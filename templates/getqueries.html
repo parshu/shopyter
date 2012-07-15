@@ -1,0 +1,35 @@
+
+
+{% block content %}
+
+    <div class="row-fluid">
+{% if qlen > 0 %}
+	<table id="table-3" style="background:#F8F8F8;">
+	<tr><td><span style="color:darkorange">{{username}}'s</span> looking for:</td></tr>
+	{% for query in queries %}
+	{% if loop.index is sameas linkno %}
+	<tr style="background:lightgrey;">
+	{% else %}
+	<tr>
+	{% endif %}
+	<td>
+	<span>
+    	<a href="#" onclick="removeQuery('/removequery/{{query['username']}}/{{query['dollar_limit']}}/{{query['keyword']}}', 1)"><i class="icon-remove"></i></a>
+   
+    		<span>	
+
+	
+		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}','dealresultsdiv', {{loop.index}}, 1, {{qlen}})"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+	</span>
+	</td></tr>
+ 	{% endfor %}
+	</table>
+{% else %}	
+ 
+ You are not looking for anything yet. Use the form below to start.
+ 
+ {% endif %}
+ 
+ {% endblock %}  
+ </div>
+

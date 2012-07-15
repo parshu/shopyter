@@ -1,0 +1,81 @@
+<font face="arial">
+              <span style="color:red">New Today</span> | knopons for <span style="color:darkorange">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span></th>
+		      <hr>
+		        
+		        
+		       <table> 
+		        {% block content %}
+		        {% if deals[0] is undefined %}
+		        <tr>
+		       		<td>
+		       		
+		       		 No new deals for this today. We will continue to look!
+					</td>
+				</tr>
+				{% endif %}
+				 <tr>
+				{% for deal in deals %}
+				
+				   {% if loop.index is sameas 4 %}
+				   <tr></tr>
+				   
+				   {% endif %}
+		        
+		           
+		        
+		           {% if loop.index < 7 %}
+    	    	
+    			
+		
+
+		       		<td>
+		       		    <table bgcolor="#EFEFEF">
+					   			<tr><td>
+					   				<table><tr>
+					   				<td>
+					    				<img src="{{deal['image']}}" style="height: 150px;" width="150"/> 
+					    			
+					    			</td>
+					    			</tr></table>
+					    			</td>
+					    			<td>
+					    			<table width="200"><tr>
+					    			<td>
+					    				<tr>
+					    					<td><a href="{{deal['url']}}"  target="_blank">{{deal['title']}}</a><b> ({{deal['condition']}})</b><td>
+					    				</tr>
+					    				<tr>
+					   						<td><b>${{deal['price']}}</b></td>
+					   					</tr>
+					   					<tr>
+					   						<td><span style="color:green">From {{deal['source']}}</span></td>
+					   					</tr>
+					   					{% if loop.index is sameas 6 %}
+		           							<tr>
+					   						<td><span style="background-color:darkorange"><a href="http://knopon.com/{{username}}">See more…</a></span></td>
+					   					    </tr>
+
+				   						{% endif %}
+					   				</td>
+					   				</tr></table>
+					   				</td>
+					   			
+					   			</tr>
+					   	</table>
+	
+		       	    </td>
+		       	    
+		       	    {% endif %}
+		       	    
+		       	    
+		          
+		         {% endfor %}
+ 				 {% endblock %}	
+ 				 </tr>	
+		      
+		      </table>
+           
+</font>
+
+
+	    

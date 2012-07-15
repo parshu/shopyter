@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knopon.com | no coupons, just deals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+    </style>
+<style type="text/css">
+#table-3 {
+	
+	background-color: #F9F9F9;
+	width: 100%;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-family: Arial,"Bitstream Vera Sans",Helvetica,Verdana,sans-serif;
+	color: #333;
+}
+#table-3 td, #table-3 th {
+	border-top-color: white;
+	border-bottom: 1px solid #DFDFDF;
+	color: #555;
+}
+#table-3 th {
+	text-shadow: rgba(255, 255, 255, 0.796875) 0px 1px 0px;
+	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+	font-weight: normal;
+	padding: 7px 7px 8px;
+	text-align: left;
+	line-height: 1.3em;
+	font-size: 14px;
+}
+#table-3 td {
+	font-size: 12px;
+	padding: 4px 7px 2px;
+	vertical-align: top;
+}
+</style>   
+    <link href="/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/siteassets/img/faviconK.jpg">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
+
+	<script type="text/javascript">
+
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-30448786-1']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="http://knopon.com"><h1><span style="color:darkorange">knopon.com </span><small>no coupons, just deals</small></h1></a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <!--<li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>-->
+            </ul>
+            <p class="navbar-text pull-right"><a href="/{{username}}">{{username}}'s</a> knopon page | <a href="mailto:knopon@gmail.com">feedback</a></p>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div> <!-- nav bar done -->
+    
+    
+    <div class="row">
+    	<div class="span4">&nbsp;</div>
+    	<div class="span8">&nbsp;</div>
+    </div>
+	<div class="row">
+    	<div class="span4">&nbsp;</div>
+    	<div class="span8">&nbsp;</div>
+    </div>
+
+
+    <div class="container-fluid">
+    
+      <div class="row-fluid">
+        <div class="span3">
+        
+        
+          <div class="well" id="queriesdiv" style="background:#F8F8F8;">
+          
+             <!--This is where the queries in the mainbox will get rendered -->
+            </div>
+           
+          <!-- Form to add new queries -->
+            <div id="addform" class="collapse in">
+            <div class="well" >
+             <div class="row-fluid"><div class="span12"><form id="add_query" class="form-inline">
+                <input type="text" id="keyword" class="input-medium" placeholder="I am looking for..." required>&nbsp; around &nbsp;
+                <input type="text" id="dollar_limit" onkeypress="return isNumberKey(event)" class="input-small" placeholder="$..." required>
+                <button type="submit" class="btn">Add</button>
+              </form></div></div>
+              
+
+            
+          </div><!--/.well -->
+          </div>
+     
+          
+         
+        </div><!--/span-->
+        <div class="span5">
+          <div class="row-fluid">
+          <div class="span12 well" id="dealresultsdiv">
+               <!-- This is where the deal results will get rendered -->
+
+		  </div>
+		  
+          </div>
+       
+          
+        </div><!--/span-->
+        <div class="span4">
+          <div class="row-fluid">
+          <div class="span12" id="savedresultsdiv">
+<iframe width="380" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=234+Granada+Avenue,+Santa+Clara,+CA&amp;aq=0&amp;oq=234+grana&amp;sll=37.34007,-121.982832&amp;sspn=0.021495,0.045447&amp;ie=UTF8&amp;hq=&amp;t=m&amp;ll=37.350987,-121.992187&amp;spn=0.02388,0.036478&amp;z=14&amp;output=embed"></iframe>
+		  </div>
+		  
+          </div>
+       
+          
+        </div><!--/span-->
+         
+        
+      </div><!--/row-->
+      <hr>
+
+      <footer>
+        <p>© knopon.com 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/bootstrap/docs/assets/js/jquery.js"></script>
+    
+    
+    <script language="javascript" type="text/javascript">
+
+    // knopon.com custom JS functions follows
+
+    
+    function addQuery(url){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				
+			}
+		}
+		ajaxRequest.open("GET", url, false);
+		ajaxRequest.send(null); 
+		
+	}
+    
+    //noOfQueries - unused as of now
+	//queryBoxDivname - Name of the  query box div
+	//queryBoxURL - URL that needs to be requested for the query box html. This is rendered in queryBoxDivname
+    
+    function renderQueryBox(queryBoxURL, queryBoxDivname, noOfQueries){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				var ajaxDisplay = document.getElementById(queryBoxDivname);
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
+		}
+		ajaxRequest.open("GET", queryBoxURL, false); // false: synchronous call to eliminate weird UI behavior
+		ajaxRequest.send(null); 
+	}
+    
+    //noOfQueries - unused as of now
+	//queryIndex - Index of the selected query. Used for highlighting
+	//dealResultsDivname - Name of the  deal results div
+	//dealResultsURL - URL that needs to be requested for the deal results html. This is rendered in queryBoxDivname
+	
+	function renderDealResults(dealResultsURL, dealResultsDivname, queryIndex, doRenderQueryBox, noOfQueries){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+
+					return false;
+				}
+			}
+		}
+		// function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				var ajaxDisplay = document.getElementById(dealResultsDivname);
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
+		}
+		ajaxRequest.open("GET", dealResultsURL, false); // false: synchronous call to eliminate weird UI behavior
+		ajaxRequest.send(null); 
+		
+		// if something gets clicked, this is a hacky way of re rendering query box to change the highlighting to the clicked query. gets called from getdeals.html
+		if(doRenderQueryBox == 1)
+		{
+			renderQueryBox('/getqueries/{{username}}/' + queryIndex,'queriesdiv', noOfQueries);
+		}
+	}
+	
+	//url - URL containing information to delete a query
+	// highlightIndex - highlighted query
+	// keyword/dollarlimit pair used as primary key contained in url
+	
+	function removeQuery(url,highlightIndex){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		
+		
+		ajaxRequest.open("GET", url, false); // false: synchronous call to eliminate weird UI behavior
+		ajaxRequest.send(null); 
+		
+		// Re render query box and deal results after deleting a query. Immediately see results of action
+		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);		
+        renderDealResults('/getdeals/{{username}}/-1','dealresultsdiv', -1, 0, 1 );
+       
+		
+	}
+	
+	// Function to validate that a typed char is a number or . (used to validate entry in $box
+	function isNumberKey(evt)
+    {
+          var charCode = (evt.which) ? evt.which : event.keyCode
+          if (charCode > 31 
+            && (charCode < 48 || charCode > 57))
+             return false;
+
+          return true;
+    }
+
+
+      
+      // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
+      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
+      renderDealResults('/getdeals/{{username}}/-1','dealresultsdiv', -1, 0, 1 );
+      
+      // Functions to handle submit of a new query
+      $("#add_query").bind("submit", function(e){
+     	 e.preventDefault();
+      });
+      
+      $('#add_query').submit(function() {
+	      var keyword = $("#keyword").val();
+	      var dollar_limit = $("#dollar_limit").val();
+	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
+	      //var stat = $.get("/addquery", {keyword: keyword, dollar_limit: dollar_limit});
+	      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);
+	      	
+	      renderDealResults('/getdeals/{{username}}/-1','dealresultsdiv', -1, 0, 1 );
+	      
+	      $('#keyword').val('');
+	      $('#dollar_limit').val('');
+      });
+      
+      function recordOutboundLink(link) {
+    		_gaq.push(['_trackEvent', 'deals', 'click', 'knoponpage']);
+    		setTimeout('document.location = "' + link.href + '"', 100);
+  	  }
+      
+    
+    </script>
+    
+    <script src="/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-alert.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-modal.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
+
+    <script src="/bootstrap/docs/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-tab.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-button.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
+
+    <script src="/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
+
+</body></html>
