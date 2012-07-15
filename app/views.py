@@ -6,6 +6,18 @@ from bottle import static_file
 
 TEMPLATE_PATH.append('./templates')
 
+@route('/jquery-ui-1.8.21.custom/<dir1>/<dir2>/<dir3>/:filename')
+def serve_jquery_ui_3(dir1,dir2,dir3,filename):
+	return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
+	
+@route('/jquery-ui-1.8.21.custom/<dir1>/<dir2>/:filename')
+def serve_jquery_ui_2(dir1,dir2,filename):
+	return static_file(dir1 + '/' + dir2 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
+	
+@route('/jquery-ui-1.8.21.custom/<dir1>/:filename')
+def serve_jquery_ui_1(dir1,filename):
+	return static_file(dir1 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
+
 @route('/siteassets/<dir1>/:filename')
 def serve_static(dir1, filename):
     return static_file(dir1 + '/' + filename, root='./siteassets/')
@@ -90,10 +102,12 @@ def getdealemail(keyword, dollarlimit, days, username):
     return template('getdealemail.html', username = username, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
 
 
-@route('/getdeals/<keyword>/<dollarlimit>')
-def getdeals(keyword, dollarlimit):
+@route('/getdeals/<keyword>/<dollarlimit>/<startnum>/<resultsize>')
+def getdeals(keyword, dollarlimit, startnum, resultsize):
     dollarlimit = int(dollarlimit)
     dollarlimit = int(1.25 * dollarlimit)
+    startnum = int(startnum) - 1
+    resultsize = int(resultsize)
     deals_table = pymongo.Connection('localhost', 27017)['master']['deals']
     deals = []
     print "dollarlimit:" + str(dollarlimit) + "\n"
@@ -115,7 +129,7 @@ def getdeals(keyword, dollarlimit):
         print "not -1\n"
         sys.stdout.flush()
     
-    deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': dollarlimit} }).sort("founddate", pymongo.DESCENDING)])
+    deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': dollarlimit} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     i = 0
     for deal in deals:
         d2 = deal['founddate']

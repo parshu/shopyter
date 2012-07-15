@@ -19,7 +19,7 @@
     		<span>	
 
 	
-		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}','dealresultsdiv', {{loop.index}}, 1, {{qlen}})"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/1/10','dealresultsdiv', {{loop.index}}, 1, {{qlen}})"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}
