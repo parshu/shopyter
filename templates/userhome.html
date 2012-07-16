@@ -121,6 +121,7 @@
 				<div class="well" id="queriesdiv" style="background:#F8F8F8;">
           			<!--This is where the queries in the mainbox will get rendered -->
             	</div>
+            	
            	
             	<div id="addform" class="collapse in"><!-- Form to add new queries -->
             		<div class="well" >
@@ -135,10 +136,14 @@
               			</div>
               		</div><!--/.well -->
           		</div> <!-- end add form -->
+          		<div class="alert alert-info">
+							<button class="close" data-dismiss="alert">×</button>
+							Add it and forget it! We do all your work. We will email you when we find good stuff. You can also visit your homepage anytime for updates.
+				</div>
 			</div><!--/span end column-->
         
         
-			<div class="span5"> <!-- second column, holds deal results -->
+			<div class="span6"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
           			<div class="span12 well carousel slide" id="carousel">
                			
@@ -155,23 +160,38 @@
 				</div> <!-- end second col -->
             </div>   
         
-        	<div class="span4">
+        	<div class="span3">
           		<div class="row-fluid well">
 		  	    	<div class="span12">
+		  	    		<div class="alert alert-info">
+							<button class="close" data-dismiss="alert">×</button>
+							Use filters to narrow down or tell us what to look for. We'll remember it every time we go looking!
+						</div>
 		  	        	<div class="row-fluid">
 		  	        		<div class="span3" style="margin-top: 2px;">
-								<span class="label" style="margin-left:5px;">Price Range</span>
+								<span class="label label-info" style="margin-left:5px;">Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							</div>
-							<div class="span7">
+							<div class="span6">
 								<div id="slider-range" style="margin-top: 5px"></div>
 							</div>
-							<div class="span2">
+							<div class="span3">
 								<input type="text" id="amount" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
+           		    		</div>
+           		    	</div>
+           		    	<div class="row-fluid">
+		  	        		<div class="span3" style="margin-top: 2px;">
+								<span class="label label-info" style="margin-left:5px;">Found&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span6">
+								<div id="slider-range-min" style="margin-top: 5px"></div>
+							</div>
+							<div class="span3">
+								<input type="text" id="days" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
            		    		</div>
            		    	</div>
            		     	<div class="row-fluid">
            		     		<div class="span3" style="margin-top: 2px;">
-           		     			<span class="label" style="margin-left:5px;">Condition&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+           		     			<span class="label label-info" style="margin-left:5px;">Condition&nbsp;</span>
 							</div>
 							<div class="span9" style="margin-top: 2px;">
 								<div class="btn-group" data-toggle="buttons-checkbox" >
@@ -183,7 +203,7 @@
 					 	</div>
 					 	<div class="row-fluid">
            		     		<div class="span3" style="margin-top: 5px;">
-           		     			<span class="label" style="margin-left:5px;">Sold&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+           		     			<span class="label label-info" style="margin-left:5px;">Sold&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							</div>
 							<div class="span9" style="margin-top: 5px;">
 								<div class="btn-group" data-toggle="buttons-checkbox" >
@@ -193,13 +213,34 @@
 								</div>
 							</div>
 					 	</div>
+					 	
+					 	<div class="row-fluid">
+					 		<div class="row-fluid">
+								<div class="span12" style="margin-top: 2px;">
+									<span class="label label-info" style="margin-left:5px;">Features&nbsp;&nbsp;&nbsp;</span>
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+									
+								</div>
+							</div>
+							
+           		    	</div>
+           		    	
+           		    	
+           		    	
            			</div>
            		</div>
         
           	
           		<div class="row-fluid well">
           			<div class="span12" id="mapsdiv">
-						<iframe width="420" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=234+Granada+Avenue,+Santa+Clara,+CA&amp;aq=0&amp;oq=234+grana&amp;sll=37.34007,-121.982832&amp;sspn=0.021495,0.045447&amp;ie=UTF8&amp;hq=&amp;t=m&amp;ll=37.350987,-121.992187&amp;spn=0.02388,0.036478&amp;z=14&amp;output=embed"></iframe>
+          			    <div class="alert alert-info">
+							<button class="close" data-dismiss="alert">×</button>
+							Locate local/in-store deals around you.
+						</div>
+						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=234+Granada+Avenue,+Santa+Clara,+CA&amp;aq=0&amp;oq=234+grana&amp;sll=37.34007,-121.982832&amp;sspn=0.021495,0.045447&amp;ie=UTF8&amp;hq=&amp;t=m&amp;ll=37.350987,-121.992187&amp;spn=0.02388,0.036478&amp;z=14&amp;output=embed"></iframe>
 		  			</div>
 		  		</div>
 		  	</div><!--/span4-->
@@ -446,6 +487,22 @@
 			" - $" + $( "#slider-range" ).slider( "values", 1 ) );
 	});
 	</script>
+	
+	<script>
+	$(function() {
+		$( "#slider-range-min" ).slider({
+			range: "min",
+			value: 7,
+			min: 1,
+			max: 21,
+			slide: function( event, ui ) {
+				$( "#days" ).val( ui.value + " days ago" );
+			}
+		});
+		$( "#days" ).val( $( "#slider-range-min" ).slider( "value" ) + " days ago");
+	});
+	</script>
+
 	
 	  <script>
 		$(function() {
