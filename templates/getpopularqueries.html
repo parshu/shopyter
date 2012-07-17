@@ -1,0 +1,35 @@
+
+
+{% block content %}
+
+    <div class="row-fluid">
+{% if qlen > 0 %}
+	<table id="table-3" style="background:#F8F8F8;">
+	<tr><td><span style="color:darkorange">other users</span> looking for:</td></tr>
+	{% for query in queries %}
+	{% if loop.index is sameas linkno %}
+	<tr style="background:lightgrey;">
+	{% else %}
+	<tr>
+	{% endif %}
+	<td>
+	<span>
+    	<a href="#" onclick="addQuery('/addquery/{{query['keyword']}}/{{query['dollar_limit']}}')"><i class="icon-plus"></i></a>
+   
+    		<span>	
+
+	
+		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/1/10','dealresultsdiv', {{loop.index}}, 2, {{qlen}})"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+	</span>
+	</td></tr>
+ 	{% endfor %}
+	</table>
+{% else %}	
+ 
+ Watch this space for what others are looking for...
+ 
+ {% endif %}
+ 
+ {% endblock %}  
+ </div>
+

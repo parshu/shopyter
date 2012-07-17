@@ -172,15 +172,15 @@ def getqueries(username, linkno):
     queries = [query for query in mainbox_table.find({'username': username})]  
     qlen = len(queries)  
     return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen)
-    
-    
+
 @route('/getpopularqueries/<username>/<linkno>')
-def getqueries(username, linkno):
+def getpopularqueries(username, linkno):
     linkno = int(linkno)
     mainbox_table = pymongo.Connection('localhost', 27017)['master']['mainbox']    
-    queries = [query for query in mainbox_table.find({'username': username})]  
+    queries = [query for query in mainbox_table.find().limit(6)]  
     qlen = len(queries)  
-    return template('getqueries.html', linkno = linkno, queries = queries, qlen = qlen)
+    return template('getpopularqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen)
+    
 
 @route('/removequery/<username>/<dollar_limit>/<keyword>')
 def removequery(username, dollar_limit, keyword):

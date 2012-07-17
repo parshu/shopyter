@@ -140,6 +140,10 @@
 							<button class="close" data-dismiss="alert">×</button>
 							Add it and forget it! We do all your work. We will email you when we find good stuff. You can also visit your homepage anytime for updates.
 				</div>
+				
+				<div class="well" id="popularqueriesdiv" style="background:#F8F8F8;">
+          			<!--This is where query recommendations will get rendered -->
+            	</div>
 			</div><!--/span end column-->
         
         
@@ -328,6 +332,7 @@
 		}
 		ajaxRequest.open("GET", url, false);
 		ajaxRequest.send(null); 
+	
 		
 	}
     
@@ -363,6 +368,7 @@
 		}
 		ajaxRequest.open("GET", queryBoxURL, false); // false: synchronous call to eliminate weird UI behavior
 		ajaxRequest.send(null); 
+		
 	}
     
     //noOfQueries - unused as of now
@@ -405,6 +411,11 @@
 		{
 			renderQueryBox('/getqueries/{{username}}/' + queryIndex,'queriesdiv', noOfQueries);
 		}
+		else if(doRenderQueryBox == 2)
+		{
+			renderQueryBox('/getpopularqueries/{{username}}/' + queryIndex,'popularqueriesdiv', noOfQueries);
+			
+		}
 		
 	}
 	
@@ -438,7 +449,7 @@
 		ajaxRequest.send(null); 
 		
 		// Re render query box and deal results after deleting a query. Immediately see results of action
-		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);		
+		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
         renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
        
 		
@@ -460,6 +471,7 @@
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
       renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
+      renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
       // Functions to handle submit of a new query
       $("#add_query").bind("submit", function(e){
      	 e.preventDefault();
