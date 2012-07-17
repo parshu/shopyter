@@ -44,12 +44,42 @@
 													<div class="row-fluid" style="margin-bottom: 3px; color: green;">
 													From {{deal['source']}}
 													</div>
-													<div class="row-fluid" style="margin-bottom: 3px; color: red;">
-													Available online
+													<div id="{{deal['sold']}}" class="row-fluid" style="margin-bottom: 3px;">
+													Available {{deal['sold']}}
 													</div>
 												</div>
 												<div class="span6">
-													<span><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-empty"></i></span>
+													<span class="muted" style="color: #555555;">
+													{% if deal['f1value'] is defined %}
+													<div class="row-fluid">
+														{{deal['f1name']}}:&nbsp;{{deal['f1value']}}	
+													</div>
+													{% endif %}
+													{% if deal['f2value'] is defined %}
+													<div class="row-fluid">
+														{{deal['f2name']}}:&nbsp;{{deal['f2value']}}	
+													</div>
+													{% endif %}
+													</span>
+													
+													<div class="row-fluid" style="margin-top: 10px;">
+													
+													<span>
+													{% if deal['rating'] is undefined %}
+													<i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i>
+													{% else %}
+													
+													{% for number in range(0,deal['rating']) %}
+													<i class="icon-star"></i>
+													{% endfor %}
+													{% for number in range(deal['rating'], 5) %}
+													<i class="icon-star-empty"></i>
+													{% endfor %}
+													{% endif %}
+													
+													</span>
+													</div>
+													</div>
 												</div>
 											</div>
 												
