@@ -145,18 +145,29 @@
         
 			<div class="span6"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
-          			<div class="span12 well carousel slide" id="carousel">
-               			
-               			<div class="carousel-inner">
-							<div class="active item" id="dealresultsdiv">…</div> <!-- This is where the deal results will get rendered -->
-							<div class="item">a</div>
-							<div class="item">b</div>
+          			<ul class="nav nav-tabs" id="myTab">
+						<li class="active"><a href="#knopons" data-toggle="tab">Knopons</a></li>
+						<li><a href="#savedknopons" data-toggle="tab">Saved Knopons</a></li>
+					</ul>
+					<div id="myTabContent" class="tab-content well">
+						<div class="tab-pane fade active in" id="knopons">
+							<div class="span12 carousel slide" id="carousel">
+								
+								<div class="carousel-inner">
+									<div class="active item" id="dealresultsdiv">…</div> <!-- This is where the deal results will get rendered -->
+									<div class="item">a</div>
+									<div class="item">b</div>
+								</div>
+								<!-- Carousel nav -->
+								<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+								<a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+		
+							</div> <!-- end row-->
 						</div>
-						<!-- Carousel nav -->
-						<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
-						<a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
-
-		  			</div> <!-- end row-->
+						<div class="tab-pane fade" id="savedknopons">
+							Saved deals
+						</div>
+					</div>
 				</div> <!-- end second col -->
             </div>   
         
