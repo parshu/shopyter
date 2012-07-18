@@ -182,8 +182,7 @@
 								
 								<div class="carousel-inner">
 									<div class="active item" id="dealresultsdiv">…</div> <!-- This is where the deal results will get rendered -->
-									<div class="item">a</div>
-									<div class="item">b</div>
+									<div class="item" id="dealresults2div">a</div>
 								</div>
 								<!-- Carousel nav -->
 								<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
@@ -466,6 +465,7 @@
 		// Re render query box and deal results after deleting a query. Immediately see results of action
 		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
         renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
+        renderDealResults('/getdeals/{{username}}/-1/11/10','dealresults2div', -1, 0, 1 );
        
 		
 	}
@@ -486,6 +486,8 @@
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
       renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
+      renderDealResults('/getdeals/{{username}}/-1/11/10','dealresults2div', -1, 0, 1 );
+
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
       // Functions to handle submit of a new query
       $("#add_query").bind("submit", function(e){
@@ -500,6 +502,8 @@
 	      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);
 	      	
 	      renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
+	      renderDealResults('/getdeals/{{username}}/-1/11/10','dealresults2div', -1, 0, 1 );
+
 	      
 	      $('#keyword').val('');
 	      $('#dollar_limit').val('');
