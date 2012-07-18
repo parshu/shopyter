@@ -22,6 +22,10 @@ def serve_jquery_ui_1(dir1,filename):
 def serve_static(dir1, filename):
     return static_file(dir1 + '/' + filename, root='./siteassets/')
     
+@route('/maplocal/:filename')
+def serve_test_static(filename):
+    return template(filename)
+    
 @route('/bootstrap/<dir1>/<dir2>/<dir3>/:filename')
 def serve_static(dir1, dir2, dir3, filename):
     return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + filename, root='./bootstrap/')
@@ -45,22 +49,6 @@ def user(username):
         deals.extend([deal for deal in deals_table.find({'query_id': first_query['_id']})])
     response.set_cookie('username', username, path = '/')    
     return template('userhome.html', username = username, queries = queries, deals = deals, qlen = qlen)
-    
-@route('/test/:username')
-def user(username):
-    users_table = pymongo.Connection('localhost', 27017)['master']['users']
-    if not users_table.find_one({'username': username}):
-        return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
-    mainbox_table = pymongo.Connection('localhost', 27017)['master']['mainbox']
-    deals_table = pymongo.Connection('localhost', 27017)['master']['deals']
-    queries = [query for query in mainbox_table.find({'username': username})]
-    deals = []
-    qlen = len(queries)
-    if len(queries) > 0:
-        first_query = queries[0]
-        deals.extend([deal for deal in deals_table.find({'query_id': first_query['_id']})])
-    response.set_cookie('username', username, path = '/')    
-    return template('test.html', username = username, queries = queries, deals = deals, qlen = qlen)
 
 import string
 @route('/addquery/<keyword>/<dollarlimit>')

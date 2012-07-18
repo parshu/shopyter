@@ -197,25 +197,25 @@
 				</div> <!-- end second col -->
             </div>   
         
-        	<div class="span3">
+        	<div class="span3">  <!-- Third col holds filters and maps -->
           		<div class="row-fluid well">
 		  	    	<div class="span12">
-		  	    			<div class="accordion" id="accordion2">
-            <div class="accordion-group" style="background-color: #D9EDF7;">
-              <div class="accordion-heading">
-                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                  Filters <i class="icon-info-sign"></i>
-                </a>
-              </div>
-              <div style="height: 0px;" id="collapseOne" class="accordion-body collapse">
-                <div class="accordion-inner">
-                  Use filters to narrow down or tell us what to look for. We'll remember it every time we go looking! 
-                </div>
-              </div>
-            </div>
-            
-          </div>
-		  	        	<div class="row-fluid">
+		  	    		<div class="accordion" id="accordion2">  <!-- Holds Filter heading and accordian -->
+							<div class="accordion-group" style="background-color: #D9EDF7;">
+								<div class="accordion-heading">
+									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+								  		Filters <i class="icon-info-sign"></i>
+									</a>
+							  	</div>
+								<div style="height: 0px;" id="collapseOne" class="accordion-body collapse">
+									<div class="accordion-inner">
+								  		Use filters to narrow down or tell us what to look for. We'll remember it every time we go looking! 
+									</div>
+							  	</div>
+							</div>
+						</div>
+		  	        	
+		  	        	<div class="row-fluid">  <!-- price slider filter -->
 		  	        		<div class="span3" style="margin-top: 2px;">
 								<span class="label label-info" style="margin-left:5px;">Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							</div>
@@ -226,7 +226,7 @@
 								<input type="text" id="amount" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
            		    		</div>
            		    	</div>
-           		    	<div class="row-fluid">
+           		    	<div class="row-fluid">  <!-- date slider filter -->
 		  	        		<div class="span3" style="margin-top: 2px;">
 								<span class="label label-info" style="margin-left:5px;">Found&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							</div>
@@ -237,7 +237,7 @@
 								<input type="text" id="days" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
            		    		</div>
            		    	</div>
-           		     	<div class="row-fluid">
+           		     	<div class="row-fluid">  <!-- condition filter-->
            		     		<div class="span3" style="margin-top: 2px;">
            		     			<span class="label label-info" style="margin-left:5px;">Condition&nbsp;</span>
 							</div>
@@ -248,8 +248,8 @@
 									<button class="btn" style="padding: 1px 10px;">Refurbished</button>
 								</div>
 							</div>
-					 	</div>
-					 	<div class="row-fluid">
+					 	</div>   <!-- end condition filter -->
+					 	<div class="row-fluid">  <!-- where sold filter -->
            		     		<div class="span3" style="margin-top: 5px;">
            		     			<span class="label label-info" style="margin-left:5px;">Sold&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							</div>
@@ -260,9 +260,9 @@
 									<button class="btn" style="padding: 1px 10px;">Local</button>
 								</div>
 							</div>
-					 	</div>
+					 	</div>  <!-- end where sold filter -->
 					 	
-					 	<div class="row-fluid">
+					 	<div class="row-fluid">  <!-- features filter -->
 					 		
 							<div class="span3" style="margin-top: 2px;">
 								<span class="label label-info" style="margin-left:5px;">Features&nbsp;&nbsp;&nbsp;</span>
@@ -279,24 +279,21 @@
 							
 							
 							
-           		    	</div>
-           		    	
-           		    	
-           		    	
+           		    	</div>  <!-- end features filter -->
            			</div>
            		</div>
         
           	
-          		<div class="row-fluid well">
+          		<div class="row-fluid well">  <!-- holds maps -->
           			<div class="span12" id="mapsdiv">
           			    <div class="alert alert-info">
 							<button class="close" data-dismiss="alert">×</button>
 							Locate local/in-store deals around you.
 						</div>
-						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=234+Granada+Avenue,+Santa+Clara,+CA&amp;aq=0&amp;oq=234+grana&amp;sll=37.34007,-121.982832&amp;sspn=0.021495,0.045447&amp;ie=UTF8&amp;hq=&amp;t=m&amp;ll=37.350987,-121.992187&amp;spn=0.02388,0.036478&amp;z=14&amp;output=embed"></iframe>
+						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://localhost:8080/maplocal/test.html"></iframe>
 		  			</div>
-		  		</div>
-		  	</div><!--/span4-->
+		  		</div>  <!-- end maps -->
+		  	</div><!-- end third column containing filters and maps-->
       	</div> <!-- end row containing all main body elements -->
       
       
