@@ -17,6 +17,11 @@
       .sidebar-nav {
         padding: 9px 0;
       }
+      .scrollspy-example {  
+		height: 1200px;  
+		overflow: auto;  
+		position: relative;  
+	  }
     </style>
 <style type="text/css">
 #table-3 {
@@ -160,6 +165,7 @@
 			<div class="span6"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
           			<ul class="nav nav-tabs" id="myTab">
+          				
 						<li class="active"><a href="#knopons" data-toggle="tab">Knopons</a></li>
 						<li><a href="#savedknopons" data-toggle="tab">Saved Knopons</a></li>
 						<li class="dropdown" id="menu1">
@@ -174,25 +180,19 @@
 								
 							</ul>
 						</li>
+						
 					</ul>
 					
 					<div id="myTabContent" class="tab-content well">
-						<div class="tab-pane fade active in" id="knopons">
-							<div class="span12 carousel slide" id="carousel">
-								
-								<div class="carousel-inner">
-									<div class="active item" id="dealresultsdiv">…</div> <!-- This is where the deal results will get rendered -->
-									<div class="item" id="dealresults2div">a</div>
-								</div>
-								<!-- Carousel nav -->
-								<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
-								<a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
-		
-							</div> <!-- end row-->
-						</div>
 						<div class="tab-pane fade" id="savedknopons">
 							Saved deals
 						</div>
+						<div class="tab-pane fade active in scrollspy-example" data-target="#knopons" id="knopons" data-spy="scroll">
+							
+									<div id="dealresultsdiv"></div> <!-- This is where the deal results will get rendered -->
+									
+						</div>
+						
 					</div>
 				</div> <!-- end second col -->
             </div>   
@@ -290,7 +290,7 @@
 							<button class="close" data-dismiss="alert">×</button>
 							Locate local/in-store deals around you.
 						</div>
-						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://localhost:8080/maplocal/test.html"></iframe>
+						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://localhost:8080/maplocal/getmap.html"></iframe>
 		  			</div>
 		  		</div>  <!-- end maps -->
 		  	</div><!-- end third column containing filters and maps-->
@@ -482,10 +482,11 @@
       
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
-      renderDealResults('/getdeals/{{username}}/-1/1/10','dealresultsdiv', -1, 0, 1 );
+      renderDealResults('/getdeals/{{username}}/-1/1/20','dealresultsdiv', -1, 0, 1 );
       renderDealResults('/getdeals/{{username}}/-1/11/10','dealresults2div', -1, 0, 1 );
 
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
+      $('#dealresultsdiv').scrollspy()
       // Functions to handle submit of a new query
       $("#add_query").bind("submit", function(e){
      	 e.preventDefault();
