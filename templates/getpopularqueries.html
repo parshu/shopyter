@@ -14,7 +14,8 @@
 	{% endif %}
 	<td>
 	<span>
-    	<a href="#" onclick="addQuery('/addquery/{{query['keyword']}}/{{query['dollar_limit']}}')"><i class="icon-plus"></i></a>
+	
+    	<a href="#" onclick="totalqueries=totalqueries+1;addQuery('/addquery/{{query['keyword']}}/{{query['dollar_limit']}}');renderQueryBox('/getqueries/{{username}}/' + totalqueries,'queriesdiv', 1);"><i class="icon-plus"></i></a>
    
     		<span>	
 

@@ -3,7 +3,7 @@ from fabric.api import put, env, sudo, roles, run, local, lcd, settings, cd, get
 import time
 
 env.roledefs = {
-    'box': ['ubuntu@ec2-50-18-129-86.us-west-1.compute.amazonaws.com'],
+    'box': ['ubuntu@klipiter.com'],
 }
 
 env.code_path = '.'
