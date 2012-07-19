@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>klipiter.com | personal shopping assistant</title>
+    <title>klipiter.com | personal deal hunting engine | shopping assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -103,14 +103,14 @@
             		<span class="icon-bar"></span>
             		<span class="icon-bar"></span>
           		</a>
-          		<a class="brand" href="http://klipiter.com"><h1><span style="color:darkorange">klipiter.com </span><small>personal shopping assistant</small></h1></a>
+          		<a class="brand" href="http://klipiter.com"><h1><span style="color:darkorange">klipiter.com </span><small>personal deal hunting engine | shopping assistant</small></h1></a>
           		<div class="nav-collapse">
             		<ul class="nav">
               		<!--<li class="active"><a href="#">Home</a></li>
               		<li><a href="#about">About</a></li>
               		<li><a href="#contact">Contact</a></li>-->
             		</ul>
-            		<p class="navbar-text pull-right"><a href="/{{username}}">{{username}}'s</a> klip board | <a href="mailto:knopon@gmail.com">feedback</a></p>
+            		<p class="navbar-text pull-right" style="margin-right: 60px;"><a href="/{{username}}">{{username}}'s</a> klip board | <a href="mailto:knopon@gmail.com">feedback</a></p>
           		</div><!--/.nav-collapse -->
         	</div>
 		</div>
@@ -290,7 +290,7 @@
 							<button class="close" data-dismiss="alert">×</button>
 							Locate local/in-store deals around you.
 						</div>
-						<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://localhost:8080/maplocal/getmap.html"></iframe>
+						<div id="mapresultsdiv"></div>
 		  			</div>
 		  		</div>  <!-- end maps -->
 		  	</div><!-- end third column containing filters and maps-->
@@ -430,6 +430,15 @@
 		
 	}
 	
+	function renderMapResults(dealResultsURL, dealResultsDivname, queryIndex, doRenderQueryBox, noOfQueries){
+		
+		var ajaxDisplay = document.getElementById(dealResultsDivname);
+		ajaxDisplay.innerHTML = '<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + dealResultsURL  + '"></iframe>';
+	
+		
+		
+	}
+	
 	//url - URL containing information to delete a query
 	// highlightIndex - highlighted query
 	// keyword/dollarlimit pair used as primary key contained in url
@@ -461,7 +470,7 @@
 		
 		// Re render query box and deal results after deleting a query. Immediately see results of action
 		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
-        renderDealResults('/getdeals/{{username}}/-1/1/30','dealresultsdiv', -1, 0, 1 );
+        renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
        
 		
 	}
@@ -481,10 +490,12 @@
       
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
-      renderDealResults('/getdeals/{{username}}/-1/1/30','dealresultsdiv', -1, 0, 1 );
+      renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	  renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
-      $('#dealresultsdiv').scrollspy()
+      
+     
       // Functions to handle submit of a new query
       $("#add_query").bind("submit", function(e){
      	 e.preventDefault();
@@ -497,7 +508,7 @@
 	      //var stat = $.get("/addquery", {keyword: keyword, dollar_limit: dollar_limit});
 	      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);
 	      	
-	      renderDealResults('/getdeals/{{username}}/-1/1/30','dealresultsdiv', -1, 0, 1 );
+	      renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
 
 	      
 	      $('#keyword').val('');

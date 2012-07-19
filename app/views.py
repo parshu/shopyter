@@ -22,10 +22,6 @@ def serve_jquery_ui_1(dir1,filename):
 def serve_static(dir1, filename):
     return static_file(dir1 + '/' + filename, root='./siteassets/')
     
-@route('/maplocal/:filename')
-def serve_test_static(filename):
-    return template(filename)
-    
 @route('/bootstrap/<dir1>/<dir2>/<dir3>/:filename')
 def serve_static(dir1, dir2, dir3, filename):
     return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + filename, root='./bootstrap/')
@@ -33,6 +29,8 @@ def serve_static(dir1, dir2, dir3, filename):
 @route('/')
 def hello_world():
     return "Hello World!!!!"
+    
+    
 
 @route('/:username')
 def user(username):
@@ -90,8 +88,8 @@ def getdealemail(keyword, dollarlimit, days, username):
     return template('getdealemail.html', username = username, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
 
 
-@route('/getdeals/<keyword>/<dollarlimit>/<startnum>/<resultsize>')
-def getdeals(keyword, dollarlimit, startnum, resultsize):
+@route('/getdeals/<keyword>/<dollarlimit>/<startnum>/<resultsize>/:filename')
+def getdeals(keyword, dollarlimit, startnum, resultsize, filename):
     dollarlimit = int(dollarlimit)
     dollarlimit = int(1.25 * dollarlimit)
     startnum = int(startnum) - 1
@@ -126,7 +124,7 @@ def getdeals(keyword, dollarlimit, startnum, resultsize):
         i = i + 1
     print deals
     sys.stdout.flush()
-    return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals)
+    return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
     
 """@route('/getsaveddeals/<mainboxid>/')
 def getsaveddeals(mainboxid):

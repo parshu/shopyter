@@ -32,3 +32,11 @@ def importdb():
     get('dump.tz', env.code_path)
     local('tar -zxvf dump.tz')
     local('mongorestore')
+
+@roles('box')
+def exportdb():
+    local('mongodump')
+    local('tar -zcvf dump.tz dump/')
+    put('dump.tz', env.code_path)
+    run('tar -zxvf dump.tz')
+    run('/home/ubuntu/downloads/mongodb-linux-x86_64-2.0.4/bin/mongorestore')

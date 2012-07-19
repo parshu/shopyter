@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map_canvas { height: 100% }
+    </style>
+     <link href="/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
+     <link href="/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY&sensor=true">
+    </script>
+        <script src="/bootstrap/docs/assets/js/jquery.js"></script>
+          <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
+ 	<script src="/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-button.js"></script>
+   
+
+
+    <script type="text/javascript">
+    	
+    	function codeAddress(map, address, markertitle, isuserlocation, url) {
+    		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div>' + address + '</div></div>';
+			geocoder.geocode( { 'address': address}, function(results, status) {
+			  if (status == google.maps.GeocoderStatus.OK) {
+				map.setCenter(results[0].geometry.location);
+				var marker = new google.maps.Marker({
+					map: map,
+					position: results[0].geometry.location,
+					title: markertitle
+				});
+				if(isuserlocation) {
+					iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+					marker.setIcon(iconFile);
+				}
+				var infowindow = new google.maps.InfoWindow({
+					content: display
+				});
+				google.maps.event.addListener(marker, 'click', function() {
+				  infowindow.open(map,marker);
+				});
+			  } else {
+				alert("Geocode was not successful for the following reason: " + status);
+			  }
+			});
+			
+			
+    		
+		  }
+
+    	
+    	
+    	function initialize() {
+       		geocoder = new google.maps.Geocoder();
+    		var mapOptions = {
+      			zoom: 11,
+      			mapTypeId: google.maps.MapTypeId.ROADMAP,
+      			center: new google.maps.LatLng(geoplugin_latitude(), geoplugin_longitude())
+    		}
+    		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+    		
+			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#");
+			{% block content %}
+			{% for deal in deals %}
+				{% if deal['city'] in [''] %}
+				
+				{% else %}
+					var add = "{{deal['address']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
+    				
+    				
+    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}");
+    			{% endif %}
+    		{% endfor %}
+			 {% endblock %}	
+      	}
+      	
+
+
+    </script>
+  </head>
+  <body onload="initialize()" style="padding-left: 0px; padding-right: 0px;">
+    <div id="map_canvas" style="width:100%; height:100%"></div>
+  </body>
+</html>
