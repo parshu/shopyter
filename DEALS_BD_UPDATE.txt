@@ -1,0 +1,2 @@
+db.deals.update({ "_id" : ObjectId("5005f33208efb332af000000") }, { $set : { 'founddate' : new ISODate() } }, false, true)
+db.deals.update({ "_id" : ObjectId("5005f33208efb332af000001") }, { $set : { 'founddate' : new ISODate() } }, false, true)
