@@ -24,8 +24,8 @@
 
     <script type="text/javascript">
     	
-    	function codeAddress(map, address, markertitle, isuserlocation, url) {
-    		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div>' + address + '</div></div>';
+    	function codeAddress(map, address, markertitle, isuserlocation, url, source) {
+    		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
 			geocoder.geocode( { 'address': address}, function(results, status) {
 			  if (status == google.maps.GeocoderStatus.OK) {
 				map.setCenter(results[0].geometry.location);
@@ -39,11 +39,14 @@
 					marker.setIcon(iconFile);
 				}
 				var infowindow = new google.maps.InfoWindow({
-					content: display
+					content: display,
+					maxWidth: 20
 				});
+				
 				google.maps.event.addListener(marker, 'click', function() {
 				  infowindow.open(map,marker);
 				});
+				
 			  } else {
 				alert("Geocode was not successful for the following reason: " + status);
 			  }
@@ -64,7 +67,7 @@
     		}
     		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     		
-			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#");
+			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#", "");
 			{% block content %}
 			{% for deal in deals %}
 				{% if deal['city'] is defined %}
@@ -73,7 +76,7 @@
 				{% else %}
 					var add = "{{deal['address']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
     				
-    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}");
+    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}", "{{ deal['source'] }}");
     			{% endif %}
     			{% endif %}
     		{% endfor %}

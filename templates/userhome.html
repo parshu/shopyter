@@ -90,6 +90,8 @@
 	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 	  })();
 
+
+	var totalqueries = {{qlen}};
 	</script>
 
   </head>
@@ -473,6 +475,7 @@
         renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
         renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
+		totalqueries = totalqueries - 1;
        
 		
 	}
@@ -496,6 +499,8 @@
 	  renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
+     
+	
       
      
       // Functions to handle submit of a new query
@@ -508,14 +513,17 @@
 	      var dollar_limit = $("#dollar_limit").val();
 	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
 	      //var stat = $.get("/addquery", {keyword: keyword, dollar_limit: dollar_limit});
-	      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);
+	      totalqueries = totalqueries + 1;
+	      renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
 	      	
-	      renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	      renderDealResults('/getdeals/' + keyword + '/' + dollar_limit + '/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
 	      renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
 	      
 	      $('#keyword').val('');
 	      $('#dollar_limit').val('');
+	      
+
       });
       
       function recordOutboundLink(link) {
@@ -584,6 +592,24 @@
 		$(function() {
 			$('#carousel').carousel('pause');
 		});
+	
+		var progress = setInterval(function() {
+		var $bar = $('.bar');
+		
+		if ($bar.width()==400) {
+			clearInterval(progress);
+			$('.progress').removeClass('active');
+			renderDealResults('/getdeals/HD camcorder/400/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	  		renderMapResults('/getdeals/HD camcorder/400/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+		} else {
+			$bar.width($bar.width()+40);
+		}
+		$bar.text($bar.width()/4 + "%");
+		//renderDealResults('/getdeals/HD camcorder/400/1/' + $bar.width()/20 + '/getdeals.html','dealresultsdiv', -1, 0, 1 );
+		
+	}, 800);
+	
+	
 	</script>
 
 </body></html>

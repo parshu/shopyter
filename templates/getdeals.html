@@ -7,17 +7,25 @@
 		        {% block content %}
 		        {% if deals[0] is undefined %}
 		        <div class="row-fluid">
-		         <div class="alert alert-info">
-			   			<strong>We are working on your deals</strong>, like right now. We will do all the work and send you an email as soon as we find a great deal for you online.  
+		         <div class="alert alert-error">
+			   			This is a <strong>demo</strong> of how we will process an entry in real time(coming soon) in addition to the offline deal hunting we will be doing for you.  
 				</div>
-				 <div class="alert alert-info">
-						Alternatively, bookmark your url and visit us after a few hours.
+				
 				</div>
-				 <div class="alert alert-info">
-						If you have been waiting for deals and still not seen any, try relaxing your dollar limits. There might not be any great deals at this price point at this time
-				</div>
+				
+					<div class="progress progress-striped active" style="width: 400px; margin-left: auto; margin-right: auto;">
+						<div class="bar" style="width: 0%;"></div>
+					</div>
+				
+				
+
+				{% else %}
+				<div class="alert alert-info">
+						<button class="close" data-dismiss="alert">×</button>
+			   			Watch this space. We are looking for deals right now. Get on with your day and we will notify you when we find more great deals.  
 				</div>
 				{% endif %}
+				
 				{% for deal in deals %}
 		        
 		        
