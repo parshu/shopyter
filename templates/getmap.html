@@ -10,7 +10,8 @@
      <link href="/bootstrap/docs/assets/css/bootstrap.css" rel="stylesheet">
      <link href="/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY&sensor=true">
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY&sensor=false">
+      
     </script>
         <script src="/bootstrap/docs/assets/js/jquery.js"></script>
           <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
@@ -66,13 +67,14 @@
 			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#");
 			{% block content %}
 			{% for deal in deals %}
+				{% if deal['city'] is defined %}
 				{% if deal['city'] in [''] %}
 				
 				{% else %}
 					var add = "{{deal['address']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
     				
-    				
     				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}");
+    			{% endif %}
     			{% endif %}
     		{% endfor %}
 			 {% endblock %}	

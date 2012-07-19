@@ -471,6 +471,8 @@
 		// Re render query box and deal results after deleting a query. Immediately see results of action
 		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
         renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+        renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+
        
 		
 	}
@@ -509,6 +511,7 @@
 	      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);
 	      	
 	      renderDealResults('/getdeals/{{username}}/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	      renderMapResults('/getdeals/{{username}}/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
 	      
 	      $('#keyword').val('');
