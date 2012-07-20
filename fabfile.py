@@ -23,7 +23,7 @@ def restart():
     with settings(warn_only=True):
         run('ps ax | grep python | grep main | grep -v grep | awk {\'print $1\'} | xargs kill')
     with cd(env.deploy_path):
-        _run_background('python main.py >>forever.log 2>&1')
+        _run_background('python main.py >> forever.log 2>&1')
 
 @roles('box')
 def importdb():

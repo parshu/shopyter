@@ -1,0 +1,5 @@
+mainbox table: keyword, price, pricelow, pricehigh, condition, sold, tags[] 
+deals table: dealid, prodid, feedsource, prodsource, condition, price, shipping, modificationtime, image, url, channel, availability, color
+product table: prodid, title, brand, specs[]
+savedbox table: userid, dealid
+deletebox table: userid, dealid
