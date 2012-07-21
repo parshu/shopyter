@@ -1,4 +1,5 @@
-{
+
+CONFIG = {
 	"dbname": "test",
 	"dealstablename": "deals",
 	"producttablename" : "product",

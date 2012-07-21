@@ -2,14 +2,13 @@ import sys
 sys.path.append('./backend/feeds')
 import feedslib
 import json
+import feedsconfig
 
-
-configfile = sys.argv[1]
-feedsource = sys.argv[2]
-keyword = sys.argv[3]
-pricelow = sys.argv[4]
-pricehigh = sys.argv[5]
-maxresults = sys.argv[6]
+feedsource = sys.argv[1]
+keyword = sys.argv[2]
+pricelow = sys.argv[3]
+pricehigh = sys.argv[4]
+maxresults = sys.argv[5]
 
 print "feedsource: " + feedsource
 print "keyword: " + keyword
@@ -17,9 +16,10 @@ print "pricerange: " + pricelow + " - " + pricehigh
 print "maxresults: " + maxresults
 print "----------------------------------------------"
 
-f = open(configfile, 'r')
-jsonconfig = json.loads(f.read())
+
+jsonconfig = feedsconfig.CONFIG
 print jsonconfig
+
 
 deals = feedslib.getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults)
 

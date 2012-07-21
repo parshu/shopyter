@@ -8,6 +8,7 @@ import os
 
 def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults):
 	feedconfig = None
+	deals = []
 	for fconfig in jsonconfig['feeds']:
 		if(fconfig['feedsource'] == feedsource):
 			 feedconfig = fconfig
@@ -23,19 +24,13 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	
 	url = feedconfig['feedurl'] + feedconfig['feedkeyname'] + "=" + feedconfig['feedkeyvalue'] + "&" + feedconfig['feedparams'] %(keyword, maxresults, pricelow, pricehigh)
 	
-	print "URL: " + url
 	response = urllib2.urlopen(url)
-	results = json.loads(response.read())
-	
-	print "Result count: " + str(results[feedconfig['resultscountfield']])
-	print "Printing results..."
+	results = json.loads(response.read())	
 	dataitems = feedconfig['feeddatatostore']
-	ct = 1
 	for result in results[feedconfig['resultslistfield']]:
 		dealresult = {}
 		for datakey in dataitems.keys():
 			val = result
-			ctr = 1
 			for datavals in dataitems[datakey].split(','):
 	
 				if(datavals.isdigit()):
@@ -47,16 +42,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 						continue
 						
 				
-				ctr = ctr + 1
-			#print datakey
 			dealresult[datakey] = val
 		
-		print dealresult
-		for key in dealresult.keys():
-			print str(key) + " : " + str(dealresult[key])
+		deals.append(dealresult)
 		
-		#print str(ct) + ": " + result
-		print "#########################"
-		ct = ct + 1
-	
-
+	return(deals)
