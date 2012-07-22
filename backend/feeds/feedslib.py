@@ -3,7 +3,14 @@ import json
 import urllib
 import sys
 import os
+import datetime
+import hashlib
+import unicodedata
 
+def gethash(s):
+	h = hashlib.new('ripemd160')
+	h.update(s)
+	return(h.hexdigest())
 
 
 def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults):
@@ -41,9 +48,21 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 					else:
 						continue
 						
-				
-			dealresult[datakey] = val
-		
+			if( (type(val) is dict) or (type(val) is list)):
+				pass 
+			else:
+				dealresult[datakey] = val
+		dealresult['keyword'] = urllib.unquote(keyword)
+		dealresult['founddate'] = datetime.datetime.utcnow()
+		hashstr = ""
+		for component in jsonconfig['hashcomponents']:
+			if(dealresult.has_key(component)):
+				if((type(dealresult[component]) is int) or (type(dealresult[component]) is float)):
+					hashstr = hashstr + str(dealresult[component])
+				else:
+					hashstr = hashstr + dealresult[component]
+		hashstr = unicodedata.normalize('NFKD', hashstr).encode('ascii','ignore')
+		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
 		
 	return(deals)

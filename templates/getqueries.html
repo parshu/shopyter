@@ -19,7 +19,7 @@
     		<span>	
 
 	
-		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}

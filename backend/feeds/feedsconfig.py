@@ -3,6 +3,15 @@ CONFIG = {
 	"dbname": "test",
 	"dealstablename": "deals",
 	"producttablename" : "product",
+	"hashcomponents": [
+		"title",
+		"source",
+		"price",
+		"shipping",
+		"brand",
+		"condition",
+		"channel"		
+	],
 	"feeds" : [
 		{
 			"feedsource": "google",
@@ -29,6 +38,7 @@ CONFIG = {
 				"url" : "product,link",
 				"image" : "product,images,0,link"
 			}
+			
 		}
 	]
 }
