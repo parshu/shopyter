@@ -10,7 +10,8 @@ CONFIG = {
 		"shipping",
 		"brand",
 		"condition",
-		"channel"		
+		"channel",
+		"keyword"		
 	],
 	"feeds" : [
 		{
@@ -18,8 +19,9 @@ CONFIG = {
 			"feedurl": "https://www.googleapis.com/shopping/search/v1/public/products?",
 			"feedkeyname": "key",
 			"feedkeyvalue": "AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY",
-			"feedparams": "&country=US&q=%s&max-results=%s&restrictBy=price=[%s,%s]",
-			"feedreplacementfields": "keyword, pricelow, pricehigh",
+			"feedparams": "&country=US&q=%s&max-results=%s&restrictBy=price=[%s,%s]%s%s%s",
+			"feedreplacementfields": "keyword, maxresults, pricelow, pricehigh, zipcode, city, state",
+			"feedtagfields":"title",
 			"resultscountfield": "currentItemCount",
 			"resultslistfield" : "items",
 			"feeddatatostore": {	
@@ -37,6 +39,28 @@ CONFIG = {
 				"shipping" : "product,inventories,0,shipping",
 				"url" : "product,link",
 				"image" : "product,images,0,link"
+			}
+			
+		},
+		{
+			"feedsource": "craigslist",
+			"feedurl": "",
+			"feedparams": "http://localhost:8079/getclfeed/%s%s/%s/%s/0/%s/%s/%s",
+			"feedreplacementfields": "keyword, maxresults, pricehigh, pricelow, zipcode, city, state",
+			"feedtagfields":"title",
+			"resultscountfield": "totalItems",
+			"resultslistfield" : "items",
+			"feeddatatostore": {	
+				"title" : "title",
+				"source" : "#craigslist",
+				"modifiedtime" : "posteddate",
+				"condition" : "#used",
+				"channel" : "#local",
+				"price" : "price",
+				"url" : "url",
+				"image" : "image",
+				"city" : "city",
+				"state" : "state"
 			}
 			
 		}

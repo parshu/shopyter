@@ -1,3 +1,4 @@
+
 import pymongo
 import urllib
 import urllib2
@@ -7,6 +8,8 @@ from BeautifulSoup import BeautifulSoup
 import unicodedata
 
 def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
+	print "here 91"
+	sys.stdout.flush()
 	keyword = urllib.quote(keyword)
 	cl_table = pymongo.Connection('localhost', 27017)[DBNAME]['clmapping']
 	pageindex = str(int(pageindex) * 100)
@@ -14,7 +17,10 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 		return {'status': 'error: mapping not found for ' + zipcode}
 	clmapping = cl_table.find_one({'_id': zipcode})
 	url = clmapping['baseurl'] + "search/sss?sort=rel&hasPic=1&maxAsk=%s&minAsk=%s&query=%s&srchType=T&s=%s"
+	
 	url = url %(pricehigh,pricelow,keyword,pageindex)
+	print url
+   	sys.stdout.flush()
 	
 	page = urllib2.urlopen(url)
 	
@@ -27,9 +33,13 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 		jsonitem = {}
 		spans = item.findAll('span')
 		for span in spans:
-			if((span['class'] != None) and (span.string != None)):
+
+			if((span['class'] != None) and ((span.string != None) or (len(span.findAll('font')) > 0))):
 				classval = unicodedata.normalize('NFKD', span['class']).encode('ascii','ignore')
-				classstr = unicodedata.normalize('NFKD', span.string).encode('ascii','ignore')
+				classstr = None
+				if(span.string != None):
+					classstr = unicodedata.normalize('NFKD', span.string).encode('ascii','ignore')
+
 				name = None
 				val = None
 				if(classval == "ih"):
@@ -41,15 +51,18 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 					
 				elif(classval == "itempp"):
 					name = "price"
-					val = classstr.strip()
+					val = classstr.strip().replace("$","")
+					val = float(val)
 				elif(classval == "itempn"):
-					name = "location"
+					name = "city"
 					locval = None
 					for font in span.findAll('font'):
-						locval = unicodedata.normalize('NFKD', font.string).encode('ascii','ignore').split("/")[0].strip() + ", " + state
+						locval = unicodedata.normalize('NFKD', font.string).encode('ascii','ignore').split("/")[0].strip().replace("(","").replace(")","")
+						jsonitem['state'] = state
 						break
 					if(locval == None):
-						locval = classstr.split("/")[0].strip() + ", " + state
+						locval = classstr.split("/")[0].strip().replace("(","").replace(")","")
+						jsonitem['state'] = state
 					val = locval
 				elif(classval == "itemdate"):
 					name = "posteddate"
@@ -61,8 +74,11 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 		for atag in atags:
 			jsonitem['url'] = unicodedata.normalize('NFKD', atag['href']).encode('ascii','ignore')
 			jsonitem['title'] = unicodedata.normalize('NFKD', atag.string).encode('ascii','ignore')
+			
 			break
+		
 		jsonitems.append(jsonitem)
 	
 	htmljson['items'] = jsonitems
+
 	return htmljson

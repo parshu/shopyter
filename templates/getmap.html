@@ -61,13 +61,13 @@
     	function initialize() {
        		geocoder = new google.maps.Geocoder();
     		var mapOptions = {
-      			zoom: 11,
+      			zoom: 9,
       			mapTypeId: google.maps.MapTypeId.ROADMAP,
       			center: new google.maps.LatLng(geoplugin_latitude(), geoplugin_longitude())
     		}
     		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     		
-			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#", "");
+			
 			{% block content %}
 			{% for deal in deals %}
 				{% if deal['city'] is defined %}
@@ -81,6 +81,9 @@
     			{% endif %}
     		{% endfor %}
 			 {% endblock %}	
+			 
+			 			codeAddress(map, geoplugin_city() + ", " + geoplugin_regionName() + ", " + geoplugin_countryName(), "My location", true, "#", "");
+
       	}
       	
 

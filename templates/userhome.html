@@ -79,6 +79,8 @@
     <link rel="apple-touch-icon-precomposed" href="/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
 
 	<script type="text/javascript">
+	 
+	 	
 
 	  var _gaq = _gaq || [];
 	  _gaq.push(['_setAccount', 'UA-30448786-1']);
@@ -200,89 +202,8 @@
             </div>   
         
         	<div class="span3">  <!-- Third col holds filters and maps -->
-          		<div class="row-fluid well">
-		  	    	<div class="span12">
-		  	    		<div class="accordion" id="accordion2">  <!-- Holds Filter heading and accordian -->
-							<div class="accordion-group" style="background-color: #D9EDF7;">
-								<div class="accordion-heading">
-									<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-								  		Filters <i class="icon-info-sign"></i>
-									</a>
-							  	</div>
-								<div style="height: 0px;" id="collapseOne" class="accordion-body collapse">
-									<div class="accordion-inner">
-								  		Use filters to narrow down or tell us what to look for. We'll remember it every time we go looking! 
-									</div>
-							  	</div>
-							</div>
-						</div>
-		  	        	
-		  	        	<div class="row-fluid">  <!-- price slider filter -->
-		  	        		<div class="span3" style="margin-top: 2px;">
-								<span class="label label-info" style="margin-left:5px;">Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							</div>
-							<div class="span6">
-								<div id="slider-range" style="margin-top: 5px"></div>
-							</div>
-							<div class="span3">
-								<input type="text" id="amount" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
-           		    		</div>
-           		    	</div>
-           		    	<div class="row-fluid">  <!-- date slider filter -->
-		  	        		<div class="span3" style="margin-top: 2px;">
-								<span class="label label-info" style="margin-left:5px;">Found&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							</div>
-							<div class="span6">
-								<div id="slider-range-min" style="margin-top: 5px"></div>
-							</div>
-							<div class="span3">
-								<input type="text" id="days" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
-           		    		</div>
-           		    	</div>
-           		     	<div class="row-fluid">  <!-- condition filter-->
-           		     		<div class="span3" style="margin-top: 2px;">
-           		     			<span class="label label-info" style="margin-left:5px;">Condition&nbsp;</span>
-							</div>
-							<div class="span9" style="margin-top: 2px;">
-								<div class="btn-group" data-toggle="buttons-checkbox" >
-									<button class="btn" style="padding: 1px 10px;">New</button>
-									<button class="btn" style="padding: 1px 10px;">Used</button>
-									<button class="btn" style="padding: 1px 10px;">Refurbished</button>
-								</div>
-							</div>
-					 	</div>   <!-- end condition filter -->
-					 	<div class="row-fluid">  <!-- where sold filter -->
-           		     		<div class="span3" style="margin-top: 5px;">
-           		     			<span class="label label-info" style="margin-left:5px;">Sold&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							</div>
-							<div class="span9" style="margin-top: 5px;">
-								<div class="btn-group" data-toggle="buttons-checkbox" >
-									<button class="btn" style="padding: 1px 10px;">Online</button>
-									<button class="btn" style="padding: 1px 10px;">In Store</button>
-									<button class="btn" style="padding: 1px 10px;">Local</button>
-								</div>
-							</div>
-					 	</div>  <!-- end where sold filter -->
-					 	
-					 	<div class="row-fluid">  <!-- features filter -->
-					 		
-							<div class="span3" style="margin-top: 2px;">
-								<span class="label label-info" style="margin-left:5px;">Features&nbsp;&nbsp;&nbsp;</span>
-							</div>
-							<div class="span9" style="margin-top: 5px;">
-								<div class="btn-group" data-toggle="buttons-checkbox" >
-									<button class="btn" style="padding: 1px 10px;">1080P (5)</button>
-									<button class="btn" style="padding: 1px 10px;">720P (4)</button>
-									<button class="btn" style="padding: 1px 10px;">60X Zoom (4)</button>
-									<button class="btn" style="padding: 1px 10px;">20X Zoom (3)</button>
-									<button class="btn" style="padding: 1px 10px;">40X Zoom (3)</button>
-								</div>
-							</div>
-							
-							
-							
-           		    	</div>  <!-- end features filter -->
-           			</div>
+          		<div class="row-fluid well" id="filtersdiv">
+		  	    	
            		</div>
         
           	
@@ -313,9 +234,37 @@
     <script language="javascript" type="text/javascript">
 
     // knopon.com custom JS functions follows
+    
+    function renderProgressBar()
+    {
+    	var ajaxDisplay = document.getElementById("dealresultsdiv");
+		ajaxDisplay.innerHTML = '<div class="progress progress-striped active" style="width: 400px; margin-left: auto; margin-right: auto;"><div class="bar" style="width: 0%;"></div></div>';
+    
+    }
 
+	function doAnimation() {
+			var sourcesite = ['Amazon','Amazon', 'Ebay','Ebay', 'Craigslist', 'Craigslist', 'Walmart', 'Walmart', 'Other', 'Other'];
+			
+			var progress = setInterval(function() {
+				var $bar = $('.bar');
+				
+				if ($bar.width()==400) {
+					clearInterval(progress);
+					$('.progress').removeClass('active');
+				} else {
+					$bar.width($bar.width()+40);
+				}
+				$bar.text(sourcesite[$bar.width()/40] + " " + $bar.width()/4 + "%");
+				//renderDealResults('/getdeals/HD camcorder/400/1/' + $bar.width()/20 + '/getdeals.html','dealresultsdiv', -1, 0, 1 );
+				
+			}, 100);
+	
+		}
     
     function addQuery(url){
+  
+    	
+    	
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
 			// Opera 8.0+, Firefox, Safari
@@ -344,6 +293,72 @@
 		ajaxRequest.send(null); 
 	
 		
+	}
+    
+    
+    
+    
+    function renderURLinDiv(url, divname, asynchronous){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				var ajaxDisplay = document.getElementById(divname);
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
+		}
+		ajaxRequest.open("GET", url, asynchronous); 
+		ajaxRequest.send(null); 
+		
+	}
+	
+	function renderPriceSlider(pricemax, pricemin, pricehigh, pricelow) {
+		$(function() {
+			$( "#slider-range" ).slider({
+				range: true,
+				min: pricemin,
+				max: pricemax,
+				values: [ pricelow, pricehigh ],
+				slide: function( event, ui ) {
+					$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+				}
+			});
+			$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+				" - $" + $( "#slider-range" ).slider( "values", 1 ) );
+		});
+	
+	}
+	
+	function renderDaysSlider(daysfilter) {
+		$(function() {
+			$( "#slider-range-min" ).slider({
+				range: "min",
+				value: daysfilter,
+				min: 1,
+				max: 21,
+				slide: function( event, ui ) {
+					$( "#days" ).val( ui.value + " days ago" );
+				}
+			});
+			$( "#days" ).val( $( "#slider-range-min" ).slider( "value" ) + " days ago");
+		});
 	}
     
     //noOfQueries - unused as of now
@@ -506,6 +521,8 @@
       });
       
       $('#add_query').submit(function() {
+      	  renderProgressBar();
+      	  doAnimation();
 	      var keyword = $("#keyword").val();
 	      var dollar_limit = $("#dollar_limit").val();
 	      var price_high = dollar_limit + ({{PRICE_HIGH_PER}} * dollar_limit);
@@ -553,63 +570,6 @@
 	<script src="/jquery-ui-1.8.21.custom/development-bundle/ui/jquery.ui.widget.js"></script>
 	<script src="/jquery-ui-1.8.21.custom/development-bundle/ui/jquery.ui.mouse.js"></script>
 	<script src="/jquery-ui-1.8.21.custom/development-bundle/ui/jquery.ui.slider.js"></script>
-	
-	
-	<script>
-	$(function() {
-		$( "#slider-range" ).slider({
-			range: true,
-			min: 0,
-			max: 500,
-			values: [ 75, 300 ],
-			slide: function( event, ui ) {
-				$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-			}
-		});
-		$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-			" - $" + $( "#slider-range" ).slider( "values", 1 ) );
-	});
-	</script>
-	
-	<script>
-	$(function() {
-		$( "#slider-range-min" ).slider({
-			range: "min",
-			value: 7,
-			min: 1,
-			max: 21,
-			slide: function( event, ui ) {
-				$( "#days" ).val( ui.value + " days ago" );
-			}
-		});
-		$( "#days" ).val( $( "#slider-range-min" ).slider( "value" ) + " days ago");
-	});
-	</script>
 
-	
-	  <!--<script>
-	    var sourcesite = ['Amazon','Amazon', 'Ebay','Ebay', 'Craigslist', 'Craigslist', 'Walmart', 'Walmart', 'Other', 'Other'];
-		$(function() {
-			$('#carousel').carousel('pause');
-		});
-	
-		var progress = setInterval(function() {
-		var $bar = $('.bar');
-		
-		if ($bar.width()==400) {
-			clearInterval(progress);
-			$('.progress').removeClass('active');
-			renderDealResults('/getdeals/HD camcorder/400/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
-	  		renderMapResults('/getdeals/HD camcorder/400/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
-		} else {
-			$bar.width($bar.width()+40);
-		}
-		$bar.text(sourcesite[$bar.width()/40] + " " + $bar.width()/4 + "%");
-		//renderDealResults('/getdeals/HD camcorder/400/1/' + $bar.width()/20 + '/getdeals.html','dealresultsdiv', -1, 0, 1 );
-		
-	}, 800);
-	
-	
-	</script>-->
 
 </body></html>

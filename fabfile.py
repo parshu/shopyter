@@ -11,7 +11,7 @@ env.deploy_path = './knopon'
 
 @roles('box')
 def deploy():
-    local('tar -zcvf deploy.tgz batch app siteassets bootstrap jquery-ui-1.8.21.custom templates tools main.py requirements.*')
+    local('tar -zcvf deploy.tgz batch backend app siteassets feedserver.py feedserver_restart.sh restart.sh bootstrap jquery-ui-1.8.21.custom templates tools main.py requirements.*')
     put ('deploy.tgz', env.code_path)
     run('tar -C %s -zxvf %s/deploy.tgz' % (env.deploy_path, env.code_path))
 
@@ -24,6 +24,10 @@ def restart():
         run('ps ax | grep python | grep main | grep -v grep | awk {\'print $1\'} | xargs kill')
     with cd(env.deploy_path):
         _run_background('python main.py >> forever.log 2>&1')
+    with settings(warn_only=True):
+        run('ps ax | grep python | grep feedserver | grep -v grep | awk {\'print $1\'} | xargs kill')
+    with cd(env.deploy_path):
+        _run_background('python feedserver.py >> feed_forever.log 2>&1')
 
 @roles('box')
 def importdb():

@@ -1,4 +1,4 @@
-
+	
 
 			<div class="row-fluid" style="margin-top: 5px;margin-bottom: 10px;">
               &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span></th>
@@ -6,16 +6,9 @@
 		        
 		        {% block content %}
 		        {% if deals[0] is undefined %}
-		        <div class="row-fluid">
-		         <div class="alert alert-error">
-			   			This is a <strong>demo</strong> of how we will process an entry in real time(coming soon) in addition to the offline deal hunting we will be doing for you.  
-				</div>
+		        
 				
-				</div>
 				
-					<div class="progress progress-striped active" style="width: 400px; margin-left: auto; margin-right: auto;">
-						<div class="bar" style="width: 0%;"></div>
-					</div>
 				
 				
 
@@ -59,8 +52,11 @@
 													<div class="row-fluid" style="margin-bottom: 3px; color: green;">
 													From {{deal['source']}}
 													</div>
-													<div id="{{deal['sold']}}" class="row-fluid" style="margin-bottom: 3px;">
-													Available {{deal['sold']}}
+													<div id="{{deal['channel']}}" class="row-fluid" style="margin-bottom: 3px;">
+													Available {{deal['channel']}}
+													{% if deal['city'] is defined %}
+													&nbsp;@{{deal['city']}}, {{deal['state']}}
+													{% endif %}
 													</div>
 												</div>
 												<div class="span6">

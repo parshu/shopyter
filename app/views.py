@@ -1,14 +1,20 @@
+import os
 import pymongo
 
 from bottle import TEMPLATE_PATH, route, jinja2_template as template, request, response
 from models import *
 from bottle import static_file
-
+import urllib
+import urllib2
 import sys
 sys.path.append('./backend/feeds')
+sys.path.append('./backend/feeds/feedconvertors/craigslist')
 import feedslib
 import feedsconfig
 import json
+from BeautifulSoup import BeautifulSoup
+import unicodedata
+import CLJsonFeed
 TEMPLATE_PATH.append('./templates')
 
 DBNAME = "test"
@@ -41,7 +47,10 @@ def serve_static(dir1, dir2, dir3, filename):
 def hello_world():
     return "Hello World!!!!"
     
-    
+@route('/getclfeed/<keyword>/<pricelow>/<pricehigh>/<pageindex>/<zipcode>/<city>/<state>')
+def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
+	jsonresp = CLJsonFeed.getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME)
+	return jsonresp
 
 @route('/:username')
 def user(username):
@@ -71,16 +80,34 @@ def addquery(keyword, dollarlimit):
     keyword = string.strip(keyword)
     pricehigh = int(dollar + (PRICE_HIGH_PER * dollar))
     pricelow = int(dollar - (PRICE_LOW_PER * dollar))
+    pricemax = pricehigh * 2
+    pricemin = pricelow / 2
     queryhash = feedslib.gethash(keyword + dollarlimit + str(pricehigh) + str(pricelow))
     querymatches = [query for query in mainbox_table.find({'_id': queryhash})]
     if(len(querymatches) == 0):
-   		mainbox_table.insert({'_id': queryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollarlimit, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow()})
-   		deals = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
-   		if(len(deals) > 0):
-   			deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-   			print "Inserting into deals table..."
-   			sys.stdout.flush()
-   			deals_table.insert(deals)
+   		mainbox_table.insert({'_id': queryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollarlimit, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': 7, 'pricemax': pricemax, 'pricemin': pricemin})
+   		
+		try:
+			results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "","95051","Santa Clara","CA")
+			deals1 = results1['deals']
+			print "feed1 deals found: " + str(len(deals1))
+			results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
+			deals2 = results2['deals']
+			print "feed2 deals found: " + str(len(deals2))
+			deals = deals1 + deals2
+			print "Total deals found: " + str(len(deals))
+			
+			sys.stdout.flush()
+			if(len(deals) > 0):
+				deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+				print "Inserting into deals table..."
+				sys.stdout.flush()
+				deals_table.insert(deals)
+		except TypeError, ex:
+			print "TypeError: ", ex
+		except:
+			print "Unexpected error:", sys.exc_info()[0]
+   		
     
     return {'status': 'ok'}
 
@@ -109,6 +136,12 @@ def getdealemail(keyword, dollarlimit, days, username):
     sys.stdout.flush()
     return template('getdealemail.html', username = username, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
 
+
+@route('/getfilters/<queryid>')
+def getfilters(queryid):
+    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+    query = mainbox_table.find_one({'_id': queryid})   
+    return template('getfilters.html', query = query)
 
 @route('/getdeals/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
 def getdeals(keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):
