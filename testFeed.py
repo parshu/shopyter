@@ -34,12 +34,18 @@ ct = 1
 for deal in deals:
 	print "Result " + str(ct) + ":"
 	for key in deal.keys():
-		print "\t" + key + " : " + str(deal[key])
+		pass
+		#print "\t" + key + " : " + str(deal[key])
 	print "----------------------------------------------"
 	ct = ct + 1
 print "Total result: " + str(len(deals))
 print "Tagcloud: " + str(results['tagcloud'])
+print "Facetcloud: " + str(results['facetcloud'])
 tagcloud1 = results['tagcloud']
 tagcloud2 = results['tagcloud']
+facetcloud1 = results['facetcloud']
+facetcloud2 = results['facetcloud']
 mtagcloud = feedslib.consolidateTagClouds([tagcloud1, tagcloud2])
 print feedslib.getSortedTagCloudList(mtagcloud)
+mfacetcloud = feedslib.consolidateTagClouds([facetcloud1, facetcloud2])
+print feedslib.getSortedTagCloudList(mfacetcloud)

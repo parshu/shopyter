@@ -16,16 +16,25 @@ def gethash(s):
 	h.update(s)
 	return(h.hexdigest())
 	
-def consolidateTagClouds(tagcloudlist):
+def consolidateTagClouds(tagcloudlist, threshold=7):
 	if(len(tagcloudlist) == 0):
 		return None
 	resulttagcloud = tagcloudlist[0]
+	
+		
+	
 	for tagcloud in tagcloudlist[1:len(tagcloudlist)]:
 		for key in tagcloud.keys():
 			if(resulttagcloud.has_key(key)):
 				resulttagcloud[key] = resulttagcloud[key] + tagcloud[key]
 			else:
 				resulttagcloud[key] = tagcloud[key]
+			if(resulttagcloud[key] < threshold):
+				del resulttagcloud[key]
+	
+	for key in resulttagcloud.keys():
+		if(resulttagcloud[key] < threshold):
+				del resulttagcloud[key]
 	return resulttagcloud
 
 def getSortedTagCloudList(tagcloud, cutoff=8):
@@ -34,12 +43,13 @@ def getSortedTagCloudList(tagcloud, cutoff=8):
 	
 	tagslice = cutoff
 	if(len(tagcloudlist) < tagslice):
-		tagslice = len(tagslice)
+		tagslice = len(tagcloudlist)
 	tagcloudlist = tagcloudlist[0:tagslice]
 	return tagcloudlist
 
 
 def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults, zipcode="", city="", state=""):
+	
 	feedconfig = None
 	deals = []
 	for fconfig in jsonconfig['feeds']:
@@ -59,24 +69,30 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	
 	url = feedconfig['feedurl']
 	feedtags = feedconfig['feedtagfields'].split(",")
+	feedfacets = feedconfig['feedfacetfields'].split(",")
 	
 	if(feedconfig.has_key('feedkeyname')):
 		url = url + feedconfig['feedkeyname'] + "=" + feedconfig['feedkeyvalue'] + "&"
 	
 	url = url  + feedconfig['feedparams'] % (keyword, maxresults, pricelow, pricehigh, zipcode, city, state)
 	print url
+	
 	try:
 		request = urllib2.Request(url)
 		request.add_header('User-agent', 'Mozilla/6.0 (Macintosh; I; Intel Mac OS X 11_7_9; de-LI; rv:1.9b4) Gecko/2012010317 Firefox/10.0a4')
 		response = urllib2.urlopen(request, timeout=2)
 	except urllib2.HTTPError, e:
-		print "Ecode:" + e.code
+		print "Ecode:" + str(e.code)
 	except urllib2.URLError, e:
-		print "Eargs:" + e.args
+		print "Eargs:" + str(e.args)
 	
 	tagcloud = {}
+	facetcloud = {}
+	
+	
 	results = json.loads(response.read())	
 	dataitems = feedconfig['feeddatatostore']
+	
 	for result in results[feedconfig['resultslistfield']]:
 		dealresult = {}
 		for datakey in dataitems.keys():
@@ -97,18 +113,29 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 				pass 
 			else:
 				dealresult[datakey] = val
-			if(datakey in feedtags):
-				valascii = unicodedata.normalize('NFKD', val).encode('ascii','ignore')
-				tags = re.split('\W+', valascii)
-				for tag in tags:
-					if(tag.isdigit() or tag.islower() or (tag == '') or (tag in keywordtags)):
-						continue
+				if(datakey in feedfacets):
+					datakeyascii = datakey
+					valascii = val
 					
-					tag = tag.title()
-					if(tagcloud.has_key(tag)):
-						tagcloud[tag] = tagcloud[tag] + 1
+					facetkey = datakeyascii + "|" + valascii
+					
+					if(facetcloud.has_key(facetkey)):
+						facetcloud[facetkey] = facetcloud[facetkey] + 1
 					else:
-						tagcloud[tag] = 1
+						facetcloud[facetkey] = 1
+							
+				if(datakey in feedtags):
+					valascii = unicodedata.normalize('NFKD', val).encode('ascii','ignore')
+					tags = re.split('\W+', valascii)
+					for tag in tags:
+						if(tag.isdigit() or tag.islower() or (tag == '') or (tag in keywordtags)):
+							continue
+						
+						tag = tag.title()
+						if(tagcloud.has_key(tag)):
+							tagcloud[tag] = tagcloud[tag] + 1
+						else:
+							tagcloud[tag] = 1
 		dealresult['keyword'] = urllib.unquote(keyword)
 		dealresult['founddate'] = datetime.datetime.utcnow()
 		hashstr = ""
@@ -118,9 +145,10 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 					hashstr = hashstr + str(dealresult[component])
 				else:
 					hashstr = hashstr + dealresult[component]
+							
 		hashstr = unicodedata.normalize('NFKD', hashstr).encode('ascii','ignore')
 		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
 	
 	
-	return({'deals': deals, 'tagcloud': tagcloud})
+	return({'deals': deals, 'tagcloud': tagcloud, 'facetcloud': facetcloud})

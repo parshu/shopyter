@@ -85,7 +85,8 @@ def addquery(keyword, dollarlimit):
     queryhash = feedslib.gethash(keyword + dollarlimit + str(pricehigh) + str(pricelow))
     querymatches = [query for query in mainbox_table.find({'_id': queryhash})]
     if(len(querymatches) == 0):
-   		mainbox_table.insert({'_id': queryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollarlimit, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': 7, 'pricemax': pricemax, 'pricemin': pricemin})
+   		
+   		inserthash = {'_id': queryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollarlimit, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': 7, 'pricemax': pricemax, 'pricemin': pricemin}
    		
 		try:
 			results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "","95051","Santa Clara","CA")
@@ -97,6 +98,22 @@ def addquery(keyword, dollarlimit):
 			deals = deals1 + deals2
 			print "Total deals found: " + str(len(deals))
 			
+			tagcloudlist = [results1['tagcloud'], results2['tagcloud']]
+			mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
+			tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
+			tagslist = []
+			facetcloudlist = [results1['facetcloud'], results2['facetcloud']]
+			mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist)
+			facetcloud = feedslib.getSortedTagCloudList(mfacetcloud)
+			facetslist = []
+			for tag in tagcloud:
+				inserthash[tag[0]] = tag[1]
+				tagslist.append(tag[0])
+			inserthash["tags"] = ','.join(tagslist)
+			for facet in facetcloud:
+				inserthash[facet[0]] = facet[1]
+				facetslist.append(facet[0])
+			inserthash["facets"] = ','.join(facetslist)
 			sys.stdout.flush()
 			if(len(deals) > 0):
 				deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
@@ -107,7 +124,10 @@ def addquery(keyword, dollarlimit):
 			print "TypeError: ", ex
 		except:
 			print "Unexpected error:", sys.exc_info()[0]
-   		
+		
+		print "Inserting query: " + str(inserthash)
+		sys.stdout.flush()
+   		mainbox_table.insert(inserthash)
     
     return {'status': 'ok'}
 
@@ -140,8 +160,18 @@ def getdealemail(keyword, dollarlimit, days, username):
 @route('/getfilters/<queryid>')
 def getfilters(queryid):
     mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
-    query = mainbox_table.find_one({'_id': queryid})   
-    return template('getfilters.html', query = query)
+    query = mainbox_table.find_one({'_id': queryid})
+    tags = []
+    taghash = {}
+    if(query.has_key('tags')):
+		tags = query['tags'].split(",")
+	
+		for tag in tags:
+			if(query.has_key(tag)):
+				taghash[tag] = query[tag]
+	
+	
+    return template('getfilters.html', query = query, tags = tags, taghash = taghash)
 
 @route('/getdeals/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
 def getdeals(keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):

@@ -22,6 +22,7 @@ CONFIG = {
 			"feedparams": "&country=US&q=%s&max-results=%s&restrictBy=price=[%s,%s]%s%s%s",
 			"feedreplacementfields": "keyword, maxresults, pricelow, pricehigh, zipcode, city, state",
 			"feedtagfields":"title",
+			"feedfacetfields":"brand,condition,channel,source",
 			"resultscountfield": "currentItemCount",
 			"resultslistfield" : "items",
 			"feeddatatostore": {	
@@ -48,6 +49,7 @@ CONFIG = {
 			"feedparams": "http://localhost:8079/getclfeed/%s%s/%s/%s/0/%s/%s/%s",
 			"feedreplacementfields": "keyword, maxresults, pricehigh, pricelow, zipcode, city, state",
 			"feedtagfields":"title",
+			"feedfacetfields":"condition,channel,source,city",
 			"resultscountfield": "totalItems",
 			"resultslistfield" : "items",
 			"feeddatatostore": {	
