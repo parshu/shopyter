@@ -7,6 +7,7 @@
 	<table id="table-3" style="background:#F8F8F8;">
 	<tr><td><span style="color:darkorange">{{username}}'s</span> looking for:</td></tr>
 	{% for query in queries %}
+	
 	{% if loop.index is sameas linkno %}
 	<tr style="background:lightgrey;">
 	{% else %}
@@ -14,12 +15,15 @@
 	{% endif %}
 	<td>
 	<span>
-    	<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1)"><i class="icon-remove"></i></a>
-   
+		{% if loop.index is sameas 1 %}
+			<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '-1',-1,-1,-1,-1,-1);"><i class="icon-remove"></i></a>
+		{% else %}
+    	<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '{{queries[0]['_id']}}', {{queries[0]['pricemax']}}, {{queries[0]['pricemin']}}, {{queries[0]['price_high']}}, {{queries[0]['price_low']}}, {{queries[0]['dayfilter']}});"><i class="icon-remove"></i></a>
+   		{% endif %}
     		<span>	
 
 	
-		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/-1','filtersdiv',false);renderPriceSlider({{query['pricemax']}},{{query['pricemin']}},{{query['price_high']}},{{query['price_low']}});renderDaysSlider({{query['dayfilter']}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a href="#" onclick="renderDealResults('/getdeals/{{username}}/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{username}}/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/-1','filtersdiv',false);renderPriceSlider({{query['pricemax']}},{{query['pricemin']}},{{query['price_high']}},{{query['price_low']}});renderDaysSlider({{query['dayfilter']}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}

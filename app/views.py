@@ -200,8 +200,24 @@ def getfilters(queryid, queryno):
 
     return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash)
 
-@route('/getdeals/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
-def getdeals(keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):
+
+@route('/savedeal/<dealid>/<username>')
+def getdeals(dealid, username):
+	deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	saved_deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']  
+	deal = deal_table.find_one({'_id': dealid})
+	deal['username'] = username
+	saved_deal_table.insert(deal)
+	print "Saving|" + username + ":" + dealid
+	sys.stdout.flush()
+	return "<strong>Saved</strong>"
+    
+    
+    
+    
+    
+@route('/getdeals/<username>/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
+def getdeals(username, keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):
     dollarlimit = int(dollarlimit)
     pricehigh = int(float(pricehigh))
     pricelow = int(float(pricelow))
@@ -226,14 +242,26 @@ def getdeals(keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, fi
    
     
     deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+    
+    saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
+    saved_deals = []
+    saved_deals.extend([saved_deal for saved_deal in saved_deals_table.find({'keyword': keyword, 'username': username})])
+    sdealhash = {}
+    for saved_deal in saved_deals:
+    	sdealhash[saved_deal['_id']] = 1
+    	
     i = 0
     for deal in deals:
         d2 = deal['founddate']
         days = (datetime.utcnow() - d2).days
         deals[i]['days'] = days
+        if(sdealhash.has_key(deal['_id'])):
+        	deals[i]['saved'] = 1
+        else:
+        	deals[i]['saved'] = 0
         i = i + 1
     sys.stdout.flush()
-    return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
+    return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username)
     
 """@route('/getsaveddeals/<mainboxid>/')
 def getsaveddeals(mainboxid):

@@ -105,7 +105,14 @@
 										<h6>{{deal['days']}} day(s)</h6>
 									 {% endif %}
 									
-									</td></tr><tr><td align="right" valign="bottom"> <a href="#" class="btn btn-info" style="padding: 3px 18px;">Save</a></td></tr></table>
+									</td></tr><tr><td align="right" valign="bottom"> 
+									
+									{% if deal['saved'] is sameas 1 %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+									{% else %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Save</a>
+									{% endif %}
+									</td></tr></table>
 									</div>
 									
 									</td>
@@ -116,7 +123,7 @@
 						
 					  </ul>
 				
-					   <script>alert("hey")</script> 
+					    
 					    	
 					 
 	

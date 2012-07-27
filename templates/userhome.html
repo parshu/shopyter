@@ -236,6 +236,8 @@
 
     // knopon.com custom JS functions follows
     
+    
+    
     function renderProgressBar()
     {
     	var ajaxDisplay = document.getElementById("dealresultsdiv");
@@ -329,6 +331,42 @@
 		ajaxRequest.send(null); 
 		
 	}
+	function indicateSaved(url, divname, asynchronous){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				var ajaxDisplay = document.getElementById(divname);
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+				ajaxDisplay.setAttribute("style","background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);");
+			}
+		}
+		ajaxRequest.open("GET", url, asynchronous); 
+		ajaxRequest.send(null); 
+		
+	}
+	
+	function saveDeal(dealid, username)
+    {
+    	indicateSaved('/savedeal/' + dealid + '/' + username, dealid, true);
+    }
 	
 	function renderPriceSlider(pricemax, pricemin, pricehigh, pricelow) {
 		$(function() {
@@ -458,7 +496,8 @@
 	// highlightIndex - highlighted query
 	// keyword/dollarlimit pair used as primary key contained in url
 	
-	function removeQuery(url,highlightIndex){
+	function removeQuery(url,highlightIndex, queryid, price_max, price_min, price_high, price_low, daysfilter)
+	{
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		
 		try{
@@ -485,10 +524,21 @@
 		
 		// Re render query box and deal results after deleting a query. Immediately see results of action
 		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
-        renderDealResults('/getdeals/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
-        renderMapResults('/getdeals/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+        renderDealResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+        
+        renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
 		totalqueries = totalqueries - 1;
+		
+		if(price_max != -1) {
+		 renderURLinDiv('/getfilters/' + queryid + '/-1','filtersdiv',false);
+	  	  renderPriceSlider(price_max, price_min, price_high, price_low);
+	      renderDaysSlider(daysfilter);
+	    }
+	    else {
+	    	var ajaxDisplay = document.getElementById('filtersdiv');
+			ajaxDisplay.innerHTML = '';
+	    }
        
 		
 	}
@@ -508,8 +558,8 @@
       
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
-      renderDealResults('/getdeals/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
-	  renderMapResults('/getdeals/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+      renderDealResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	  renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 	 
 	  
 	  {% if qlen > 0 %}
@@ -546,9 +596,9 @@
 	      renderURLinDiv('/getfilters/-1/' + totalqueries.toString(),'filtersdiv',false);
 	  	  renderPriceSlider(price_max, price_min, price_high, price_low);
 	      renderDaysSlider({{DEFAULT_DAYS_FILTER}});
-	      renderDealResults('/getdeals/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	      renderDealResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
 	      
-	      renderMapResults('/getdeals/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+	      renderMapResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
 	      
 	      $('#keyword').val('');
