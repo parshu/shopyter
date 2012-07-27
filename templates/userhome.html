@@ -169,12 +169,12 @@
 			</div><!--/span end column-->
         
         
-			<div class="span6"> <!-- second column, holds deal results -->
+			<div class="span6" id="secondcol"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
           			<ul class="nav nav-tabs" id="myTab">
           				
-						<li class="active"><a href="#knopons" data-toggle="tab">Results</a></li>
-						<li><a href="#savedknopons" data-toggle="tab">Saved Results</a></li>
+						<li class="active"><a href="#knopons" data-toggle="tab" onclick="revertBigMapChanges();">Results</a></li>
+						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges();">Saved Results</a></li>
 						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges();">Local Results(Map)</a></li>
 						<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
@@ -208,7 +208,7 @@
 				</div> <!-- end second col -->
             </div>   
         
-        	<div class="span3">  <!-- Third col holds filters and maps -->
+        	<div class="span3" id="thirdcol">  <!-- Third col holds filters and maps -->
           		<div class="row-fluid well" id="filtersdiv">
 		  	    	
            		</div>
@@ -371,7 +371,24 @@
 	
 	function makeBigMapChanges()
 	{
-	
+		/*var ajaxDisplay = document.getElementById("filtersdiv");
+		var filtercontent = ajaxDisplay.innerHTML;
+		ajaxDisplay = document.getElementById("tempfiltersdiv");
+		ajaxDisplay.innerHTML = filtercontent;*/
+		ajaxDisplay = document.getElementById("thirdcol");
+		ajaxDisplay.setAttribute("class","span0");
+		ajaxDisplay = document.getElementById("secondcol");
+		ajaxDisplay.setAttribute("class","span9");
+	}
+	function revertBigMapChanges()
+	{
+		
+		/*ajaxDisplay = document.getElementById("tempfiltersdiv");
+		ajaxDisplay.innerHTML = "";*/
+		ajaxDisplay = document.getElementById("thirdcol");
+		ajaxDisplay.setAttribute("class","span3");
+		ajaxDisplay = document.getElementById("secondcol");
+		ajaxDisplay.setAttribute("class","span6");
 	}
 	function saveDeal(dealid, username)
     {
