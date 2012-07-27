@@ -1,10 +1,14 @@
 	
-
+ {% block content %}
 			<div class="row-fluid" style="margin-top: 5px;margin-bottom: 10px;">
-              &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span></th>
+              &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span>
+              
+              {% if savetab is sameas 0 %}
+               around <span style="color:darkorange">${{dollarlimit}}</span></th>
 		        </div>
+		      {% endif %}
 		        
-		        {% block content %}
+		       
 		        {% if deals[0] is undefined %}
 		        
 				
@@ -13,10 +17,12 @@
 				
 
 				{% else %}
+				{% if savetab is sameas 0 %}
 				<div class="alert alert-info">
 						<button class="close" data-dismiss="alert">×</button>
 			   			Watch this space. We are looking for deals right now. Get on with your day and we will notify you when we find more great deals.  
 				</div>
+				{% endif %}
 				{% endif %}
 				
 				{% for deal in deals %}
@@ -24,7 +30,7 @@
 		        
 		       		   
 					    	
-						<ul class="thumbnails">
+						<ul class="thumbnails" id="tn{{deal['_id']}}">
 					
 						
 						<li class="span12">
@@ -109,6 +115,8 @@
 									
 									{% if deal['saved'] is sameas 1 %}
 									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+									{% elif deal['saved'] is sameas 2 %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 									{% else %}
 									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Save</a>
 									{% endif %}

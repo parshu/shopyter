@@ -202,7 +202,7 @@ def getfilters(queryid, queryno):
 
 
 @route('/savedeal/<dealid>/<username>')
-def getdeals(dealid, username):
+def savedeal(dealid, username):
 	deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
 	saved_deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']  
 	deal = deal_table.find_one({'_id': dealid})
@@ -212,81 +212,81 @@ def getdeals(dealid, username):
 	sys.stdout.flush()
 	return "<strong>Saved</strong>"
     
-    
+@route('/unsavedeal/<dealid>/<username>')
+def unsavedeal(dealid, username):
+	saved_deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']  
+	
+	saved_deal_table.remove({'username': username, '_id': dealid})
+	print "Unsaving|" + username + ":" + dealid
+	sys.stdout.flush()
+	return ""   
     
     
     
 @route('/getdeals/<username>/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
 def getdeals(username, keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):
-    dollarlimit = int(dollarlimit)
-    pricehigh = int(float(pricehigh))
-    pricelow = int(float(pricelow))
-    startnum = int(startnum) - 1
-    resultsize = int(resultsize)
-    deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-    deals = []
-    if(dollarlimit == -1):
-        sys.stdout.flush()
-        mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
-        queries = [query for query in mainbox_table.find({'username': keyword})]  
-        qlen = len(queries)
-        if(qlen == 0):
-            return ""
-        else:
-            keyword = queries[0]['keyword']
-            dollarlimit = int(queries[0]['dollar_limit'])
-            pricehigh = int(queries[0]['price_high'])
-            pricelow = int(queries[0]['price_low'])
-            print keyword + ":" + str(dollarlimit) + "\n"
-            sys.stdout.flush()
+	savetab = 0
+	dollarlimit = int(dollarlimit)
+	pricehigh = int(float(pricehigh))
+	pricelow = int(float(pricelow))
+	startnum = int(startnum) - 1
+	resultsize = int(resultsize)
+	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	deals = []
+	if(dollarlimit == -1):
+		sys.stdout.flush()
+		mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+		queries = [query for query in mainbox_table.find({'username': keyword})]  
+		qlen = len(queries)
+		if(qlen == 0):
+			return ""
+		else:
+			keyword = queries[0]['keyword']
+			dollarlimit = int(queries[0]['dollar_limit'])
+			pricehigh = int(queries[0]['price_high'])
+			pricelow = int(queries[0]['price_low'])
+			print keyword + ":" + str(dollarlimit) + "\n"
+			sys.stdout.flush()
    
     
-    deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+	deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
-    saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
-    saved_deals = []
-    saved_deals.extend([saved_deal for saved_deal in saved_deals_table.find({'keyword': keyword, 'username': username})])
-    sdealhash = {}
-    for saved_deal in saved_deals:
-    	sdealhash[saved_deal['_id']] = 1
+	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
+	saved_deals = []
+	saved_deals.extend([saved_deal for saved_deal in saved_deals_table.find({'keyword': keyword, 'username': username})])
+	sdealhash = {}
+	for saved_deal in saved_deals:
+		sdealhash[saved_deal['_id']] = 1
     	
-    i = 0
-    for deal in deals:
-        d2 = deal['founddate']
-        days = (datetime.utcnow() - d2).days
-        deals[i]['days'] = days
-        if(sdealhash.has_key(deal['_id'])):
-        	deals[i]['saved'] = 1
-        else:
-        	deals[i]['saved'] = 0
-        i = i + 1
-    sys.stdout.flush()
-    return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username)
+	i = 0
+	for deal in deals:
+		d2 = deal['founddate']
+		days = (datetime.utcnow() - d2).days
+		deals[i]['days'] = days
+		if(sdealhash.has_key(deal['_id'])):
+			deals[i]['saved'] = 1
+		else:
+			deals[i]['saved'] = 0
+		i = i + 1
+	sys.stdout.flush()
+	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab)
     
-"""@route('/getsaveddeals/<mainboxid>/')
-def getsaveddeals(mainboxid):
-   
-    deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-    deals = []
-   
-	saveddeals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saveddeals']    
-	queries = [query for query in mainbox_table.find({'mainboxid': mainboxid})]  
-	qlen = len(queries)
-	if(qlen == 0):
-		return ""
-
+@route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
+def getsaveddeals(username, keyword, dollarlimit):
+	dollarlimit = int(dollarlimit)
+	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
+	deals = []
+	savetab = 1
     
-    deals.extend([deal for deal in deals_table.find({ "_id": { $in: queries } }).sort("founddate", pymongo.DESCENDING)])
-    i = 0
-    for deal in deals:
-        d2 = deal['founddate']
-        days = (datetime.utcnow() - d2).days
-        deals[i]['days'] = days
-        i = i + 1
-    print deals
-    sys.stdout.flush()
-    return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals)
-"""
+	deals.extend([deal for deal in saved_deals_table.find({'username': username, 'keyword': keyword})])
+	i = 0
+	for deal in deals:
+		d2 = deal['founddate']
+		days = (datetime.utcnow() - d2).days
+		deals[i]['days'] = days
+		deals[i]['saved'] = 2
+		i = i + 1
+	return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab)
     
 @route('/getqueries/<username>/<linkno>')
 def getqueries(username, linkno):
