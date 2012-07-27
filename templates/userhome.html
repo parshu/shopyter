@@ -1,3 +1,4 @@
+{% block content %}
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -509,8 +510,18 @@
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
       renderDealResults('/getdeals/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
 	  renderMapResults('/getdeals/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
-
-      renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);	
+	 
+	  
+	  {% if qlen > 0 %}
+		  renderURLinDiv('/getfilters/{{first_query['_id']}}/-1','filtersdiv',false);
+		  renderPriceSlider({{first_query['pricemax']}},{{first_query['pricemin']}},{{first_query['price_high']}},{{first_query['price_low']}});
+		  renderDaysSlider({{first_query['dayfilter']}});
+	{% endif %}
+	 
+	 
+	 
+	 
+      renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);
      
 	
       
@@ -524,15 +535,19 @@
       	  renderProgressBar();
       	  doAnimation();
 	      var keyword = $("#keyword").val();
-	      var dollar_limit = $("#dollar_limit").val();
-	      var price_high = dollar_limit + ({{PRICE_HIGH_PER}} * dollar_limit);
-		  var price_low = dollar_limit - ({{PRICE_LOW_PER}} * dollar_limit);
-
+	      var dollar_limit = parseInt($("#dollar_limit").val());
+	      var price_high = dollar_limit + parseInt({{PRICE_HIGH_PER}} * dollar_limit);
+		  var price_low = dollar_limit - parseInt({{PRICE_LOW_PER}} * dollar_limit);
+		  var price_max = parseInt({{PRICE_MAX_PER}} * price_high);
+		  var price_min = parseInt(price_low / {{PRICE_MIN_PER}});
 	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
 	      totalqueries = totalqueries + 1;
 	      renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
-	      	
+	      renderURLinDiv('/getfilters/-1/' + totalqueries.toString(),'filtersdiv',false);
+	  	  renderPriceSlider(price_max, price_min, price_high, price_low);
+	      renderDaysSlider({{DEFAULT_DAYS_FILTER}});
 	      renderDealResults('/getdeals/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
+	      
 	      renderMapResults('/getdeals/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
 
 	      
@@ -573,3 +588,4 @@
 
 
 </body></html>
+ {% endblock %}	

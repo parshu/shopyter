@@ -14,12 +14,12 @@
 	{% endif %}
 	<td>
 	<span>
-    	<a href="#" onclick="removeQuery('/removequery/{{query['username']}}/{{query['dollar_limit']}}/{{query['keyword']}}', 1)"><i class="icon-remove"></i></a>
+    	<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1)"><i class="icon-remove"></i></a>
    
     		<span>	
 
 	
-		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}','filtersdiv',false);renderPriceSlider({{query['pricemax']}},{{query['pricemin']}},{{query['price_high']}},{{query['price_low']}});renderDaysSlider({{query['dayfilter']}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a href="#" onclick="renderDealResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderMapResults('/getdeals/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/-1','filtersdiv',false);renderPriceSlider({{query['pricemax']}},{{query['pricemin']}},{{query['price_high']}},{{query['price_low']}});renderDaysSlider({{query['dayfilter']}});"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}

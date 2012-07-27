@@ -49,7 +49,8 @@ CONFIG = {
 			"feedparams": "http://localhost:8079/getclfeed/%s%s/%s/%s/0/%s/%s/%s",
 			"feedreplacementfields": "keyword, maxresults, pricehigh, pricelow, zipcode, city, state",
 			"feedtagfields":"title",
-			"feedfacetfields":"condition,channel,source,city",
+			"feedfacetfields":"condition,channel,source",
+			"feedlocationfields":"city",
 			"resultscountfield": "totalItems",
 			"resultslistfield" : "items",
 			"feeddatatostore": {	

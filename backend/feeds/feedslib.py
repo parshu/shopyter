@@ -89,8 +89,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	tagcloud = {}
 	facetcloud = {}
 	
-	
-	results = json.loads(response.read())	
+	resp = response.read()
+	results = json.loads(resp)	
 	dataitems = feedconfig['feeddatatostore']
 	
 	for result in results[feedconfig['resultslistfield']]:
@@ -112,6 +112,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 			if( (type(val) is dict) or (type(val) is list)):
 				pass 
 			else:
+				if(type(val) == unicode):
+					val = unicodedata.normalize('NFKD', val).encode('ascii','ignore')
 				dealresult[datakey] = val
 				if(datakey in feedfacets):
 					datakeyascii = datakey
@@ -125,7 +127,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 						facetcloud[facetkey] = 1
 							
 				if(datakey in feedtags):
-					valascii = unicodedata.normalize('NFKD', val).encode('ascii','ignore')
+					valascii = val
 					tags = re.split('\W+', valascii)
 					for tag in tags:
 						if(tag.isdigit() or tag.islower() or (tag == '') or (tag in keywordtags)):
@@ -146,7 +148,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 				else:
 					hashstr = hashstr + dealresult[component]
 							
-		hashstr = unicodedata.normalize('NFKD', hashstr).encode('ascii','ignore')
+		
 		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
 	
