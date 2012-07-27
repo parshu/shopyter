@@ -164,6 +164,8 @@
 				<div class="well" id="popularqueriesdiv" style="background:#F8F8F8;">
           			<!--This is where query recommendations will get rendered -->
             	</div>
+            	<div id="tempfiltersdiv">
+            	</div>
 			</div><!--/span end column-->
         
         
@@ -173,7 +175,7 @@
           				
 						<li class="active"><a href="#knopons" data-toggle="tab">Results</a></li>
 						<li><a href="#savedknopons" data-toggle="tab">Saved Results</a></li>
-						<li><a href="#localmaps" data-toggle="tab">Local Results(Map)</a></li>
+						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges();">Local Results(Map)</a></li>
 						<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
 							Sort by
@@ -193,7 +195,7 @@
 						<div class="tab-pane fade" id="savedknopons">
 							Loading...
 						</div>
-						<div class="tab-pane fade" id="localmaps">
+						<div class="tab-pane fade" id="localmaps" >
 							Loading...
 						</div>
 						<div class="tab-pane fade active in scrollspy-example" data-target="#knopons" id="knopons" data-spy="scroll">
@@ -367,7 +369,10 @@
 		
 	}
 	
+	function makeBigMapChanges()
+	{
 	
+	}
 	function saveDeal(dealid, username)
     {
     	indicateSaved('/savedeal/' + dealid + '/' + username, dealid, true);
@@ -492,10 +497,10 @@
 		
 	}
 	
-	function renderMapResults(dealResultsURL, dealResultsDivname, queryIndex, doRenderQueryBox, noOfQueries){
+	function renderMapResults(dealResultsURL, dealResultsDivname, queryIndex, doRenderQueryBox, noOfQueries, height){
 		
 		var ajaxDisplay = document.getElementById(dealResultsDivname);
-		ajaxDisplay.innerHTML = '<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + dealResultsURL  + '"></iframe>';
+		ajaxDisplay.innerHTML = '<iframe width="100%" height="' + height + '" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="' + dealResultsURL  + '"></iframe>';
 	
 		
 		
@@ -535,17 +540,22 @@
 		renderQueryBox('/getqueries/{{username}}/' + highlightIndex,'queriesdiv', 1);
         renderDealResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
         
-        renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+        renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1, 500 );
+        renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','localmaps', -1, 0, 1, 1000 );
+        
 
 		totalqueries = totalqueries - 1;
 		
 		if(price_max != -1) {
+			renderURLinDiv('/getsaveddeals/{{username}}/-1/1','savedknopons',true);
 		 renderURLinDiv('/getfilters/' + queryid + '/-1','filtersdiv',false);
 	  	  renderPriceSlider(price_max, price_min, price_high, price_low);
 	      renderDaysSlider(daysfilter);
 	    }
 	    else {
 	    	var ajaxDisplay = document.getElementById('filtersdiv');
+			ajaxDisplay.innerHTML = '';
+			ajaxDisplay = document.getElementById('savedknopons');
 			ajaxDisplay.innerHTML = '';
 	    }
        
@@ -568,12 +578,15 @@
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
       renderDealResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
-	  renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
-	  renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','localmaps', -1, 0, 1 );
-	 
+	  renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','mapresultsdiv', -1, 0, 1, 500 );
+	  renderMapResults('/getdeals/{{username}}/{{username}}/-1/-1/-1/1/30/getmap.html','localmaps', -1, 0, 1, 1000 );
+	  
+	  
+	  
 	  
 	  {% if qlen > 0 %}
 		  renderURLinDiv('/getfilters/{{first_query['_id']}}/-1','filtersdiv',false);
+		  renderURLinDiv('/getsaveddeals/{{username}}/{{first_query['keyword']}}/1','savedknopons',true);
 		  renderPriceSlider({{first_query['pricemax']}},{{first_query['pricemin']}},{{first_query['price_high']}},{{first_query['price_low']}});
 		  renderDaysSlider({{first_query['dayfilter']}});
 	{% endif %}
@@ -604,11 +617,13 @@
 	      totalqueries = totalqueries + 1;
 	      renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
 	      renderURLinDiv('/getfilters/-1/' + totalqueries.toString(),'filtersdiv',false);
+	      renderURLinDiv('/getsaveddeals/{{username}}/' + keyword + '/1','savedknopons',true);
 	  	  renderPriceSlider(price_max, price_min, price_high, price_low);
 	      renderDaysSlider({{DEFAULT_DAYS_FILTER}});
 	      renderDealResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getdeals.html','dealresultsdiv', -1, 0, 1 );
 	      
-	      renderMapResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','mapresultsdiv', -1, 0, 1 );
+	      renderMapResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','mapresultsdiv', -1, 0, 1, 500 );
+	       renderMapResults('/getdeals/{{username}}/' + keyword + '/' + dollar_limit + '/' + price_high + '/' + price_low + '/1/30/getmap.html','localmaps', -1, 0, 1, 1000 );
 
 	      
 	      $('#keyword').val('');

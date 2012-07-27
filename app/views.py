@@ -273,6 +273,13 @@ def getdeals(username, keyword, dollarlimit, pricehigh, pricelow, startnum, resu
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
+	
+	if(keyword == '-1'): 
+		mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+		query = mainbox_table.find_one({'username': username})
+		keyword = query['keyword']
+		dollarlimit = query['dollar_limit']
+   
 	dollarlimit = int(dollarlimit)
 	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
 	deals = []

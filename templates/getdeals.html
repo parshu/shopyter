@@ -118,7 +118,7 @@
 									{% elif deal['saved'] is sameas 2 %}
 									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 									{% else %}
-									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Save</a>
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);">Save</a>
 									{% endif %}
 									</td></tr></table>
 									</div>
