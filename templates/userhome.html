@@ -252,25 +252,20 @@
     }
 
 	function doAnimation() {
-			var sourcesite = ['Amazon','Amazon', 'Ebay','Ebay', 'Craigslist', 'Craigslist', 'Walmart', 'Walmart', 'Other', 'Other'];
+			var sourcesite = ['Amazon', 'Ebay','Craigslist', 'Walmart', 'Other'];
 			
 			var progress = setInterval(function() {
 				var $bar = $('.bar');
 				
-				if ($bar.width()==400) {
-					clearInterval(progress);
-					$('.progress').removeClass('active');
-				} else {
-					$bar.width($bar.width()+40);
-				}
-				$bar.text(sourcesite[$bar.width()/40] + " " + $bar.width()/4 + "%");
-				//renderDealResults('/getdeals/HD camcorder/400/1/' + $bar.width()/20 + '/getdeals.html','dealresultsdiv', -1, 0, 1 );
-				
-			}, 100);
+				$bar.width($bar.width()+200);
+				var rand = Math.floor(Math.random()*5);
+				$bar.text("Scouring " + sourcesite[rand] + "...");
+			}, 10);
+
 	
 		}
     
-    function addQuery(url){
+    function addQuery(url, totalqueries){
   
     	
     	
@@ -295,11 +290,21 @@
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4){
+				  renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
+				  var link = document.getElementById('query' + totalqueries);
+				  if(link != undefined) {
+					link.click();
+				  }
+		
+				  
+				  $('#keyword').val('');
+				  $('#dollar_limit').val('');
 				
 			}
 		}
-		ajaxRequest.open("GET", url, false);
+		ajaxRequest.open("GET", url, true);
 		ajaxRequest.send(null); 
+		
 	
 		
 	}
@@ -608,23 +613,21 @@
       $('#add_query').submit(function() {
       	  renderProgressBar();
       	  doAnimation();
+      	  
+      	 
+      	  
+      	  
+      	  
 	      var keyword = $("#keyword").val();
 	      var dollar_limit = parseInt($("#dollar_limit").val());
 	      var price_high = dollar_limit + parseInt({{PRICE_HIGH_PER}} * dollar_limit);
 		  var price_low = dollar_limit - parseInt({{PRICE_LOW_PER}} * dollar_limit);
 		  var price_max = parseInt({{PRICE_MAX_PER}} * price_high);
 		  var price_min = parseInt(price_low / {{PRICE_MIN_PER}});
-	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
-	      totalqueries = totalqueries + 1;
-	      renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
-	      var link = document.getElementById('query' + totalqueries);
-	  	  if(link != undefined) {
-	  		link.click();
-	  	  }
-
+		  totalqueries = totalqueries + 1;
+	      addQuery('/addquery/' + keyword + '/' + dollar_limit, totalqueries);
 	      
-	      $('#keyword').val('');
-	      $('#dollar_limit').val('');
+
 	      
 
       });
