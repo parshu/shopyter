@@ -289,10 +289,7 @@
 		}
 		
 		
-	function updateQuery(url, pricelow, pricehigh) {
-		execURL(url + '/' + pricelow + '/' + pricehigh, false);
 	
-	}
     
     function addQuery(url, totalqueries){
   
@@ -465,7 +462,7 @@
 					//ui.values[0] & ui.values[1]
 					var ele = document.getElementById("filtersholder");
 					var qid = ele.getAttribute("qid");
-					updateQuery('/updatequerypricerange/' + qid, ui.values[0], ui.values[1]);
+					execURL('/updatequerypricerange/' + qid + '/' + ui.values[0] + '/' + ui.values[1], false);
 					var lpid = ele.getAttribute("loopid");
 					var linkele = document.getElementById(lpid);
 					linkele.setAttribute("pl",ui.values[0]);
@@ -482,15 +479,28 @@
 	
 	}
 	
-	function renderDaysSlider(daysfilter) {
+	function renderDaysSlider(loopid) {
+		var ajaxDisplay = document.getElementById(loopid);
+		var days = parseInt(ajaxDisplay.getAttribute("df"));
 		$(function() {
 			$( "#slider-range-min" ).slider({
 				range: "min",
-				value: daysfilter,
+				value: days,
 				min: 1,
 				max: 21,
 				slide: function( event, ui ) {
 					$( "#days" ).val( ui.value + " days ago" );
+				},
+				stop: function( event, ui ) {
+					var ele = document.getElementById("filtersholder");
+					var qid = ele.getAttribute("qid");
+					execURL('/updatequerydays/' + qid + '/' + ui.value, false);
+					var lpid = ele.getAttribute("loopid");
+					var linkele = document.getElementById(lpid);
+					linkele.setAttribute("df",ui.value);
+					linkele.click();
+											
+					
 				}
 			});
 			$( "#days" ).val( $( "#slider-range-min" ).slider( "value" ) + " days ago");

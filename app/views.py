@@ -86,6 +86,18 @@ def updatequerypricerange(qid, pricelow, pricehigh):
 	print res
 	sys.stdout.flush()
 	return {'status': 'ok'}
+	
+@route('/updatequerydays/<qid>/<days>')
+def updatequerypricerange(qid, days):
+	days = int(days)
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	username = request.cookies.get('username')
+	print "updating " + qid + ": " + str(days) 
+	sys.stdout.flush()
+	res = mainbox_table.update({'_id': qid, 'username': username}, { "$set" : { "dayfilter" : days } })
+	print res
+	sys.stdout.flush()
+	return {'status': 'ok'}
 
 
 @route('/addquery/<keyword>/<dollarlimit>')
