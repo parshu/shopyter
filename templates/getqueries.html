@@ -9,9 +9,9 @@
 	{% for query in queries %}
 	
 	{% if loop.index is sameas linkno %}
-	<tr style="background:lightgrey;">
+	<tr id="activequerytr" style="background:lightgrey;" realid="trquery{{loop.index}}">
 	{% else %}
-	<tr>
+	<tr id="trquery{{loop.index}}" realid="trquery{{loop.index}}">
 	{% endif %}
 	<td>
 	<span>
@@ -23,7 +23,7 @@
     		<span>	
 
 	
-		<a id="query{{loop.index}}" href="#" onclick="renderDealResults('/getdeals/{{username}}/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/-1','filtersdiv',false);renderPriceSlider({{query['pricemax']}},{{query['pricemin']}},{{query['price_high']}},{{query['price_low']}});renderDaysSlider({{query['dayfilter']}});renderURLinDiv('/getsaveddeals/{{username}}/{{query['keyword']}}/1','savedknopons',true);renderMapResults('/getdeals/{{username}}/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}}, 500);renderMapResults('/getdeals/{{username}}/{{query['keyword']}}/{{query['dollar_limit']}}/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','localmaps', {{loop.index}}, 1, {{qlen}}, 1000);"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a id="query{{loop.index}}" pmn="{{query['pricemin']}}" pmx="{{query['pricemax']}}" pl="{{query['price_low']}}" ph="{{query['price_high']}}" df="{{query['dayfilter']}}" href="#" onclick="highlightQuery('trquery{{loop.index}}');renderDealResults('/getdeals/{{username}}/{{query['_id']}}/-2/{{query['price_high']}}/{{query['price_low']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/query{{loop.index}}','filtersdiv',false);renderPriceSlider('query{{loop.index}}');renderDaysSlider({{query['dayfilter']}});renderURLinDiv('/getsaveddeals/{{username}}/{{query['keyword']}}/1','savedknopons',true);renderMapResults('/getdeals/{{username}}/{{query['_id']}}/-2/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}}, 500);renderMapResults('/getdeals/{{username}}/{{query['_id']}}/-2/{{query['price_high']}}/{{query['price_low']}}/1/30/getmap.html','localmaps', {{loop.index}}, 1, {{qlen}}, 1000);"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}

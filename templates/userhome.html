@@ -242,7 +242,30 @@
 
     // knopon.com custom JS functions follows
     
-    
+    function execURL(url, asynchronous){
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		
+		ajaxRequest.open("GET", url, asynchronous); 
+		ajaxRequest.send(null); 
+		
+	}
     
     function renderProgressBar()
     {
@@ -264,6 +287,12 @@
 
 	
 		}
+		
+		
+	function updateQuery(url, pricelow, pricehigh) {
+		execURL(url + '/' + pricelow + '/' + pricehigh, false);
+	
+	}
     
     function addQuery(url, totalqueries){
   
@@ -302,7 +331,7 @@
 				
 			}
 		}
-		ajaxRequest.open("GET", url, true);
+		ajaxRequest.open("GET", url, false);
 		ajaxRequest.send(null); 
 		
 	
@@ -404,7 +433,24 @@
     	renderURLinDiv('/unsavedeal/' + dealid + '/' + username, 'tn' + dealid, true);
     }
 	
-	function renderPriceSlider(pricemax, pricemin, pricehigh, pricelow) {
+	function highlightQuery(id) {
+		
+		var activeele = document.getElementById("activequerytr");
+		activeele.removeAttribute("style");
+		var realid = activeele.getAttribute("realid");
+		activeele.setAttribute("id", realid);
+		var clickedele = document.getElementById(id);
+		clickedele.setAttribute("id", "activequerytr");
+		clickedele.setAttribute("style", "background:lightgrey;");
+		
+	}
+	
+	function renderPriceSlider(loopid) {
+		var ajaxDisplay = document.getElementById(loopid);
+		var pricemin = parseInt(ajaxDisplay.getAttribute("pmn"));
+		var pricemax = parseInt(ajaxDisplay.getAttribute("pmx"));
+		var pricelow = parseInt(ajaxDisplay.getAttribute("pl"));
+		var pricehigh = parseInt(ajaxDisplay.getAttribute("ph"));
 		$(function() {
 			$( "#slider-range" ).slider({
 				range: true,
@@ -413,6 +459,21 @@
 				values: [ pricelow, pricehigh ],
 				slide: function( event, ui ) {
 					$( "#amount" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+					
+				},
+				stop: function( event, ui ) {
+					//ui.values[0] & ui.values[1]
+					var ele = document.getElementById("filtersholder");
+					var qid = ele.getAttribute("qid");
+					updateQuery('/updatequerypricerange/' + qid, ui.values[0], ui.values[1]);
+					var lpid = ele.getAttribute("loopid");
+					var linkele = document.getElementById(lpid);
+					linkele.setAttribute("pl",ui.values[0]);
+					linkele.setAttribute("ph",ui.values[1]);
+					linkele.click();
+					
+										
+					
 				}
 			});
 			$( "#amount" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
@@ -507,7 +568,7 @@
 		ajaxRequest.send(null); 
 		
 		// if something gets clicked, this is a hacky way of re rendering query box to change the highlighting to the clicked query. gets called from getdeals.html
-		if(doRenderQueryBox == 1)
+		/*if(doRenderQueryBox == 1)
 		{
 			renderQueryBox('/getqueries/{{username}}/' + queryIndex,'queriesdiv', noOfQueries);
 		}
@@ -515,7 +576,7 @@
 		{
 			renderQueryBox('/getpopularqueries/{{username}}/' + queryIndex,'popularqueriesdiv', noOfQueries);
 			
-		}
+		}*/
 		
 	}
 	
