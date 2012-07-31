@@ -1,5 +1,6 @@
 import os
 import pymongo
+import re
 import string
 from bottle import TEMPLATE_PATH, route, jinja2_template as template, request, response
 from models import *
@@ -302,8 +303,31 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	print "Getting deals for {" + keyword + ":" + str(dollarlimit) + "}"
 	sys.stdout.flush()
    
+	dealquery = { '$and': [{'keyword': keyword}, {'price': {'$lt': pricehigh}}, {'price': {'$gt': pricelow}}, {'founddate': {'$gt':  datetime.utcnow() - t} }] }
     
-	deals.extend([deal for deal in deals_table.find({ '$and': [{'keyword': keyword}, {'price': {'$lt': pricehigh}}, {'price': {'$gt': pricelow}}, {'founddate': {'$gt':  datetime.utcnow() - t} }] }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+	filterhash = {}
+	if(query.has_key('filters')):
+		for filter in query['filters'].split(","):
+			keyval = filter.split("|")
+			if(len(keyval) == 2):
+				if(keyval[0] != 'tag'):
+					if(filterhash.has_key(keyval[0])):
+						filterhash[keyval[0]][keyval[1]] = 1
+					else:
+						filterhash[keyval[0]] = {keyval[1]: 1}
+				else:
+					regx = re.compile(keyval[1],re.IGNORECASE)
+					dealquery['$and'].append({'title': {'$regex': regx}})
+    
+	filterkeys = []
+	for filterkey in filterhash.keys():	
+		addhash = {'$or': []}
+		for filterval in filterhash[filterkey].keys():
+			addhash['$or'].append({filterkey: filterval})
+		dealquery['$and'].append(addhash)
+    
+	print dealquery
+	deals.extend([deal for deal in deals_table.find(dealquery).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
 	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
 	saved_deals = []
