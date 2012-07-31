@@ -15,6 +15,7 @@ import json
 from BeautifulSoup import BeautifulSoup
 import unicodedata
 import CLJsonFeed
+from datetime import timedelta
 TEMPLATE_PATH.append('./templates')
 
 DBNAME = "test"
@@ -281,31 +282,28 @@ def unsavedeal(dealid, username):
     
     
     
-@route('/getdeals/<username>/<keyword>/<dollarlimit>/<pricehigh>/<pricelow>/<startnum>/<resultsize>/:filename')
-def getdeals(username, keyword, dollarlimit, pricehigh, pricelow, startnum, resultsize, filename):
+@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/:filename')
+def getdeals(username, queryid, startnum, resultsize, filename):
 	savetab = 0
-	dollarlimit = int(dollarlimit)
-	pricehigh = int(float(pricehigh))
-	pricelow = int(float(pricelow))
 	startnum = int(startnum) - 1
 	resultsize = int(resultsize)
 	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
 	deals = []
-	if(dollarlimit < 0):
-		mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox'] 
-		query = mainbox_table.find_one({'username': keyword})
-		if(dollarlimit == -2):
-			 query = mainbox_table.find_one({'_id': keyword})
-		
-		keyword = query['keyword']
-		dollarlimit = int(query['dollar_limit'])
-		pricehigh = int(query['price_high'])
-		pricelow = int(query['price_low'])
-		print keyword + ":" + str(dollarlimit) + "\n"
-		sys.stdout.flush()
+	
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox'] 
+	query = mainbox_table.find_one({'_id': queryid})
+	
+	keyword = query['keyword']
+	dollarlimit = int(query['dollar_limit'])
+	pricehigh = int(query['price_high'])
+	pricelow = int(query['price_low'])
+	dayfilter = int(query['dayfilter'])
+	t = timedelta(dayfilter + 1)
+	print "Getting deals for {" + keyword + ":" + str(dollarlimit) + "}"
+	sys.stdout.flush()
    
     
-	deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+	deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow}, 'founddate': {'$gt':  datetime.utcnow() - t} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
 	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
 	saved_deals = []

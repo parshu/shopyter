@@ -600,16 +600,6 @@
 		ajaxRequest.open("GET", dealResultsURL, false); // false: synchronous call to eliminate weird UI behavior
 		ajaxRequest.send(null); 
 		
-		// if something gets clicked, this is a hacky way of re rendering query box to change the highlighting to the clicked query. gets called from getdeals.html
-		/*if(doRenderQueryBox == 1)
-		{
-			renderQueryBox('/getqueries/{{username}}/' + queryIndex,'queriesdiv', noOfQueries);
-		}
-		else if(doRenderQueryBox == 2)
-		{
-			renderQueryBox('/getpopularqueries/{{username}}/' + queryIndex,'popularqueriesdiv', noOfQueries);
-			
-		}*/
 		
 	}
 	
