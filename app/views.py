@@ -303,7 +303,7 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	sys.stdout.flush()
    
     
-	deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': pricehigh}, 'price': {'$gt': pricelow}, 'founddate': {'$gt':  datetime.utcnow() - t} }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+	deals.extend([deal for deal in deals_table.find({ '$and': [{'keyword': keyword}, {'price': {'$lt': pricehigh}}, {'price': {'$gt': pricelow}}, {'founddate': {'$gt':  datetime.utcnow() - t} }] }).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
 	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
 	saved_deals = []
