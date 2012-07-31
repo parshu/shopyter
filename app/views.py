@@ -88,13 +88,26 @@ def updatequerypricerange(qid, pricelow, pricehigh):
 	return {'status': 'ok'}
 	
 @route('/updatequerydays/<qid>/<days>')
-def updatequerypricerange(qid, days):
+def updatequerydays(qid, days):
 	days = int(days)
 	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
 	username = request.cookies.get('username')
 	print "updating " + qid + ": " + str(days) 
 	sys.stdout.flush()
 	res = mainbox_table.update({'_id': qid, 'username': username}, { "$set" : { "dayfilter" : days } })
+	print res
+	sys.stdout.flush()
+	return {'status': 'ok'}
+	
+@route('/updatequeryfilters/<qid>/<filters>')
+def updatequeryfilters(qid, filters):
+	if(filters == "-1"):
+		filters = ""
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	username = request.cookies.get('username')
+	print "updating " + qid + ": " + filters
+	sys.stdout.flush()
+	res = mainbox_table.update({'_id': qid, 'username': username}, { "$set" : { "filters" : filters } })
 	print res
 	sys.stdout.flush()
 	return {'status': 'ok'}
@@ -199,14 +212,30 @@ def getdealemail(keyword, dollarlimit, days, username):
 
 @route('/getfilters/<queryid>/<loopid>')
 def getfilters(queryid, loopid):
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
-    query = mainbox_table.find_one({'_id': queryid})
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
+	query = mainbox_table.find_one({'_id': queryid})
+	filterstring = ""
+	selectedfilters = {}
+	if(query.has_key('filters')):
+		filterstring = query['filters']
+		filters = query['filters'].lstrip(",")
+		if(filters != ""):
+			filters = filters.split(",")
+			for filter in filters:
+				keyval = filter.split("|")
+				if(len(keyval) == 2):
+					if(selectedfilters.has_key(keyval[0])):
+						selectedfilters[keyval[0]][keyval[1]] = 1
+					else:
+						filterh = {keyval[1]: 1}
+						selectedfilters[keyval[0]] = filterh
 
-    tags = []
-    taghash = {}
-    facets = []
-    facethash = {}
-    if(query.has_key('facets')):
+
+	tags = []
+	taghash = {}
+	facets = []
+	facethash = {}
+	if(query.has_key('facets')):
 		facets = query['facets'].split(",")
 		for facet in facets:
 			if(query.has_key(facet)):
@@ -219,7 +248,7 @@ def getfilters(queryid, loopid):
 		print facethash
 				
 			
-    if(query.has_key('tags')):
+	if(query.has_key('tags')):
 		tags = query['tags'].split(",")
 	
 		for tag in tags:
@@ -227,7 +256,7 @@ def getfilters(queryid, loopid):
 				taghash[tag] = query[tag]
 	
 
-    return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash, loopid = loopid)
+	return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash, loopid = loopid, selectedfilters = selectedfilters, filterstring = filterstring)
 
 
 @route('/savedeal/<dealid>/<username>')

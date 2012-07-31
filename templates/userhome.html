@@ -506,6 +506,29 @@
 			$( "#days" ).val( $( "#slider-range-min" ).slider( "value" ) + " days ago");
 		});
 	}
+	
+	function saveFilter(queryid, eleid, filtername) {
+		var ele = document.getElementById(eleid);
+		var classval = ele.getAttribute("class");
+		var filtersele = document.getElementById("filtersholder");
+		var selectedbuttons = filtersele.getAttribute("selectedbuttons");
+		if(classval == "btn") {
+			selectedbuttons = selectedbuttons + "," + filtername;
+		}
+		else {
+			selectedbuttons = selectedbuttons.replace("," + filtername, "");
+		}
+		filtersele.setAttribute("selectedbuttons", selectedbuttons);
+		if(selectedbuttons == "") {
+			selectedbuttons = "-1";
+		}
+		execURL('/updatequeryfilters/' + queryid + '/' + selectedbuttons, false);
+		var lpid = filtersele.getAttribute("loopid");
+		var linkele = document.getElementById(lpid);
+		linkele.click();
+		
+	
+	}
     
     //noOfQueries - unused as of now
 	//queryBoxDivname - Name of the  query box div
