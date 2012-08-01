@@ -178,6 +178,7 @@ def addquery(keyword, dollarlimit):
 		else:
 			thisquery = querymatches[0]
 			thisquery['username'] = username
+			thisquery['lastmodified'] = datetime.utcnow()
 			thisquery['_id'] = feedslib.gethash(username + thisquery['keyword'] + str(thisquery['dollar_limit']) + str(thisquery['price_high']) + str(thisquery['price_low']))
 			print "Inserting dup query: " + str(thisquery)
 			sys.stdout.flush()
@@ -375,19 +376,21 @@ def getsaveddeals(username, keyword, dollarlimit):
     
 @route('/getqueries/<username>/<linkno>')
 def getqueries(username, linkno):
-    linkno = int(linkno)
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
-    queries = [query for query in mainbox_table.find({'username': username})]  
-    qlen = len(queries)  
-    return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen)
+	source = {'id': 1, 'trname': 'trquery', 'linkname': 'query'}
+	linkno = int(linkno)
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+	queries = [query for query in mainbox_table.find({'username': username}).sort("lastmodified", pymongo.ASCENDING)]  
+	qlen = len(queries)  
+	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source)
 
 @route('/getpopularqueries/<username>/<linkno>')
 def getpopularqueries(username, linkno):
-    linkno = int(linkno)
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
-    queries = [query for query in mainbox_table.find().limit(6)]  
-    qlen = len(queries)  
-    return template('getpopularqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen)
+	source = {'id': 2, 'trname': 'trpopquery', 'linkname': 'popquery'}
+	linkno = int(linkno)
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+	queries = [query for query in mainbox_table.find({'username': {'$ne': username}}).limit(6)]  
+	qlen = len(queries)  
+	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source)
     
 
 @route('/removequery/<queryid>')

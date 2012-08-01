@@ -93,6 +93,10 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	results = json.loads(resp)	
 	dataitems = feedconfig['feeddatatostore']
 	
+	if(not results.has_key(feedconfig['resultslistfield'])):
+		return({'deals': deals, 'tagcloud': tagcloud, 'facetcloud': facetcloud})
+		
+	
 	for result in results[feedconfig['resultslistfield']]:
 		dealresult = {}
 		for datakey in dataitems.keys():
@@ -117,9 +121,13 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 				dealresult[datakey] = val
 				if(datakey in feedfacets):
 					datakeyascii = datakey
+					if(val.find(".") >= 0):
+						val = val.replace(".","")
+						dealresult[datakey] = val
 					valascii = val
 					
 					facetkey = datakeyascii + "|" + valascii
+					
 					
 					if(facetcloud.has_key(facetkey)):
 						facetcloud[facetkey] = facetcloud[facetkey] + 1

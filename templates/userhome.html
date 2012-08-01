@@ -94,7 +94,6 @@
 	  })();
 
 
-	var totalqueries = {{qlen}};
 	</script>
 
   </head>
@@ -102,7 +101,7 @@
 <body>
 	<div class="navbar navbar-fixed-top">
     	<div class="navbar-inner">
-        	<div class="container-fluid">
+        	<div class="container-fluid" style="padding-left:50px;padding-right:0px;">
           		<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             		<span class="icon-bar"></span>
             		<span class="icon-bar"></span>
@@ -123,17 +122,10 @@
     
     
     
-    <div class="row">
-    	<div class="span4">&nbsp;</div>
-    	<div class="span8">&nbsp;</div>
-    </div>
-	<div class="row">
-    	<div class="span4">&nbsp;</div>
-    	<div class="span8">&nbsp;</div>
-    </div>
+   
 
 
-	<div class="container-fluid"><!--high level container for all body elements -->
+	<div class="container-fluid" style="padding-top:30px;padding-left:50px;padding-right:0px;"><!--high level container for all body elements -->
 		<div class="row-fluid"> <!--holds the row containing main parts, not footer -->
 			
 			<div class="span3"> <!--first column, holds query mainbox and add form -->
@@ -167,7 +159,7 @@
             	<div id="tempfiltersdiv">
             	</div>
 			</div><!--/span end column-->
-        
+        	
         
 			<div class="span6" id="secondcol"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
@@ -291,7 +283,7 @@
 		
 	
     
-    function addQuery(url, totalqueries){
+    function addQuery(url){
   
     	
     	
@@ -316,10 +308,19 @@
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4){
-				  renderQueryBox('/getqueries/{{username}}/' + totalqueries.toString(),'queriesdiv', 1);
-				  var link = document.getElementById('query' + totalqueries);
+				  querycount = parseInt(document.getElementById("querytable").getAttribute("totalqueries")) + 1;
+				  
+				  renderQueryBox('/getqueries/{{username}}/' + querycount,'queriesdiv', 1);
+				  var link = document.getElementById('query' + querycount);
 				  if(link != undefined) {
 					link.click();
+				  } else {
+				  	alert(querycount);
+				  	var link2 = document.getElementById('query1');
+				  	if(link2 != undefined) {
+						link2.click();
+				  	}
+				  	
 				  }
 		
 				  
@@ -335,7 +336,13 @@
 		
 	}
     
-    
+     function renderTextInDiv(text, divname){
+
+		var ajaxDisplay = document.getElementById(divname);
+		ajaxDisplay.innerHTML = text;
+		
+		
+	}
     
     
     function renderURLinDiv(url, divname, asynchronous){
@@ -433,9 +440,11 @@
 	function highlightQuery(id) {
 		
 		var activeele = document.getElementById("activequerytr");
-		activeele.removeAttribute("style");
-		var realid = activeele.getAttribute("realid");
-		activeele.setAttribute("id", realid);
+		if(activeele != null) {
+			activeele.removeAttribute("style");
+			var realid = activeele.getAttribute("realid");
+			activeele.setAttribute("id", realid);
+		}
 		var clickedele = document.getElementById(id);
 		clickedele.setAttribute("id", "activequerytr");
 		clickedele.setAttribute("style", "background:lightgrey;");
@@ -708,8 +717,7 @@
 		  var price_low = dollar_limit - parseInt({{PRICE_LOW_PER}} * dollar_limit);
 		  var price_max = parseInt({{PRICE_MAX_PER}} * price_high);
 		  var price_min = parseInt(price_low / {{PRICE_MIN_PER}});
-		  totalqueries = totalqueries + 1;
-	      addQuery('/addquery/' + keyword + '/' + dollar_limit, totalqueries);
+	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
 	      
 
 	      

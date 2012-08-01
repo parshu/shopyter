@@ -2,35 +2,53 @@
 
 {% block content %}
 
-    <div class="row-fluid">
+    <div id="querytable" class="row-fluid" totalqueries="{{qlen}}">
 {% if qlen > 0 %}
 	<table id="table-3" style="background:#F8F8F8;">
+	{% if source['id'] is sameas 1 %}
 	<tr><td><span style="color:darkorange">{{username}}'s</span> looking for:</td></tr>
+	{% else %}
+	<tr><td><span style="color:darkorange">other users</span> looking for:</td></tr>
+	{% endif %}
 	{% for query in queries %}
 	
-	{% if loop.index is sameas linkno %}
-	<tr id="activequerytr" style="background:lightgrey;" realid="trquery{{loop.index}}">
+	{% if source['id'] is sameas 1 %}
+		{% if loop.index is sameas linkno %}
+			<tr id="activequerytr" style="background:lightgrey;" realid="{{source['trname']}}{{loop.index}}">
+		{% else %}
+		<tr id="{{source['trname']}}{{loop.index}}" realid="{{source['trname']}}{{loop.index}}">
+		{% endif %}
 	{% else %}
-	<tr id="trquery{{loop.index}}" realid="trquery{{loop.index}}">
+		<tr id="{{source['trname']}}{{loop.index}}" realid="{{source['trname']}}{{loop.index}}">
 	{% endif %}
 	<td>
 	<span>
-		{% if loop.index is sameas 1 %}
-			<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '-1',-1,-1,-1,-1,-1);"><i class="icon-remove"></i></a>
+		
+		{% if source['id'] is sameas 1 %}
+			{% if loop.index is sameas 1 %}
+				<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '-1',-1,-1,-1,-1,-1);"><i class="icon-remove"></i></a>
+			{% else %}
+			<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '{{queries[0]['_id']}}', {{queries[0]['pricemax']}}, {{queries[0]['pricemin']}}, {{queries[0]['price_high']}}, {{queries[0]['price_low']}}, {{queries[0]['dayfilter']}});"><i class="icon-remove"></i></a>
+			{% endif %}
 		{% else %}
-    	<a href="#" onclick="removeQuery('/removequery/{{query['_id']}}', 1, '{{queries[0]['_id']}}', {{queries[0]['pricemax']}}, {{queries[0]['pricemin']}}, {{queries[0]['price_high']}}, {{queries[0]['price_low']}}, {{queries[0]['dayfilter']}});"><i class="icon-remove"></i></a>
-   		{% endif %}
+			<a href="#" onclick="addQuery('/addquery/{{query['keyword']}}/{{query['dollar_limit']}}');"><i class="icon-plus"></i></a>
+		
+		{% endif %}
     		<span>	
 
 	
-		<a id="query{{loop.index}}" pmn="{{query['pricemin']}}" pmx="{{query['pricemax']}}" pl="{{query['price_low']}}" ph="{{query['price_high']}}" df="{{query['dayfilter']}}" href="#" onclick="highlightQuery('trquery{{loop.index}}');renderDealResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});renderURLinDiv('/getfilters/{{query['_id']}}/query{{loop.index}}','filtersdiv',false);renderPriceSlider('query{{loop.index}}');renderDaysSlider('query{{loop.index}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['keyword']}}/1','savedknopons',true);renderMapResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}}, 500);renderMapResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getmap.html','localmaps', {{loop.index}}, 1, {{qlen}}, 1000);"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
+		<a id="{{source['linkname']}}{{loop.index}}" pmn="{{query['pricemin']}}" pmx="{{query['pricemax']}}" pl="{{query['price_low']}}" ph="{{query['price_high']}}" df="{{query['dayfilter']}}" href="#" onclick="highlightQuery('{{source['trname']}}{{loop.index}}');renderDealResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getdeals.html','dealresultsdiv', {{loop.index}}, 1, {{qlen}});{% if source['id'] is sameas 1 %}renderURLinDiv('/getfilters/{{query['_id']}}/{{source['linkname']}}{{loop.index}}','filtersdiv',false);renderPriceSlider('{{source['linkname']}}{{loop.index}}');renderDaysSlider('{{source['linkname']}}{{loop.index}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['keyword']}}/1','savedknopons',true);{% else %}renderTextInDiv('Add this to your mainbox to do more!','filtersdiv');renderTextInDiv('Save interesting deals when you add this to your mainbox','savedknopons');{% endif %}renderMapResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getmap.html','mapresultsdiv', {{loop.index}}, 1, {{qlen}}, 500);renderMapResults('/getdeals/{{username}}/{{query['_id']}}/1/30/getmap.html','localmaps', {{loop.index}}, 1, {{qlen}}, 1000);"><strong>"{{query['keyword']}}"</strong> around <strong>{{query['dollar_limit']}}$</strong></a></span> <!-- need <span class="active> when item#1-->
 	</span>
 	</td></tr>
  	{% endfor %}
 	</table>
 {% else %}	
  
- You are not looking for anything yet. Use the form below to start.
+ {% if source['id'] is sameas 1 %}
+ 	You are not looking for anything yet. Use the form below to start.
+ {% else %}
+ 	 Watch this space for what others are looking for...
+ {% endif %}
  
  {% endif %}
  
