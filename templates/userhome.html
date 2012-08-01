@@ -262,20 +262,54 @@
     function renderProgressBar()
     {
     	var ajaxDisplay = document.getElementById("dealresultsdiv");
-		ajaxDisplay.innerHTML = '<div class="progress progress-striped active" style="width: 400px; margin-left: auto; margin-right: auto;"><div class="bar" style="width: 0%;"></div></div>';
+		ajaxDisplay.innerHTML = '<div class="progress progress-success" style="padding-top:30px;padding-left:30px;padding-right:30px;"><div class="bar" style="float: left; width: 0%; " data-percentage="100"></div></div>';
     
     }
 
 	function doAnimation() {
-			var sourcesite = ['Amazon', 'Ebay','Craigslist', 'Walmart', 'Other'];
 			
-			var progress = setInterval(function() {
-				var $bar = $('.bar');
+			
+			
+			
+			 $('.progress .bar').each(function() {
+            var me = $(this);
+            var perc = me.attr("data-percentage");
+			
+            //TODO: left and right text handling
+
+            var current_perc = 0;
+
+            var progress = setInterval(function() {
+                if (current_perc>=perc) {
+                    clearInterval(progress);
+                } else {
+                    current_perc +=5;
+                    me.css('width', (current_perc)+'%');
+                }
 				
-				$bar.width($bar.width()+200);
+				var sourcesite = ['Amazon', 'Ebay','Craigslist', 'Walmart', 'Web'];
+				var index = Math.floor(current_perc / 20);
+                me.text((current_perc)+'% ' + index);
+
+            }, 200);
+
+        	});
+			
+			
+			/*var progress = setInterval(function() {
+				var $bar = $('.bar');
+			
+				if ($bar.width()==400) {
+					clearInterval(progress);
+					$('.progress').removeClass('active');
+				} else {
+					$bar.width($bar.width()+40);
+				}
 				var rand = Math.floor(Math.random()*5);
 				$bar.text("Scouring " + sourcesite[rand] + "...");
-			}, 10);
+			}, 800);*/
+
+			
 
 	
 		}
@@ -329,7 +363,7 @@
 				
 			}
 		}
-		ajaxRequest.open("GET", url, false);
+		ajaxRequest.open("GET", url, true);
 		ajaxRequest.send(null); 
 		
 	
