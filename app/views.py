@@ -75,7 +75,8 @@ def user(username, mode, metrics):
 				if(mode == "replace"):
 					user_metrics[key] = metricshash[key]
 				elif(mode == "increment"):
-					
+					if((type(metricshash[key]) is not int) or (type(user_metrics[key]) is not int)):
+						return {'status': 'fail', 'error': 'can only increment ints'}
 					user_metrics[key] = user_metrics[key] + metricshash[key]
 				else:
 					return {'status': 'fail', 'error': 'unknown mode (' + mode + ')'}
