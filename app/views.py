@@ -57,8 +57,31 @@ def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
 	jsonresp = CLJsonFeed.getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME)
 	return jsonresp
 
+
+@route('/incrementmetrics/<username>/<metrics>')
+def user(username, metrics):
+	metricshash = json.loads(metrics)
+	print metricshash
+	sys.stdout.flush()
+	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
+	user_metrics = user_metrics_table.find_one({'username': username})
+	if not user_metrics:
+		metricshash['_id'] = username
+		metricshash['username'] = username
+		user_metrics_table.insert(metricshash)
+	else:
+		for key in metricshash.keys():
+			if(user_metrics.has_key(key)):
+				user_metrics[key] = user_metrics[key] + metricshash[key]
+		
+		user_metrics_table.update({'_id': username}, user_metrics)
+	return {'status': 'ok'}
+
 @route('/:username')
 def user(username):
+    user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
+    user_metrics = user_metrics_table.find_one({'username': username})
+    
     users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
     if not users_table.find_one({'username': username}):
         return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
@@ -72,7 +95,7 @@ def user(username):
         first_query = queries[0]
         deals.extend([deal for deal in deals_table.find({'query_id': first_query['_id']})])
     response.set_cookie('username', username, path = '/')    
-    return template('userhome.html', username = username, queries = queries, deals = deals, qlen = qlen, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, first_query = first_query)
+    return template('userhome.html', username = username, queries = queries, deals = deals, qlen = qlen, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, first_query = first_query, user_metrics = user_metrics)
 
 
 
