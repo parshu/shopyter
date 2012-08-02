@@ -58,8 +58,8 @@ def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
 	return jsonresp
 
 
-@route('/incrementmetrics/<username>/<metrics>')
-def user(username, metrics):
+@route('/incrementmetrics/<username>/<mode>/<metrics>')
+def user(username, mode, metrics):
 	metricshash = json.loads(metrics)
 	print metricshash
 	sys.stdout.flush()
@@ -72,7 +72,13 @@ def user(username, metrics):
 	else:
 		for key in metricshash.keys():
 			if(user_metrics.has_key(key)):
-				user_metrics[key] = user_metrics[key] + metricshash[key]
+				if(mode == "replace"):
+					user_metrics[key] = metricshash[key]
+				elif(mode == "increment"):
+					
+					user_metrics[key] = user_metrics[key] + metricshash[key]
+				else:
+					return {'status': 'fail', 'error': 'unknown mode (' + mode + ')'}
 		
 		user_metrics_table.update({'_id': username}, user_metrics)
 	return {'status': 'ok'}
