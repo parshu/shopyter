@@ -166,8 +166,8 @@
           			<ul class="nav nav-tabs" id="myTab">
           				
 						<li class="active"><a href="#knopons" data-toggle="tab" onclick="revertBigMapChanges();">Results</a></li>
-						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges();">Saved Results</a></li>
-						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges();">Local Results(Map)</a></li>
+						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges();execURL('/updatemetrics/{{username}}/increment/{&quot;savedtabviews&quot;:1}',true);">Saved Results</a></li>
+						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);">Local Results(Map)</a></li>
 						<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
 							Sort by
@@ -320,7 +320,7 @@
     function addQuery(url){
   
     	
-    	
+    	execURL("/updatemetrics/{{username}}/increment/{\"queryadd\":1}",true);
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
 			// Opera 8.0+, Firefox, Safari
@@ -511,6 +511,7 @@
 					linkele.setAttribute("pl",ui.values[0]);
 					linkele.setAttribute("ph",ui.values[1]);
 					linkele.click();
+					execURL("/updatemetrics/{{username}}/increment/{\"filtersused\":1}",true);
 					
 										
 					
@@ -542,7 +543,7 @@
 					var linkele = document.getElementById(lpid);
 					linkele.setAttribute("df",ui.value);
 					linkele.click();
-											
+					execURL("/updatemetrics/{{username}}/increment/{\"filtersused\":1}",true);											
 					
 				}
 			});
@@ -763,6 +764,8 @@
     		setTimeout('document.location = "' + link.href + '"', 100);
   	  }
       
+    
+      execURL("/updatemetrics/{{username}}/increment/{\"visits\":1}",true);
     
     </script>
     

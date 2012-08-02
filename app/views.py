@@ -58,8 +58,10 @@ def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
 	return jsonresp
 
 
-@route('/incrementmetrics/<username>/<mode>/<metrics>')
-def user(username, mode, metrics):
+@route('/updatemetrics/<username>/<mode>/<metrics>')
+def updatemetrics(username, mode, metrics):
+	print "Metrics: " + metrics
+	sys.stdout.flush()
 	metricshash = json.loads(metrics)
 	print metricshash
 	sys.stdout.flush()
@@ -80,6 +82,8 @@ def user(username, mode, metrics):
 					user_metrics[key] = user_metrics[key] + metricshash[key]
 				else:
 					return {'status': 'fail', 'error': 'unknown mode (' + mode + ')'}
+			else:
+				user_metrics[key] = metricshash[key]
 		
 		user_metrics_table.update({'_id': username}, user_metrics)
 	return {'status': 'ok'}
@@ -243,8 +247,8 @@ def getdealemail(keyword, dollarlimit, days, username):
     return template('getdealemail.html', username = username, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
 
 
-@route('/getfilters/<queryid>/<loopid>')
-def getfilters(queryid, loopid):
+@route('/getfilters/<username>/<queryid>/<loopid>')
+def getfilters(username, queryid, loopid):
 	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
 	query = mainbox_table.find_one({'_id': queryid})
 	filterstring = ""
@@ -289,7 +293,7 @@ def getfilters(queryid, loopid):
 				taghash[tag] = query[tag]
 	
 
-	return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash, loopid = loopid, selectedfilters = selectedfilters, filterstring = filterstring)
+	return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash, loopid = loopid, selectedfilters = selectedfilters, filterstring = filterstring, username = username)
 
 
 @route('/savedeal/<dealid>/<username>')

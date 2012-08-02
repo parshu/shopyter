@@ -49,7 +49,7 @@
 									<td width="18%" valign="top"><img src="{{deal['image']}}" style="height: 100px;" width="100"/> </td>
 									<td width="70%" valign="top">
 										
-											<p><a href="{{deal['url']}}"  onClick="_gaq.push(['_trackEvent', 'deals', 'click', 'knoponpage']);" target="_blank">{{deal['title']}}</a></p>
+											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" target="_blank">{{deal['title']}}</a></p>
 											<div class="row-fluid">
 												<div class="span6">
 													<div class="row-fluid" style="margin-bottom: 5px">
@@ -118,7 +118,7 @@
 									{% elif deal['saved'] is sameas 2 %}
 									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 									{% else %}
-									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);">Save</a>
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
 									{% endif %}
 									</td></tr></table>
 									</div>
