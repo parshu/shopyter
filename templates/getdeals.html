@@ -11,17 +11,29 @@
 		       
 		        {% if deals[0] is undefined %}
 		        
+		        {% if savetab is sameas 0 %}
+		        <div class="alert alert-block alert-error fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
+			   			We could not find great deals for you right now. But we will keep looking. Check your keywords and use the filters if you want to relax your constraints. We will remember everything you tell us.   
+				</div>
+				<div class="alert alert-block alert-error fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
+			   			Watch this space. Get on with your day and we will notify you when we find more great deals. <a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark page</a>  
+				</div>
+				{% else %}
 				
+				<div class="alert alert-block alert-error fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
+			   			Save interesting deals on the Results tab and they will appear here for you to take action later. Kind of like a personal shopping cart for every product you are tracking.   
+				</div>
 				
-				
-				
+				{% endif %}
 
 				{% else %}
 				{% if savetab is sameas 0 %}
-				<div class="alert alert-info">
+			
+				 	<div class="label label-warning span12" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
 						<button class="close" data-dismiss="alert">×</button>
-			   			Watch this space. We are looking for deals right now. Get on with your day and we will notify you when we find more great deals.  
+			   			Watch this space. Get on with your day and we will notify you when we find more great deals. <a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark page</a>   
 				</div>
+				
 				{% endif %}
 				{% endif %}
 				

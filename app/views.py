@@ -90,23 +90,23 @@ def updatemetrics(username, mode, metrics):
 
 @route('/:username')
 def user(username):
-    user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
-    user_metrics = user_metrics_table.find_one({'username': username})
     
-    users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
-    if not users_table.find_one({'username': username}):
-        return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
-    deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-    queries = [query for query in mainbox_table.find({'username': username})]
-    deals = []
-    qlen = len(queries)
-    first_query = ""
-    if len(queries) > 0:
-        first_query = queries[0]
-        deals.extend([deal for deal in deals_table.find({'query_id': first_query['_id']})])
-    response.set_cookie('username', username, path = '/')    
-    return template('userhome.html', username = username, queries = queries, deals = deals, qlen = qlen, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, first_query = first_query, user_metrics = user_metrics)
+	users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+	userinfo = users_table.find_one({'username': username})
+	if not userinfo:
+		return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
+
+	return_user = 1	
+    
+	if((not userinfo.has_key('return_user')) or (userinfo.has_key('return_user') and (userinfo['return_user'] == 0))):
+		userinfo['return_user'] = 1
+		users_table.update({'username': username}, userinfo)
+		return_user = 0
+	
+		   
+	response.set_cookie('username', username, path = '/')    
+    
+	return template('userhome.html', username = username, userinfo = userinfo, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, return_user = return_user)
 
 
 

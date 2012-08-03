@@ -13,13 +13,10 @@
       src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY&sensor=false">
       
     </script>
-        <script src="/bootstrap/docs/assets/js/jquery.js"></script>
+        
+
+   <script src="/bootstrap/docs/assets/js/jquery.js"></script>
           <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
- 	<script src="/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
-    <script src="/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
-    <script src="/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
-    <script src="/bootstrap/docs/assets/js/bootstrap-button.js"></script>
-   
 
 
     <script type="text/javascript">
@@ -91,12 +88,40 @@
     </script>
   </head>
   <body onload="initialize()" style="padding-left: 0px; padding-right: 0px;">
-  	<div class="alert alert-info" style="margin-bottom: 5px;">
-		<div id="message"></div>
-	</div>
+  	<div class="accordion" id="accordion3">  <!-- Holds Filter heading and accordian -->
+							<div class="accordion-group" style="background-color: #D9EDF7;">
+								<div id="message" class="accordion-heading">
+									
+								  		 
+									
+							  	</div>
+								<div style="height: 0px;" id="collapseOne" class="accordion-body collapse">
+									<div class="accordion-inner">
+								  		Local & store deals around you. Click on the markers to see details. Edit you location for more accurate results.
+									</div>
+							  	</div>
+							</div>
+						</div>
 	<script>
-	document.getElementById("message").innerHTML="Local deals around <strong>" + geoplugin_city() + ", " + geoplugin_regionName() + "</strong>";
+	document.getElementById("message").innerHTML="<a class=\"accordion-toggle label label-info\" data-toggle=\"collapse\" data-parent=\"#accordion3\" href=\"#collapseOne\">Local & in Store deals around <strong><span style=\"color:orange;\">" + geoplugin_city() + "</span></strong> <i class=\"icon-question-sign icon-white\"></i></a><a onclick=\"\" href=\"\" style=\"float:right;\">Enlarge Map <i class=\"icon-fullscreen\"></i></a>";
 	</script>
     <div id="map_canvas" style="width:100%; height:100%"></div>
+    
+    
+    
+ 	 <script src="/bootstrap/docs/assets/js/bootstrap-transition.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-alert.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-modal.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-dropdown.js"></script>
+
+    <script src="/bootstrap/docs/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-tab.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-tooltip.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-popover.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-button.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-collapse.js"></script>
+
+    <script src="/bootstrap/docs/assets/js/bootstrap-carousel.js"></script>
+    <script src="/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
   </body>
 </html>
