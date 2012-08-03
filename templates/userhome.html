@@ -78,7 +78,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/bootstrap/docs/assets/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
-
+	<script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
 
 
   </head>
@@ -106,12 +106,22 @@
 	</div>
     
     
-    
+   
+	
+		
+		
+		
+	
    
 
 
-	<div class="container-fluid" style="padding-top:30px;padding-left:50px;padding-right:0px;"><!--high level container for all body elements -->
+	<div class="container-fluid" style="padding-top:25px;padding-left:50px;padding-right:0px;"><!--high level container for all body elements -->
+	
+		
+					
+					
 		<div class="row-fluid"> <!--holds the row containing main parts, not footer -->
+			
 			
 			<div class="span3"> <!--first column, holds query mainbox and add form -->
 				
@@ -142,6 +152,13 @@
               		</div><!--/.well -->
           		</div> <!-- end add form -->
           		
+          		<div class="alert alert-info fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
+					<form id="mod_location" class="form-inline" style="margin: 0 0 0px;">Your location: <strong><span id="userlocation">Not Known</span></strong> <a href="" style="color:darkorange;">edit</a></form>
+				</div>
+				<!--
+				<input type="text" id="userlocation" class="input-medium" placeholder="loc..." required><button type="submit" class="btn btn-primary">Save</button>
+				-->
+          		
           		
 				
 				<div class="well" id="popularqueriesdiv" style="background:#F8F8F8;">
@@ -167,7 +184,11 @@
 							<ul class="dropdown-menu">
 								<li><a href="#">Last found</a></li>
 								<li><a href="#">Price</a></li>
-								<li><a href="#">Awesomeness</a></li>
+								<li><a href="#">Value for money</a></li>
+								<li><a href="#">Popularity</a></li>
+								<li><a href="#">Distance</a></li>
+								<li><a href="#">Time to recieve</a></li>
+
 								
 							</ul>
 						</li>
@@ -716,6 +737,28 @@
     }
 
 
+	function renderLocationBox() {
+	
+		{% if userinfo['haslocation'] is defined %}
+			var city = '{{userinfo['city']}}';
+			var state = '{{userinfo['state']}}';
+		
+		{% else %}
+			var city = geoplugin_city();
+			var state = geoplugin_regionCode();
+			var lat = geoplugin_latitude();
+			var longit = geoplugin_longitude();
+			execURL('/updatelocation/{{username}}/' + city + '/' + state + '/' + lat + '/' + longit , true);
+			
+		
+		
+		{% endif %}
+		ajaxDisplay = document.getElementById('userlocation');
+		ajaxDisplay.innerHTML = city + ', ' + state;
+	
+	
+	}
+
       
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
@@ -726,7 +769,10 @@
 	  }
 	 
 	 
-	 
+	  
+	  
+	  
+	  renderLocationBox();
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);
      
 	

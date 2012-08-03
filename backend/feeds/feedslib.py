@@ -11,6 +11,19 @@ import re
 from operator import itemgetter
 import itertools
 
+
+def getZipCode(lat, long):
+	url = "http://www.geoplugin.net/extras/postalcode.gp?lat=%s&long=%s&format=json" % (lat, long)
+	request = urllib2.Request(url)
+	request.add_header('User-agent', 'Mozilla/6.0 (Macintosh; I; Intel Mac OS X 11_7_9; de-LI; rv:1.9b4) Gecko/2012010317 Firefox/10.0a4')
+	response = urllib2.urlopen(request, timeout=2)
+	resp = response.read()
+	resp = resp.replace("geoPlugin(","")
+	resp = resp.replace(")","")
+	results = json.loads(resp)
+	return results['geoplugin_postCode']
+	
+
 def gethash(s):
 	h = hashlib.new('ripemd160')
 	h.update(s)

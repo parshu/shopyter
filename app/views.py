@@ -58,6 +58,18 @@ def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
 	return jsonresp
 
 
+@route('/updatelocation/<username>/<city>/<state>/<lat>/<long>')
+def updatelocation(username, city, state, lat, long):
+	users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+	userinfo = users_table.find_one({'username': username})
+	userinfo['city'] = city
+	userinfo['state'] = state
+	userinfo['lat'] = float(lat)
+	userinfo['long'] = float(long)
+	userinfo['zip'] = feedslib.getZipCode(lat, long)
+	userinfo['haslocation'] = 1
+	users_table.update({'username': username}, userinfo)	
+
 @route('/updatemetrics/<username>/<mode>/<metrics>')
 def updatemetrics(username, mode, metrics):
 	print "Metrics: " + metrics
@@ -78,9 +90,13 @@ def updatemetrics(username, mode, metrics):
 					user_metrics[key] = metricshash[key]
 				elif(mode == "increment"):
 					if((type(metricshash[key]) is not int) or (type(user_metrics[key]) is not int)):
+						print "Could not increment, type not int:" + str(type(metricshash[key])) + str(type(user_metrics[key]))
+						sys.stdout.flush()
 						return {'status': 'fail', 'error': 'can only increment ints'}
 					user_metrics[key] = user_metrics[key] + metricshash[key]
 				else:
+					print "unknown mode" + mode
+					sys.stdout.flush()
 					return {'status': 'fail', 'error': 'unknown mode (' + mode + ')'}
 			else:
 				user_metrics[key] = metricshash[key]
@@ -320,6 +336,8 @@ def unsavedeal(dealid, username):
     
 @route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/:filename')
 def getdeals(username, queryid, startnum, resultsize, filename):
+	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
+	user_metrics = user_metrics_table.find_one({'username': username})
 	savetab = 0
 	startnum = int(startnum) - 1
 	resultsize = int(resultsize)
@@ -382,7 +400,7 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 			deals[i]['saved'] = 0
 		i = i + 1
 	sys.stdout.flush()
-	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab)
+	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
