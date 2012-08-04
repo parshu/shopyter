@@ -79,7 +79,11 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/bootstrap/docs/assets/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/bootstrap/docs/assets/ico/apple-touch-icon-57-precomposed.png">
 	<script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
-
+	<script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY&sensor=false">
+	<script>
+	
+	</script>
 
   </head>
 
@@ -153,7 +157,7 @@
           		</div> <!-- end add form -->
           		
           		<div class="alert alert-info fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
-					<form id="mod_location" class="form-inline" style="margin: 0 0 0px;">Your location: <strong><span id="userlocation">Not Known</span></strong> <a href="" style="color:darkorange;">edit</a></form>
+					<form id="mod_location" class="form-inline" style="margin: 0 0 0px;">Your location: <strong><span id="userlocation">Not Known</span></strong> <a onclick="renderLocationEdit();" href="#" style="color:darkorange;"><span id="editlink">edit</span></a></form>
 				</div>
 				<!--
 				<input type="text" id="userlocation" class="input-medium" placeholder="loc..." required><button type="submit" class="btn btn-primary">Save</button>
@@ -247,6 +251,9 @@
 
     // knopon.com custom JS functions follows
     
+    
+    
+    
     function execURL(url, asynchronous){
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -276,6 +283,39 @@
     {
     	var ajaxDisplay = document.getElementById("dealresultsdiv");
 		ajaxDisplay.innerHTML = '<div class="progress progress-success" style="padding-top:30px;padding-left:30px;padding-right:30px;"><div class="bar" style="float: left; width: 0%; " data-percentage="100"></div></div>';
+		
+    
+    }
+    
+    
+    function renderLocationEdit() {
+    	var html = '<input type="text" id="address" class="input-medium" style="width:118px;" placeholder="loc..." required>&nbsp;<button type="submit" class="btn btn-primary">Save</button>';
+    	var ajaxDisplay = document.getElementById("userlocation");
+    	ajaxDisplay.innerHTML = html;
+    	ajaxDisplay = document.getElementById("editlink");
+		ajaxDisplay.innerHTML = "";
+    }
+    
+    function saveLocation(address) {
+    	var geocoder = new google.maps.Geocoder();
+    	geocoder.geocode( { 'address': address}, function(results, status) {
+			  if (status == google.maps.GeocoderStatus.OK) {
+				var city = results[0].address_components[0].short_name;
+				var state = results[0].address_components[2].short_name;
+				
+				var lat = results[0].geometry.location.lat();
+				var lng = results[0].geometry.location.lng();
+				execURL('/updatelocation/{{username}}/' + city + '/' + state + '/' + lat + '/' + lng , true);
+				var ajaxDisplay = document.getElementById("userlocation");
+				ajaxDisplay.innerHTML = "<strong>" + city + ", " + state + "</strong>";
+				ajaxDisplay = document.getElementById("editlink");
+				ajaxDisplay.innerHTML = "edit";
+				
+				
+			  } else {
+				alert("Geocode was not successful for the following reason: " + status);
+			  }
+			});
     
     }
 
@@ -794,6 +834,21 @@
 		  var price_max = parseInt({{PRICE_MAX_PER}} * price_high);
 		  var price_min = parseInt(price_low / {{PRICE_MIN_PER}});
 	      addQuery('/addquery/' + keyword + '/' + dollar_limit);
+	      
+
+	      
+
+      });
+      
+       $("#mod_location").bind("submit", function(ee){
+     	 ee.preventDefault();
+      });
+      
+      $('#mod_location').submit(function() {
+      	    
+      	  
+	      var address = $("#address").val();
+	      saveLocation(address);
 	      
 
 	      
