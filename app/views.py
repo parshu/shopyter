@@ -167,75 +167,67 @@ def updatequeryfilters(qid, filters):
 
 @route('/addquery/<keyword>/<dollarlimit>')
 def addquery(keyword, dollarlimit):
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
-    username = request.cookies.get('username')
-    queries = [query for query in mainbox_table.find({'username': username})]
-    
-        
-    dollar = int(dollarlimit)
-    keyword = string.strip(keyword)
-    pricehigh = int(dollar + (PRICE_HIGH_PER * dollar))
-    pricelow = int(dollar - (PRICE_LOW_PER * dollar))
-    pricemax = pricehigh * PRICE_MAX_PER
-    pricemin = pricelow / PRICE_MIN_PER
-    queryhash = feedslib.gethash(username + keyword + dollarlimit + str(pricehigh) + str(pricelow))
-    uniqqueryhash = feedslib.gethash(keyword + dollarlimit + str(pricehigh) + str(pricelow))
-    querymatches = [query for query in mainbox_table.find({'_id': queryhash})]
-    if(len(querymatches) == 0):
-   		querymatches = [query for query in mainbox_table.find({'qid': uniqqueryhash})]
-   		
-   		if(len(querymatches) == 0):
-			inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin}
-			
-			results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "","95051","Santa Clara","CA")
-			deals1 = results1['deals']
-			print "feed1 deals found: " + str(len(deals1))
-			results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
-			deals2 = results2['deals']
-			print "feed2 deals found: " + str(len(deals2))
-			deals = deals1 + deals2
-			print "Total deals found: " + str(len(deals))
-			
-			tagcloudlist = [results1['tagcloud'], results2['tagcloud']]
-			mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
-			tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
-			tagslist = []
-			facetcloudlist = [results1['facetcloud'], results2['facetcloud']]
-			mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4)
-			facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,12)
-			facetslist = []
-			for tag in tagcloud:
-				inserthash[tag[0]] = tag[1]
-				tagslist.append(tag[0])
-			inserthash["tags"] = ','.join(tagslist)
-			for facet in facetcloud:
-				inserthash[facet[0]] = facet[1]
-				facetslist.append(facet[0])
-			inserthash["facets"] = ','.join(facetslist)
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	username = request.cookies.get('username')
+	queries = [query for query in mainbox_table.find({'username': username})]		
+	dollar = int(dollarlimit)
+	keyword = string.strip(keyword)
+	pricehigh = int(dollar + (PRICE_HIGH_PER * dollar))
+	pricelow = int(dollar - (PRICE_LOW_PER * dollar))
+	pricemax = pricehigh * PRICE_MAX_PER
+	pricemin = pricelow / PRICE_MIN_PER
+	queryhash = feedslib.gethash(username + keyword + dollarlimit + str(pricehigh) + str(pricelow))
+	uniqqueryhash = feedslib.gethash(keyword + dollarlimit + str(pricehigh) + str(pricelow))
+	querymatches = [query for query in mainbox_table.find({'_id': queryhash})]
+	if(len(querymatches) == 0):
+		users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+		userinfo = users_table.find_one({'username': username})
+		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip']}
+		
+		results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "",userinfo['zip'],userinfo['city'],userinfo['state'])
+		deals1 = results1['deals']
+		print "feed1 deals found: " + str(len(deals1))
+		results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
+		deals2 = results2['deals']
+		print "feed2 deals found: " + str(len(deals2))
+		deals = deals1 + deals2
+		print "Total deals found: " + str(len(deals))
+		
+		tagcloudlist = [results1['tagcloud'], results2['tagcloud']]
+		mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
+		tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
+		tagslist = []
+		facetcloudlist = [results1['facetcloud'], results2['facetcloud']]
+		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4)
+		facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,12)
+		facetslist = []
+		for tag in tagcloud:
+			inserthash[tag[0]] = tag[1]
+			tagslist.append(tag[0])
+		inserthash["tags"] = ','.join(tagslist)
+		for facet in facetcloud:
+			inserthash[facet[0]] = facet[1]
+			facetslist.append(facet[0])
+		inserthash["facets"] = ','.join(facetslist)
+		sys.stdout.flush()
+		if(len(deals) > 0):
+			deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+			print "Inserting into deals table..."
 			sys.stdout.flush()
-			if(len(deals) > 0):
-				deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-				print "Inserting into deals table..."
-				sys.stdout.flush()
-				res = deals_table.insert(deals)
-				print "Done inserting."
-				sys.stdout.flush()
-			
-			
-			print "Inserting query: " + str(inserthash)
+			res = deals_table.insert(deals)
+			print "Done inserting."
 			sys.stdout.flush()
-			mainbox_table.insert(inserthash)
-		else:
-			thisquery = querymatches[0]
-			thisquery['username'] = username
-			thisquery['lastmodified'] = datetime.utcnow()
-			thisquery['_id'] = feedslib.gethash(username + thisquery['keyword'] + str(thisquery['dollar_limit']) + str(thisquery['price_high']) + str(thisquery['price_low']))
-			print "Inserting dup query: " + str(thisquery)
-			sys.stdout.flush()
-			mainbox_table.insert(thisquery)
+		
+		
+		print "Inserting query: " + str(inserthash)
+		sys.stdout.flush()
+		mainbox_table.insert(inserthash)
+	else:
+		print "Query already exists"
+		sys.stdout.flush()
    		
     
-    return {'status': 'ok'}
+	return {'status': 'ok'}
 
 from datetime import datetime
 import sys
@@ -400,7 +392,7 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 			deals[i]['saved'] = 0
 		i = i + 1
 	sys.stdout.flush()
-	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics)
+	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
