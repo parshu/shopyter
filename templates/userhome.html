@@ -246,7 +246,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/bootstrap/docs/assets/js/jquery.js"></script>
     
-    
+     <script src="/js/utility.js"></script>
     <script language="javascript" type="text/javascript">
 
     // knopon.com custom JS functions follows
@@ -254,30 +254,7 @@
     
     
     
-    function execURL(url, asynchronous){
-		var ajaxRequest;  // The variable that makes Ajax possible!
-		try{
-			// Opera 8.0+, Firefox, Safari
-			ajaxRequest = new XMLHttpRequest();
-		} catch (e){
-			// Internet Explorer Browsers
-			try{
-				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch (e) {
-				try{
-					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-				} catch (e){
-					// Something went wrong
-					alert("Your browser broke!");
-					return false;
-				}
-			}
-		}
-		
-		ajaxRequest.open("GET", url, asynchronous); 
-		ajaxRequest.send(null); 
-		
-	}
+    
     
     function renderProgressBar()
     {
@@ -799,21 +776,10 @@
 	
 	}
 
-      
-      // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
-      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
-      
-      var link = document.getElementById('query1');
-	  if(link != undefined) {
-	  		link.click();
-	  }
-	 
-	 
-	  
-	  
-	  
-	  renderLocationBox();
-      renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);
+      function recordOutboundLink(link) {
+    		_gaq.push(['_trackEvent', 'deals', 'click', 'knoponpage']);
+    		setTimeout('document.location = "' + link.href + '"', 100);
+  	  } 
      
 	
       
@@ -855,12 +821,19 @@
 
       });
       
-      function recordOutboundLink(link) {
-    		_gaq.push(['_trackEvent', 'deals', 'click', 'knoponpage']);
-    		setTimeout('document.location = "' + link.href + '"', 100);
-  	  }
+     
       
-    
+      // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
+      renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
+      
+      var link = document.getElementById('query1');
+	  if(link != undefined) {
+	  		link.click();
+	  }
+
+	  renderLocationBox();
+      renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);
+     
       execURL("/updatemetrics/{{username}}/increment/{\"visits\":1}",true);
     
     </script>

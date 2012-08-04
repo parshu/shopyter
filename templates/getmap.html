@@ -1,3 +1,5 @@
+
+{% block content %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -17,38 +19,67 @@
 
    <script src="/bootstrap/docs/assets/js/jquery.js"></script>
           <script language="JavaScript" src="http://www.geoplugin.net/javascript.gp" type="text/javascript"></script>
-
+ <script src="/js/utility.js"></script>
 
     <script type="text/javascript">
     	
-    	function codeAddress(map, address, markertitle, isuserlocation, url, source) {
+    	function codeAddress(map, address, markertitle, isuserlocation, url, source, dealid, latp, lngp) {
     		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
-			geocoder.geocode( { 'address': address}, function(results, status) {
-			  if (status == google.maps.GeocoderStatus.OK) {
-				map.setCenter(results[0].geometry.location);
-				var marker = new google.maps.Marker({
-					map: map,
-					position: results[0].geometry.location,
-					title: markertitle
+    		if((latp == 0) && (lngp == 0)) {
+    			geocoder.geocode( { 'address': address}, function(results, status) {
+				  if (status == google.maps.GeocoderStatus.OK) {
+					var lat = results[0].geometry.location.lat();
+					var lng = results[0].geometry.location.lng();
+					
+					execURL('/updatedeallocation/' + dealid + '/' + lat + '/' + lng, true);
+					var latlng = new google.maps.LatLng(lat,lng);
+					map.setCenter(latlng);
+					var marker = new google.maps.Marker({
+						map: map,
+						position: latlng,
+						title: markertitle
+					});
+					if(isuserlocation) {
+						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+						marker.setIcon(iconFile);
+					}
+					var infowindow = new google.maps.InfoWindow({
+						content: display,
+						maxWidth: 20
+					});
+					
+					google.maps.event.addListener(marker, 'click', function() {
+					  infowindow.open(map,marker);
+					});
+					
+				  } else {
+					//alert("Geocode was not successful for the following reason: " + status);
+				  }
 				});
-				if(isuserlocation) {
-					iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-					marker.setIcon(iconFile);
-				}
-				var infowindow = new google.maps.InfoWindow({
-					content: display,
-					maxWidth: 20
-				});
+    		}
+    		else {
+    				
+    				var latlng = new google.maps.LatLng(latp,lngp);
+					map.setCenter(latlng);
+					var marker = new google.maps.Marker({
+						map: map,
+						position: latlng,
+						title: markertitle
+					});
+					if(isuserlocation) {
+						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+						marker.setIcon(iconFile);
+					}
+					var infowindow = new google.maps.InfoWindow({
+						content: display,
+						maxWidth: 20
+					});
+					
+					google.maps.event.addListener(marker, 'click', function() {
+					  infowindow.open(map,marker);
+					});
 				
-				google.maps.event.addListener(marker, 'click', function() {
-				  infowindow.open(map,marker);
-				});
-				
-			  } else {
-				alert("Geocode was not successful for the following reason: " + status);
-			  }
-			});
-			
+			}	
 			
     		
 		  }
@@ -65,21 +96,32 @@
     		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     		
 			
-			{% block content %}
+			
 			{% for deal in deals %}
 				{% if deal['city'] is defined %}
 				{% if deal['city'] in [''] %}
 				
 				{% else %}
 					var add = "{{deal['address']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
-    				
-    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}", "{{ deal['source'] }}");
+    				{% if deal['lat'] is defined %}
+    					var lat = {{deal['lat']}};
+    				{% else %}
+    					var lat = 0;
+    				{% endif %}
+    				{% if deal['long'] is defined %}
+    					var lng = {{deal['long']}};
+    				{% else %}
+    					var lng = 0;
+    				{% endif %}
+    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}", "{{ deal['source'] }}","{{deal['_id']}}", lat, lng);
     			{% endif %}
     			{% endif %}
     		{% endfor %}
-			 {% endblock %}	
+			
 			 
-			 			codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "");
+			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}}, {{query['long']}});
+			 			
+			 			
 
       	}
       	
@@ -125,3 +167,5 @@
     <script src="/bootstrap/docs/assets/js/bootstrap-typeahead.js"></script>
   </body>
 </html>
+
+ {% endblock %}	

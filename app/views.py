@@ -27,7 +27,10 @@ PRICE_MIN_PER = 2
 DEFAULT_DAYS_FILTER = 7
 
 
-	
+@route('/js/:filename')
+def serve_jquery_ui_1(filename):
+	return static_file(filename, root='./js/')
+
 @route('/jquery-ui-1.8.21.custom/<dir1>/<dir2>/<dir3>/:filename')
 def serve_jquery_ui_3(dir1,dir2,dir3,filename):
 	return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
@@ -56,6 +59,16 @@ def hello_world():
 def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
 	jsonresp = CLJsonFeed.getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME)
 	return jsonresp
+
+
+@route('/updatedeallocation/<dealid>/<lat>/<long>')
+def updatedeallocation(dealid, lat, long):
+	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	deal = deals_table.find_one({'_id': dealid})
+	deal['lat'] = float(lat)
+	deal['long'] = float(long)
+	
+	deals_table.update({'_id': dealid}, deal)
 
 
 @route('/updatelocation/<username>/<city>/<state>/<lat>/<long>')
@@ -182,7 +195,7 @@ def addquery(keyword, dollarlimit):
 	if(len(querymatches) == 0):
 		users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
 		userinfo = users_table.find_one({'username': username})
-		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip']}
+		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': datetime.utcnow(), 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip'], 'lat': userinfo['lat'], 'long': userinfo['long']}
 		
 		results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "",userinfo['zip'],userinfo['city'],userinfo['state'])
 		deals1 = results1['deals']
