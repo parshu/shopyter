@@ -35,7 +35,7 @@ for deal in deals:
 	print "Result " + str(ct) + ":"
 	for key in deal.keys():
 		pass
-		#print "\t" + key + " : " + str(deal[key])
+		print "\t" + key + " : " + str(deal[key])
 	print "----------------------------------------------"
 	ct = ct + 1
 print "Total result: " + str(len(deals))
@@ -49,3 +49,4 @@ mtagcloud = feedslib.consolidateTagClouds([tagcloud1, tagcloud2])
 print feedslib.getSortedTagCloudList(mtagcloud)
 mfacetcloud = feedslib.consolidateTagClouds([facetcloud1, facetcloud2])
 print feedslib.getSortedTagCloudList(mfacetcloud)
+print results['specialreturn']

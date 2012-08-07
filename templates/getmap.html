@@ -23,7 +23,7 @@
 
     <script type="text/javascript">
     	
-    	function codeAddress(map, address, markertitle, isuserlocation, url, source, dealid, latp, lngp) {
+    	function codeAddress(map, address, markertitle, isuserlocation, url, source, dealid, latp, lngp, channel) {
     		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
     		if((latp == 0) && (lngp == 0)) {
     			geocoder.geocode( { 'address': address}, function(results, status) {
@@ -41,6 +41,12 @@
 					});
 					if(isuserlocation) {
 						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+						marker.setIcon(iconFile);
+					}
+					
+					
+					if(channel == "in-store") {
+						iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 						marker.setIcon(iconFile);
 					}
 					var infowindow = new google.maps.InfoWindow({
@@ -68,6 +74,10 @@
 					});
 					if(isuserlocation) {
 						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+						marker.setIcon(iconFile);
+					}
+					if(channel == "in-store") {
+						iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 						marker.setIcon(iconFile);
 					}
 					var infowindow = new google.maps.InfoWindow({
@@ -102,7 +112,7 @@
 				{% if deal['city'] in [''] %}
 				
 				{% else %}
-					var add = "{{deal['address']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
+					var add = "{{deal['street']}}" + ", {{deal['city']}}" + ", {{deal['state']}}" + ", US";
     				{% if deal['lat'] is defined %}
     					var lat = {{deal['lat']}};
     				{% else %}
@@ -113,13 +123,13 @@
     				{% else %}
     					var lng = 0;
     				{% endif %}
-    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}", false, "{{ deal['url'] }}", "{{ deal['source'] }}","{{deal['_id']}}", lat, lng);
+    				codeAddress(map, add, "{{ deal['title']|replace("\"", " ")|replace("'", " ") }}" , false, "{{ deal['url'] }}", "{{ deal['source'] }}","{{deal['_id']}}", lat, lng,"{{deal['channel']}}");
     			{% endif %}
     			{% endif %}
     		{% endfor %}
 			
 			 
-			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}}, {{query['long']}});
+			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}}, {{query['long']}},"");
 			 			
 			 			
 

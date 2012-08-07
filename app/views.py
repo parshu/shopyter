@@ -203,14 +203,25 @@ def addquery(keyword, dollarlimit):
 		results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
 		deals2 = results2['deals']
 		print "feed2 deals found: " + str(len(deals2))
-		deals = deals1 + deals2
+		results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, int(pricehigh * 100), int(pricelow * 100), 30, userinfo['zip'])
+		deals3 = results3['deals']
+		deals3 = feedslib.updateMiloMerchantInfo(deals3, results3['specialreturn'], userinfo['zip'], 10)
+		print "feed3 deals found: " + str(len(deals3))
+		print type(deals1)
+		print type(deals2)
+		print type(deals3)
+		sys.stdout.flush()
+		deals = []
+		deals.extend(deals1)
+		deals.extend(deals2)
+		deals.extend(deals3)
 		print "Total deals found: " + str(len(deals))
 		
-		tagcloudlist = [results1['tagcloud'], results2['tagcloud']]
+		tagcloudlist = [results1['tagcloud'], results2['tagcloud'], results3['tagcloud']]
 		mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
 		tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
 		tagslist = []
-		facetcloudlist = [results1['facetcloud'], results2['facetcloud']]
+		facetcloudlist = [results1['facetcloud'], results2['facetcloud'], results3['facetcloud']]
 		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4)
 		facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,12)
 		facetslist = []
@@ -227,7 +238,8 @@ def addquery(keyword, dollarlimit):
 			deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
 			print "Inserting into deals table..."
 			sys.stdout.flush()
-			res = deals_table.insert(deals)
+			deals_table.insert(deals, continue_on_error=True)
+			
 			print "Done inserting."
 			sys.stdout.flush()
 		

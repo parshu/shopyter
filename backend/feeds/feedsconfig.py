@@ -44,6 +44,34 @@ CONFIG = {
 			
 		},
 		{
+			"feedsource": "milo",
+			"additionallistreturn":"merchantid",
+			"feedurl": "https://api.x.com/milo/v3/products?",
+			"feedkeyname": "key",
+			"feedkeyvalue": "6962be92d8a82bb760d7081c15e1ea7f",
+			"feedparams": "q=%s&page=0&per_page=%s&min_price=%s&max_price=%s&postal_code=%s&show_defaults=true&show=PidEpidPnamePurlMidsSpecAvscoreAttrsBrandCatnameCattreePmaxPminSaleUpcAsinRateRatecntImg100&sort_by=relevance%s%s",
+			"feedreplacementfields": "keyword, maxresults, pricelow, pricehigh, zipcode, city, state",
+			"feedtagfields":"name",
+			"feedfacetfields":"brand,condition,channel",
+			"resultscountfield": "per_page",
+			"resultslistfield" : "products",
+			"feeddatatostore": {	
+				"feedresultid" : "product_id",
+				"title" : "name",
+				"source" : "#-1",
+				"sourceid" : "merchants,0",
+				"merchantid" : "merchants,0",
+				"brand" : "brand_name",
+				"condition" : "#new",
+				"channel" : "#in-store",
+				"availability_score" : "availability_score",
+				"price" : "(c)min_price",
+				"url" : "product_url",
+				"image" : "image_100"
+			}
+			
+		},
+		{
 			"feedsource": "craigslist",
 			"feedurl": "",
 			"feedparams": "http://localhost:8079/getclfeed/%s%s/%s/%s/0/%s/%s/%s",
