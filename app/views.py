@@ -430,8 +430,13 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	for saved_deal in saved_deals:
 		sdealhash[saved_deal['_id']] = 1
     	
+    
+	updateCountFields = ['channel']	
+    
 	i = 0
-	channelhash = {}
+	fieldhash = {}
+	for field in updateCountFields:
+		fieldhash[field] = {}
 	for deal in deals:
 		d2 = deal['founddate']
 		days = (datetime.utcnow() - d2).days
@@ -440,21 +445,26 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 			deals[i]['saved'] = 1
 		else:
 			deals[i]['saved'] = 0
-		if(channelhash.has_key(deals[i]['channel'])):
-			channelhash[deals[i]['channel']] = channelhash[deals[i]['channel']] + 1
-		else:
-			channelhash[deals[i]['channel']] = 1
+		
+		for field in updateCountFields:
+			if(deals[i].has_key(field)):
+				if(fieldhash[field].has_key(deals[i][field])):
+					fieldhash[field][deals[i][field]] = fieldhash[field][deals[i][field]] + 1
+				else:
+					fieldhash[field][deals[i][field]] = 1
 		i = i + 1
 	sys.stdout.flush()
 	facethash = facetresults['facethash']
 	
 	
-	for channel in facethash['channel'].keys():
-		if(channelhash.has_key(channel)):
-			facethash['channel'][channel] = channelhash[channel]
-		else:
-			if(facethash['channel'].has_key(channel)):
-				facethash['channel'][channel] = 0
+	for field in updateCountFields:
+		if(facethash.has_key(field)):
+			for f in facethash[field].keys():
+				if(fieldhash[field].has_key(f)):
+					facethash[field][f] = fieldhash[field][f]
+				else:
+					if(facethash[field].has_key(f)):
+						facethash[field][f] = 0
 	
 	spans = 0
 	if(facethash.has_key('channel')):
