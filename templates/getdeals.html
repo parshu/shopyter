@@ -5,10 +5,22 @@
               
               {% if savetab is sameas 0 %}
                around <span style="color:darkorange">${{dollarlimit}}</span></th>
-		        </div>
 		      {% endif %}
-		        
-		       
+		     </div>
+				{% if savetab is sameas 0 %}
+		       {% if facethash['channel'] is defined %}
+					 	<div class="row-fluid"> 
+           		     		
+								<div class="btn-group" data-toggle="buttons-checkbox" >
+									{% for channel in facethash['channel'].keys() %}
+									<div class="span{{spans}}">
+									<button class="btn{% if selectedfilters['channel'] is defined %}{% if selectedfilters['channel'][channel] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','channel-{{channel}}','channel|{{channel}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;width:100%;" id="channel-{{channel}}" channel="{{channel}}">{{channel}} ({{facethash['channel'][channel]}})</button>
+									</div>
+									{% endfor %}
+								</div>
+					 	</div>  
+					 	{% endif %}
+					{% endif %} 	
 		        {% if deals[0] is undefined %}
 		        
 					{% if savetab is sameas 0 %}
@@ -28,15 +40,20 @@
 
 				{% else %}
 					{% if savetab is sameas 0 %}
+						
+						
+						
 						{% if (user_metrics['queryclicks'] is not defined) or (user_metrics['queryclicks'] < 3) %}
 							<div class="label label-warning span12" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
 										<button class="close" data-dismiss="alert">×</button>
 										Watch this space. Get on with your day and we will notify you when we find more great deals. <a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark page</a>   
 								</div>
+								
 						{% endif %}
 						
-					
+	
 					{% endif %}
+					
 				{% endif %}
 
 				{% for deal in deals %}

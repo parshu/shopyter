@@ -27,6 +27,56 @@ PRICE_MIN_PER = 2
 DEFAULT_DAYS_FILTER = 7
 
 
+def getQueryFilters(query):
+	filterstring = ""
+	selectedfilters = {}
+	if(query.has_key('filters')):
+		filterstring = query['filters']
+		filters = query['filters'].lstrip(",")
+		if(filters != ""):
+			filters = filters.split(",")
+			for filter in filters:
+				keyval = filter.split("|")
+				if(len(keyval) == 2):
+					if(selectedfilters.has_key(keyval[0])):
+						selectedfilters[keyval[0]][keyval[1]] = 1
+					else:
+						filterh = {keyval[1]: 1}
+						selectedfilters[keyval[0]] = filterh
+	return({"filterstring": filterstring, "selectedfilters": selectedfilters})
+
+def getQueryFacets(query):
+	facets = []
+	facethash = {}
+	if(query.has_key('facets')):
+		facets = query['facets'].split(",")
+		for facet in facets:
+			if(query.has_key(facet)):
+				keyval = facet.split("|")
+				if(facethash.has_key(keyval[0])):
+					facethash[keyval[0]][keyval[1]] = query[facet]
+				else:
+					faceth = {keyval[1]: query[facet]}
+					facethash[keyval[0]] = faceth
+		print facethash
+	return({"facets": facets, "facethash": facethash})
+
+def getQueryTags(query):
+	tags = []
+	taghash = {}
+	
+				
+			
+	if(query.has_key('tags')):
+		tags = query['tags'].split(",")
+	
+		for tag in tags:
+			if(query.has_key(tag)):
+				taghash[tag] = query[tag]
+	
+	return({"tags": tags, "taghash": taghash})
+	
+	
 @route('/js/:filename')
 def serve_jquery_ui_1(filename):
 	return static_file(filename, root='./js/')
@@ -284,49 +334,14 @@ def getdealemail(keyword, dollarlimit, days, username):
 def getfilters(username, queryid, loopid):
 	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
 	query = mainbox_table.find_one({'_id': queryid})
-	filterstring = ""
-	selectedfilters = {}
-	if(query.has_key('filters')):
-		filterstring = query['filters']
-		filters = query['filters'].lstrip(",")
-		if(filters != ""):
-			filters = filters.split(",")
-			for filter in filters:
-				keyval = filter.split("|")
-				if(len(keyval) == 2):
-					if(selectedfilters.has_key(keyval[0])):
-						selectedfilters[keyval[0]][keyval[1]] = 1
-					else:
-						filterh = {keyval[1]: 1}
-						selectedfilters[keyval[0]] = filterh
 
 
-	tags = []
-	taghash = {}
-	facets = []
-	facethash = {}
-	if(query.has_key('facets')):
-		facets = query['facets'].split(",")
-		for facet in facets:
-			if(query.has_key(facet)):
-				keyval = facet.split("|")
-				if(facethash.has_key(keyval[0])):
-					facethash[keyval[0]][keyval[1]] = query[facet]
-				else:
-					faceth = {keyval[1]: query[facet]}
-					facethash[keyval[0]] = faceth
-		print facethash
-				
-			
-	if(query.has_key('tags')):
-		tags = query['tags'].split(",")
-	
-		for tag in tags:
-			if(query.has_key(tag)):
-				taghash[tag] = query[tag]
+	filterresults = getQueryFilters(query)
+	facetresults = getQueryFacets(query)
+	tagresults = getQueryTags(query)
 	
 
-	return template('getfilters.html', query = query, tags = tags, taghash = taghash, facethash = facethash, loopid = loopid, selectedfilters = selectedfilters, filterstring = filterstring, username = username)
+	return template('getfilters.html', query = query, tags = tagresults['tags'], taghash = tagresults['taghash'], facethash = facetresults['facethash'], loopid = loopid, selectedfilters = filterresults['selectedfilters'], filterstring = filterresults['filterstring'], username = username)
 
 
 @route('/savedeal/<dealid>/<username>')
@@ -363,6 +378,10 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	
 	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox'] 
 	query = mainbox_table.find_one({'_id': queryid})
+	
+	
+	facetresults = getQueryFacets(query)
+	filterresults = getQueryFilters(query)
 	
 	keyword = query['keyword']
 	dollarlimit = int(query['dollar_limit'])
@@ -407,6 +426,7 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 		sdealhash[saved_deal['_id']] = 1
     	
 	i = 0
+	channelhash = {}
 	for deal in deals:
 		d2 = deal['founddate']
 		days = (datetime.utcnow() - d2).days
@@ -415,9 +435,29 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 			deals[i]['saved'] = 1
 		else:
 			deals[i]['saved'] = 0
+		if(channelhash.has_key(deals[i]['channel'])):
+			channelhash[deals[i]['channel']] = channelhash[deals[i]['channel']] + 1
+		else:
+			channelhash[deals[i]['channel']] = 1
 		i = i + 1
 	sys.stdout.flush()
-	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query)
+	spans = 0
+	facethash = facetresults['facethash']
+	if(facethash.has_key('channel')):
+		spans = spans + len(facethash['channel'].keys())
+	
+	print "channelhash"
+	print channelhash
+	print facethash['channel']
+	sys.stdout.flush()
+	for channel in facethash['channel'].keys():
+		if(channelhash.has_key(channel)):
+			facethash['channel'][channel] = channelhash[channel]
+		else:
+			if(facethash['channel'].has_key(channel)):
+				facethash['channel'][channel] = 0
+	spans = int(12/spans)
+	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'])
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
