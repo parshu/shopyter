@@ -22,7 +22,9 @@
  <script src="/js/utility.js"></script>
 
     <script type="text/javascript">
-    	
+    	var markers = {};
+    	var infowindows = {};
+    	var markercounts = {};
     	function codeAddress(map, address, markertitle, isuserlocation, url, source, dealid, latp, lngp, channel) {
     		var display = '<div class="container well" style="margin-bottom: 0px;"><div><a href="' + url + '" target="_blank">' + markertitle + '</a></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
     		if((latp == 0) && (lngp == 0)) {
@@ -34,29 +36,47 @@
 					execURL('/updatedeallocation/' + dealid + '/' + lat + '/' + lng, true);
 					var latlng = new google.maps.LatLng(lat,lng);
 					map.setCenter(latlng);
-					var marker = new google.maps.Marker({
-						map: map,
-						position: latlng,
-						title: markertitle
-					});
-					if(isuserlocation) {
-						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-						marker.setIcon(iconFile);
+					if(markers.hasOwnProperty(address)) {
+						var iwin = infowindows[address];
+						iwin.setContent(iwin.getContent() + '<br>' + display);
+						markercounts[address] = markercounts[address] + 1;
+						var marker = markers[address];
+						if(channel == "in-store") {
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|0000FF|000000');
+						}
+						else {
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF0000|000000');
+						}
+						
+						
 					}
-					
-					
-					if(channel == "in-store") {
-						iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-						marker.setIcon(iconFile);
+					else {
+						var marker = new google.maps.Marker({
+							map: map,
+							position: latlng,
+							title: markertitle
+						});
+						if(isuserlocation) {
+							iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+							marker.setIcon(iconFile);
+						}
+						
+						
+						if(channel == "in-store") {
+							iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+							marker.setIcon(iconFile);
+						}
+						var infowindow = new google.maps.InfoWindow({
+							content: display,
+							maxWidth: 20
+						});
+						markers[address] = marker;
+						infowindows[address] = infowindow;
+						markercounts[address] = 1;
+						google.maps.event.addListener(marker, 'click', function() {
+						  infowindow.open(map,marker);
+						});
 					}
-					var infowindow = new google.maps.InfoWindow({
-						content: display,
-						maxWidth: 20
-					});
-					
-					google.maps.event.addListener(marker, 'click', function() {
-					  infowindow.open(map,marker);
-					});
 					
 				  } else {
 					//alert("Geocode was not successful for the following reason: " + status);
@@ -67,27 +87,43 @@
     				
     				var latlng = new google.maps.LatLng(latp,lngp);
 					map.setCenter(latlng);
-					var marker = new google.maps.Marker({
-						map: map,
-						position: latlng,
-						title: markertitle
-					});
-					if(isuserlocation) {
-						iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
-						marker.setIcon(iconFile);
+					if(markers.hasOwnProperty(address)) {
+						var iwin = infowindows[address];
+						iwin.setContent(iwin.getContent() + '<br>' + display);
+						markercounts[address] = markercounts[address] + 1;
+						var marker = markers[address];
+						if(channel == "in-store") {
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|0000FF|000000');
+						}
+						else {
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF0000|000000');
+						}
 					}
-					if(channel == "in-store") {
-						iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
-						marker.setIcon(iconFile);
+					else {
+						var marker = new google.maps.Marker({
+							map: map,
+							position: latlng,
+							title: markertitle
+						});
+						if(isuserlocation) {
+							iconFile = 'http://maps.google.com/mapfiles/ms/icons/green-dot.png';
+							marker.setIcon(iconFile);
+						}
+						if(channel == "in-store") {
+							iconFile = 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png';
+							marker.setIcon(iconFile);
+						}
+						var infowindow = new google.maps.InfoWindow({
+							content: display,
+							maxWidth: 20
+						});
+						markers[address] = marker;
+						infowindows[address] = infowindow;
+						markercounts[address] =  1;
+						google.maps.event.addListener(marker, 'click', function() {
+						  infowindow.open(map,marker);
+						});
 					}
-					var infowindow = new google.maps.InfoWindow({
-						content: display,
-						maxWidth: 20
-					});
-					
-					google.maps.event.addListener(marker, 'click', function() {
-					  infowindow.open(map,marker);
-					});
 				
 			}	
 			
@@ -99,7 +135,7 @@
     	function initialize() {
        		geocoder = new google.maps.Geocoder();
     		var mapOptions = {
-      			zoom: 9,
+      			zoom: {{zoom}},
       			mapTypeId: google.maps.MapTypeId.ROADMAP,
       			center: new google.maps.LatLng(geoplugin_latitude(), geoplugin_longitude())
     		}
@@ -129,7 +165,7 @@
     		{% endfor %}
 			
 			 
-			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}}, {{query['long']}},"");
+			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}} - 0.005, {{query['long']}} - 0.005,"");
 			 			
 			 			
 

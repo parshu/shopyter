@@ -371,11 +371,12 @@ def unsavedeal(dealid, username):
     
     
     
-@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/:filename')
-def getdeals(username, queryid, startnum, resultsize, filename):
+@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/:filename')
+def getdeals(username, queryid, startnum, resultsize, zoom, filename):
 	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})
 	savetab = 0
+	zoom = int(zoom)
 	startnum = int(startnum) - 1
 	resultsize = int(resultsize)
 	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
@@ -432,12 +433,26 @@ def getdeals(username, queryid, startnum, resultsize, filename):
     	
     
 	updateCountFields = ['channel']	
-    
+	addresshash = {}
 	i = 0
 	fieldhash = {}
 	for field in updateCountFields:
 		fieldhash[field] = {}
 	for deal in deals:
+		fulladdress = []
+		if(deal.has_key('city')):
+			if(deal.has_key('street')):
+				fulladdress.append(deal['street'])
+			fulladdress.append(deal['city']) 
+			if(deal.has_key('state')):
+				fulladdress.append(deal['state'])
+			if(deal.has_key('zip')):
+				fulladdress.append(deal['zip'])
+			fulladdress = ','.join(fulladdress)
+			if(not addresshash.has_key(fulladdress)):
+				addresshash[fulladdress] = []
+			addresshash[fulladdress].append(deal)
+			
 		d2 = deal['founddate']
 		days = (datetime.utcnow() - d2).days
 		deals[i]['days'] = days
@@ -470,7 +485,8 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	if(facethash.has_key('channel')):
 		spans = spans + len(facethash['channel'].keys())
 	spans = int(12/spans)
-	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'])
+	
+	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
