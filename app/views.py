@@ -272,8 +272,13 @@ def addquery(keyword, dollarlimit):
 		tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
 		tagslist = []
 		facetcloudlist = [results1['facetcloud'], results2['facetcloud'], results3['facetcloud']]
-		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4)
-		facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,12)
+		
+		
+		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4, "channel,condition")
+		print "mfacetcloud: " + str(mfacetcloud)
+		sys.stdout.flush()
+		facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,100)
+		print "facetcloud: " + str(facetcloud)
 		facetslist = []
 		for tag in tagcloud:
 			inserthash[tag[0]] = tag[1]
@@ -392,7 +397,7 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 	print "Getting deals for {" + keyword + ":" + str(dollarlimit) + "}"
 	sys.stdout.flush()
    
-	dealquery = { '$and': [{'keyword': keyword}, {'price': {'$lt': pricehigh}}, {'price': {'$gt': pricelow}}, {'founddate': {'$gt':  datetime.utcnow() - t} }] }
+	dealquery = { '$and': [{'keyword': keyword}, {'price': {'$lte': pricehigh}}, {'price': {'$gte': pricelow}}, {'founddate': {'$gt':  datetime.utcnow() - t} }] }
     
 	filterhash = {}
 	if(query.has_key('filters')):
@@ -441,21 +446,19 @@ def getdeals(username, queryid, startnum, resultsize, filename):
 			channelhash[deals[i]['channel']] = 1
 		i = i + 1
 	sys.stdout.flush()
-	spans = 0
 	facethash = facetresults['facethash']
-	if(facethash.has_key('channel')):
-		spans = spans + len(facethash['channel'].keys())
 	
-	print "channelhash"
-	print channelhash
-	print facethash['channel']
-	sys.stdout.flush()
+	
 	for channel in facethash['channel'].keys():
 		if(channelhash.has_key(channel)):
 			facethash['channel'][channel] = channelhash[channel]
 		else:
 			if(facethash['channel'].has_key(channel)):
 				facethash['channel'][channel] = 0
+	
+	spans = 0
+	if(facethash.has_key('channel')):
+		spans = spans + len(facethash['channel'].keys())
 	spans = int(12/spans)
 	return template(filename, keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'])
     

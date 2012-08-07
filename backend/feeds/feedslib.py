@@ -61,7 +61,8 @@ def gethash(s):
 	h.update(s)
 	return(h.hexdigest())
 	
-def consolidateTagClouds(tagcloudlist, threshold=7):
+def consolidateTagClouds(tagcloudlist, threshold=7, exceptkeys=""):
+	exceptlist = exceptkeys.split(",")
 	if(len(tagcloudlist) == 0):
 		return None
 	resulttagcloud = tagcloudlist[0]
@@ -75,10 +76,14 @@ def consolidateTagClouds(tagcloudlist, threshold=7):
 			else:
 				resulttagcloud[key] = tagcloud[key]
 			if(resulttagcloud[key] < threshold):
-				del resulttagcloud[key]
+				keytemp = key.split("|")[0]
+				if(not keytemp in exceptlist):
+					del resulttagcloud[key]
 	
 	for key in resulttagcloud.keys():
+		keytemp = key.split("|")[0]
 		if(resulttagcloud[key] < threshold):
+			if(not keytemp in exceptlist):
 				del resulttagcloud[key]
 	return resulttagcloud
 
