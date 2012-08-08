@@ -14,7 +14,7 @@ import unicodedata
 import CLJsonFeed
 
 
-def updateQuery(user, query):
+def updateQuery(user, query, mainbox_table):
 	
 	keywords = [query['keyword']]
 	filters = []
@@ -54,7 +54,7 @@ def updateQuery(user, query):
 		deal['keyword'] = query['keyword']
 	print "Total deals found: " + str(len(deals))
 	
-	'''tagcloudlist = [results1['tagcloud'], results2['tagcloud'], results3['tagcloud']]
+	tagcloudlist = [results1['tagcloud'], results2['tagcloud'], results3['tagcloud']]
 	mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
 	tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
 	tagslist = []
@@ -73,8 +73,15 @@ def updateQuery(user, query):
 		else:
 			query[tag[0]] = tag[1]
 		tagslist.append(tag[0])
-	query["tags"] = query["tags"] + ',' + ','.join(tagslist)
-	query["tags"] = query["tags"].rstrip(",")
+
+	querytaglist = query["tags"].split(",")
+	for tag in tagslist:
+		if(not tag in querytaglist):
+			querytaglist.append(tag)
+			
+	query["tags"] = ','.join(querytaglist)
+
+
 	for facet in facetcloud:
 		
 		if(query.has_key(facet[0])):
@@ -82,9 +89,15 @@ def updateQuery(user, query):
 		else:
 			query[facet[0]] = facet[1]
 		facetslist.append(facet[0])
-	query["facets"] = query["facets"] + ',' + ','.join(facetslist)
-	query["facets"] = query["facets"].rstrip(",")
-	sys.stdout.flush()'''
+	
+	queryfacetlist = query["facets"].split(",")
+	for facet in facetslist:
+		if(not facet in queryfacetlist):
+			queryfacetlist.append(facet)
+			
+	query["facets"] = ','.join(queryfacetlist)
+	mainbox_table.update({'_id': query['_id']}, query)
+	sys.stdout.flush()
 	if(len(deals) > 0):
 		deals_table = pymongo.Connection('localhost', 27017)[db]['deals']
 		print "Inserting into deals table..."
@@ -107,9 +120,7 @@ if __name__ == '__main__':
 	for user in users:
 		queries = mainbox_table.find()
 		for query in queries:
-			try:
-				updateQuery(user, query)
-			except:
-				print "Error: Something went wrong in updating \"" + query['_id'] + "\",\"" + query['keyword'] + "\" for \"" + user['username'] + "\""
+			updateQuery(user, query, mainbox_table)
+			#print "Error: Something went wrong in updating \"" + query['_id'] + "\",\"" + query['keyword'] + "\" for \"" + user['username'] + "\""
 	
 	
