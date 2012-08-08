@@ -216,7 +216,7 @@
 				</div> <!-- end second col -->
             </div>   
         
-        	<div class="span3" id="thirdcol">  <!-- Third col holds filters and maps -->
+        	<div class="span3" id="thirdcol" selectedmap="mapresultsdiv">  <!-- Third col holds filters and maps -->
         		
           		<div class="row-fluid" id="filtersdiv">
 		  	    	
@@ -490,22 +490,39 @@
 		var filtercontent = ajaxDisplay.innerHTML;
 		ajaxDisplay = document.getElementById("tempfiltersdiv");
 		ajaxDisplay.innerHTML = filtercontent;*/
-		ajaxDisplay = document.getElementById("thirdcol");
+		var ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("class","span0");
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span9");
 		var qid = ajaxDisplay.getAttribute("qid");
 		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/12/getmap.html','localmaps', 1000);
+		ajaxDisplay = document.getElementById("thirdcol");
+		ajaxDisplay.setAttribute("selectedmap","localmaps");
 	}
 	function revertBigMapChanges()
 	{
 		
 		/*ajaxDisplay = document.getElementById("tempfiltersdiv");
 		ajaxDisplay.innerHTML = "";*/
-		ajaxDisplay = document.getElementById("thirdcol");
+		var ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("class","span3");
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span6");
+		var qid = ajaxDisplay.getAttribute("qid");
+		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/10/getmap.html','mapresultsdiv', 500);
+		ajaxDisplay = document.getElementById("thirdcol");
+		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
+	}
+	function renderSelectedMap(username, qid)
+	{
+		var ajaxDisplay = document.getElementById("thirdcol");
+		var selmap = ajaxDisplay.getAttribute("selectedmap");
+		if(selmap == 'localmaps') {
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/getmap.html','localmaps',  1000);
+		} else {
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/getmap.html','mapresultsdiv',  500);
+		}
+	
 	}
 	function saveDeal(dealid, username)
     {
