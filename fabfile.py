@@ -11,7 +11,7 @@ env.deploy_path = './knopon'
 
 @roles('box')
 def deploy():
-    local('tar -zcvf deploy.tgz batch backend app siteassets feedserver.py feedserver_restart.sh restart.sh bootstrap jquery-ui-1.8.21.custom templates tools main.py requirements.*')
+    local('tar -zcvf deploy.tgz batch js backend app siteassets feedserver.py feedserver_restart.sh restart.sh bootstrap jquery-ui-1.8.21.custom templates tools main.py requirements.*')
     put ('deploy.tgz', env.code_path)
     run('tar -C %s -zxvf %s/deploy.tgz' % (env.deploy_path, env.code_path))
 
