@@ -50,12 +50,15 @@
 								</div>
 								
 						{% endif %}
-						
+						<div id="newdealalert">
+			
+						</div>
 	
 					{% endif %}
 					
 				{% endif %}
-
+				
+		<div class="scrollspy-example">
 				{% for deal in deals %}
 		        
 		        
@@ -80,7 +83,7 @@
 									<td width="18%" valign="top"><img src="{{deal['image']}}" style="height: 100px;" width="100"/> </td>
 									<td width="70%" valign="top">
 										
-											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" target="_blank">{{deal['title']}}</a></p>
+											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" target="_blank">{{deal['title']}}</a>{% if deal['unseen'] is defined %}<img src="/siteassets/img/newTag.gif"/>{% endif %}</p>
 											<div class="row-fluid">
 												<div class="span6">
 													<div class="row-fluid" style="margin-bottom: 5px">
@@ -137,7 +140,7 @@
 									<td width="12%" valign="top">
 									<table width="100%" height="100%"><tr><td align="right" valign="top"><h2>${{deal['price']}}</h2></td></tr><tr><td align="right" valign="top">
 									 {% if deal['days'] == 0 %}
-									 	<span style="color: coral;"><strong>New Today</strong></span>
+									 	<span style="color: coral;"><strong>Today</strong></span>
 									 {% else %}
 										<h6>{{deal['days']}} day(s)</h6>
 									 {% endif %}
@@ -168,6 +171,7 @@
 	
 		       	  
 		         {% endfor %}
+		         </div>
  				 {% endblock %}		
 		       
 

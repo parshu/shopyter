@@ -35,7 +35,7 @@
 					
 					execURL('/updatedeallocation/' + dealid + '/' + lat + '/' + lng, true);
 					var latlng = new google.maps.LatLng(lat,lng);
-					map.setCenter(latlng);
+					//map.setCenter(latlng);
 					if(markers.hasOwnProperty(address)) {
 						var iwin = infowindows[address];
 						iwin.setContent(iwin.getContent() + '<br>' + display);
@@ -86,7 +86,7 @@
     		else {
     				
     				var latlng = new google.maps.LatLng(latp,lngp);
-					map.setCenter(latlng);
+					//map.setCenter(latlng);
 					if(markers.hasOwnProperty(address)) {
 						var iwin = infowindows[address];
 						iwin.setContent(iwin.getContent() + '<br>' + display);
@@ -137,7 +137,7 @@
     		var mapOptions = {
       			zoom: {{zoom}},
       			mapTypeId: google.maps.MapTypeId.ROADMAP,
-      			center: new google.maps.LatLng(geoplugin_latitude(), geoplugin_longitude())
+      			center: new google.maps.LatLng({{query['lat']}} - 0.005,{{query['long']}} - 0.005)
     		}
     		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
     		
@@ -166,6 +166,8 @@
 			
 			 
 			 codeAddress(map, '{{query['city']}}, {{query['state']}}, {{query['zip']}}', "My location", true, "#", "", "-1", {{query['lat']}} - 0.005, {{query['long']}} - 0.005,"","");
+			 var latlng = new google.maps.LatLng({{query['lat']}} - 0.005,{{query['long']}} - 0.005);
+			 map.setCenter(latlng);
 			 			
 			 			
 

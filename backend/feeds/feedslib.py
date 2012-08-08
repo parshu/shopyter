@@ -131,7 +131,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	try:
 		request = urllib2.Request(url)
 		request.add_header('User-agent', 'Mozilla/6.0 (Macintosh; I; Intel Mac OS X 11_7_9; de-LI; rv:1.9b4) Gecko/2012010317 Firefox/10.0a4')
-		response = urllib2.urlopen(request, timeout=2)
+		response = urllib2.urlopen(request, timeout=10)
 	except urllib2.HTTPError, e:
 		print "Ecode:" + str(e.code)
 	except urllib2.URLError, e:

@@ -12,11 +12,13 @@ import json
 from BeautifulSoup import BeautifulSoup
 import unicodedata
 import CLJsonFeed
+import datetime
 
 
-def updateQuery(user, query, mainbox_table):
+def updateQuery(query, mainbox_table, db):
 	
-	keywords = [query['keyword']]
+	keywords = []
+	keywords.append(query['keyword'])
 	filters = []
 	if(query.has_key('filters')):
 		filters = query['filters'].lstrip(",").split(",")
@@ -30,10 +32,10 @@ def updateQuery(user, query, mainbox_table):
 	keyword = " ".join(keywords)
 	pricehigh = int(query["price_high"] + (query["price_high"] * 0.10))
 	pricelow = int(query["price_low"] - (query["price_low"] * 0.10))
-	zip = user['zip']
-	city = user['city']
-	state = user['state']
-	print "Updating deals for (%s,%s): keyword(%s), pricehigh(%s), pricelow(%s) @%s, %s %s" % (user['username'], query['_id'], keyword, pricehigh, pricelow, city, state, zip)
+	zip = query['zip']
+	city = query['city']
+	state = query['state']
+	print "Updating deals for (%s): keyword(%s), pricehigh(%s), pricelow(%s) @%s, %s %s" % (query['_id'], keyword, pricehigh, pricelow, city, state, zip)
 	
 	results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "",zip,city,state)
 	deals1 = results1['deals']
@@ -43,7 +45,8 @@ def updateQuery(user, query, mainbox_table):
 	print "feed2 deals found: " + str(len(deals2))
 	results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, int(pricehigh * 100), int(pricelow * 100), 30, zip)
 	deals3 = results3['deals']
-	deals3 = feedslib.updateMiloMerchantInfo(deals3, results3['specialreturn'], zip, 10)
+	if(len(deals3) > 0):
+		deals3 = feedslib.updateMiloMerchantInfo(deals3, results3['specialreturn'], zip, 10)
 	print "feed3 deals found: " + str(len(deals3))
 	sys.stdout.flush()
 	deals = []
@@ -96,6 +99,7 @@ def updateQuery(user, query, mainbox_table):
 			queryfacetlist.append(facet)
 			
 	query["facets"] = ','.join(queryfacetlist)
+	query["lastmodified"] = datetime.datetime.utcnow()
 	mainbox_table.update({'_id': query['_id']}, query)
 	sys.stdout.flush()
 	if(len(deals) > 0):
@@ -103,7 +107,7 @@ def updateQuery(user, query, mainbox_table):
 		print "Inserting into deals table..."
 		sys.stdout.flush()
 		deals_table.insert(deals, continue_on_error=True)
-		
+				
 		print "Done inserting."
 		sys.stdout.flush()
 
@@ -118,9 +122,10 @@ if __name__ == '__main__':
 	
 	users = users_table.find()
 	for user in users:
+		print "Updating deals for [%s]..." % (user['username'])
 		queries = mainbox_table.find()
 		for query in queries:
-			updateQuery(user, query, mainbox_table)
+			updateQuery(query, mainbox_table, db)
 			#print "Error: Something went wrong in updating \"" + query['_id'] + "\",\"" + query['keyword'] + "\" for \"" + user['username'] + "\""
 	
 	
