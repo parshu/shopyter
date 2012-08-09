@@ -150,7 +150,7 @@
             		<div class="well" >
 						<div class="row-fluid">
 							<div class="span12">
-								<form id="add_query" class="form-inline">
+								<form id="add_query" class="form-inline" style="margin: 0 0 0px;">
 									<input type="text" id="keyword" class="input-medium" placeholder="I am looking for..." required>&nbsp; around &nbsp;
 									<input type="text" id="dollar_limit" onkeypress="return isNumberKey(event)"  class="input-micro" placeholder="$..." required>
 									<button type="submit" class="btn btn-primary">Add</button>
@@ -560,7 +560,7 @@
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span6");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/10/getmap.html','mapresultsdiv', 500);
+		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/10/getmap.html','mapresultsdiv', {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
 	}
@@ -583,7 +583,7 @@
 		if(selmap == 'localmaps') {
 			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/getmap.html','localmaps',  1000);
 		} else {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/getmap.html','mapresultsdiv',  500);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/getmap.html','mapresultsdiv',  {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
 		}
 	
 	}

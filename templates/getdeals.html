@@ -4,7 +4,7 @@
               &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span>
               
               {% if savetab is sameas 0 %}
-               around <span style="color:darkorange">${{dollarlimit}}</span></th>
+               around <span style="color:darkorange">${{dollarlimit}}</span> [showing {{totalresults}} results]</th>
 		      {% endif %}
 		     </div>
 				{% if savetab is sameas 0 %}
@@ -143,9 +143,9 @@
 									<td width="12%" valign="top">
 									<table width="100%" height="100%"><tr><td align="right" valign="top"><h2>${{deal['price']}}</h2></td></tr><tr><td align="right" valign="top">
 									 {% if deal['days'] == 0 %}
-									 	<span style="color: coral;"><strong>Today</strong></span>
+									 	 	<span class="label label-important" style="padding: 1px 18px 2px;">Today</span>
 									 {% else %}
-										<h6>{{deal['days']}} day(s)</h6>
+										<span class="label" style="padding: 1px 18px 2px;">{{deal['days']}} day(s)</span>
 									 {% endif %}
 									
 									</td></tr><tr><td align="right" valign="bottom"> 
