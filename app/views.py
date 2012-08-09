@@ -27,7 +27,7 @@ PRICE_LOW_PER = 0.25
 PRICE_MAX_PER = 2
 PRICE_MIN_PER = 2
 DEFAULT_DAYS_FILTER = 7
-
+FILTER_ON_LEFT = 1
 
 def getQueryFilters(query):
 	filterstring = ""
@@ -191,7 +191,7 @@ def dealsupdate(username, qid):
 	dealcount = deals_table.find(dealquery).count()
 	print "Found additional %s deals..." % (dealcount)
 
-	retstr = ""
+	retstr = "<div></div>"
 	
 	if(dealcount > 0):
 		retstr = "<div class=\"alert alert-block alert-error fade in\" style=\"margin-left:0px;min-height:10px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;margin-left:10px;margin-right:10px;\">We just found " + str(dealcount) + " more new results. <a href=\"#\" onclick=\"clickCurrentQuery();\">Click to see</a></div>"
@@ -252,7 +252,7 @@ def user(username):
 		   
 	response.set_cookie('username', username, path = '/')    
     
-	return template('userhome.html', username = username, userinfo = userinfo, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, return_user = return_user)
+	return template('userhome.html', username = username, userinfo = userinfo, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, return_user = return_user, FILTER_ON_LEFT = FILTER_ON_LEFT)
 
 
 
@@ -403,6 +403,19 @@ def getdealemail(keyword, dollarlimit, days, username):
     deals = dealsout
     sys.stdout.flush()
     return template('getdealemail.html', username = username, keyword = keyword, dollarlimit = dollarlimit, deals = deals)
+
+
+@route('/savetag/<username>/<queryid>/<tag>')
+def savetag(username, queryid, tag):
+	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
+	query = mainbox_table.find_one({'_id': queryid})
+	if(query.has_key('tags')):
+		query['tags'] = query['tags'] + "," + tag
+	else:
+		query['tags'] = tag
+	mainbox_table.update({'_id': queryid, 'username': username}, { "$set" : { "tags" : query['tags'], tag: 0 } })
+	return {'status': 'ok'}
+
 
 
 @route('/getfilters/<username>/<queryid>/<loopid>')

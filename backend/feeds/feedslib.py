@@ -21,7 +21,7 @@ def updateMiloMerchantInfo(deals, merchantinfo, zip, radius):
 	print url
 	request = urllib2.Request(url)
 	request.add_header('User-agent', 'Mozilla/6.0 (Macintosh; I; Intel Mac OS X 11_7_9; de-LI; rv:1.9b4) Gecko/2012010317 Firefox/10.0a4')
-	response = urllib2.urlopen(request, timeout=2)
+	response = urllib2.urlopen(request, timeout=10)
 	resp = response.read()
 	results = json.loads(resp)
 	storeinfo = {}
@@ -48,7 +48,7 @@ def getZipCode(lat, long):
 	url = "http://www.geoplugin.net/extras/postalcode.gp?lat=%s&long=%s&format=json" % (lat, long)
 	request = urllib2.Request(url)
 	request.add_header('User-agent', 'Mozilla/6.0 (Macintosh; I; Intel Mac OS X 11_7_9; de-LI; rv:1.9b4) Gecko/2012010317 Firefox/10.0a4')
-	response = urllib2.urlopen(request, timeout=2)
+	response = urllib2.urlopen(request, timeout=10)
 	resp = response.read()
 	resp = resp.replace("geoPlugin(","")
 	resp = resp.replace(")","")
@@ -160,7 +160,12 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 					val = datavals.replace("#","")
 					break
 				if(datavals.isdigit()):
-					val = val[int(datavals)]
+					
+					if((type(val) is list) and (len(val) > int(datavals))):
+						val = val[int(datavals)]
+					else:
+						val = None
+						break
 				else:
 					iscents = False
 					if(datavals.find("(c)") == 0):

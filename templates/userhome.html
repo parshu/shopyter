@@ -132,6 +132,7 @@
 			
 			<div class="span3"> <!--first column, holds query mainbox and add form -->
 				
+           		
 				<div id="queriesdiv" style="background:#F8F8F8;">
           			<!--This is where the queries in the mainbox will get rendered -->
             	</div>
@@ -159,14 +160,20 @@
               		</div><!--/.well -->
           		</div> <!-- end add form -->
           		
+          		{% if FILTER_ON_LEFT is sameas 0 %}
           		<div class="alert alert-info fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
 					<form id="mod_location" class="form-inline" style="margin: 0 0 0px;">Your location: <strong><span id="userlocation">Not Known</span></strong> <a onclick="renderLocationEdit();" href="#" style="color:darkorange;"><span id="editlink">edit</span></a></form>
 				</div>
+				{% endif %}
 				<!--
 				<input type="text" id="userlocation" class="input-medium" placeholder="loc..." required><button type="submit" class="btn btn-primary">Save</button>
 				-->
           		
-          		
+          		{% if FILTER_ON_LEFT is sameas 1 %}
+          		<div class="row-fluid" id="filtersdiv">
+		  	    	
+           		</div>
+           		{% endif %}
 				
 				<div class="well" id="popularqueriesdiv" style="background:#F8F8F8;">
           			<!--This is where query recommendations will get rendered -->
@@ -220,11 +227,16 @@
             </div>   
         
         	<div class="span3" id="thirdcol" selectedmap="mapresultsdiv">  <!-- Third col holds filters and maps -->
-        		
+        		{% if FILTER_ON_LEFT is sameas 0 %}
           		<div class="row-fluid" id="filtersdiv">
 		  	    	
            		</div>
-        
+           		{% endif %}
+        		{% if FILTER_ON_LEFT is sameas 1 %}
+          		<div class="alert alert-info fade in" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
+					<form id="mod_location" class="form-inline" style="margin: 0 0 0px;">Your location: <strong><span id="userlocation">Not Known</span></strong> <a onclick="renderLocationEdit();" href="#" style="color:darkorange;"><span id="editlink">edit</span></a></form>
+				</div>
+				{% endif %}
           	
           		<div class="row-fluid">  <!-- holds maps -->
           			<div class="span12" id="mapsdiv">
@@ -442,6 +454,7 @@
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4){
 				
+				
 				var ajaxDisplay = document.getElementById("newdealalert");
 				
 				ajaxDisplay.innerHTML = ajaxRequest.responseText;
@@ -574,6 +587,21 @@
 		}
 	
 	}
+	
+	  
+     function saveTag(newtag, username, qid) {
+      	    
+      	  
+	      //execURL('/updatequeryfilters/' + qid + '/' + 'tag|' + newtag, false);
+	      execURL('/savetag/' + username + '/' + qid + '/' + newtag,true);
+	      
+	      clickCurrentQuery();
+	      //updateDeals(username,qid);
+
+	      
+
+      }
+      
 	function saveDeal(dealid, username)
     {
     	indicateSaved('/savedeal/' + dealid + '/' + username, dealid, true);
@@ -640,6 +668,7 @@
 					linkele.setAttribute("ph",ui.values[1]);
 					linkele.click();
 					execURL("/updatemetrics/{{username}}/increment/{\"filtersused\":1}",true);
+					updateDeals('{{username}}',qid);
 					
 										
 					
@@ -927,6 +956,8 @@
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);
      
       execURL("/updatemetrics/{{username}}/increment/{\"visits\":1}",true);
+      
+    
     
     </script>
     
