@@ -454,8 +454,13 @@ def unsavedeal(dealid, username):
     
     
     
-@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/:filename')
-def getdeals(username, queryid, startnum, resultsize, zoom, filename):
+@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/:filename')
+def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, sorttype):
+	if(sortby == "-1"):
+		sortby = "founddate"
+	if(sorttype == "-1"):
+		sorttype = "descending"
+	
 	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})
 	savetab = 0
@@ -477,8 +482,17 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename):
 	
 	dealquery = getDealQuery(query)
     
+	if(filename == "getmap.html"):
+		dealquery['$and'].append({'city': {'$exists': True}})
+    
 	print dealquery
-	deals.extend([deal for deal in deals_table.find(dealquery).sort("founddate", pymongo.DESCENDING).skip(startnum).limit(resultsize)])
+	if(sortby == "nosort"):
+		deals.extend([deal for deal in deals_table.find(dealquery).skip(startnum).limit(resultsize)])
+	else:
+		if(sorttype == "ascending"):
+			deals.extend([deal for deal in deals_table.find(dealquery).sort(sortby, pymongo.ASCENDING).skip(startnum).limit(resultsize)])
+		else:
+			deals.extend([deal for deal in deals_table.find(dealquery).sort(sortby, pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
 	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
 	saved_deals = []

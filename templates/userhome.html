@@ -190,7 +190,7 @@
 						<li class="active"><a href="#knopons" data-toggle="tab" onclick="revertBigMapChanges();">Results</a></li>
 						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges();execURL('/updatemetrics/{{username}}/increment/{&quot;savedtabviews&quot;:1}',true);">Saved Results</a></li>
 						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);">Local Results(Map)</a></li>
-						<li class="dropdown" id="menu1">
+						<!--<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
 							Sort by
 							<b class="caret"></b>
@@ -200,12 +200,23 @@
 								<li><a href="#">Price</a></li>
 								<li><a href="#">Value for money</a></li>
 								<li><a href="#">Popularity</a></li>
-								<li><a href="#">Distance</a></li>
-								<li><a href="#">Time to recieve</a></li>
+								<li><a href="#">Distance (coming soon)</a></li>
+								<li><a href="#">Time to recieve (coming soon)</a></li>
 
 								
 							</ul>
-						</li>
+						</li>-->
+						<div class="controls" style="float:right;">
+						  <span class="label" style="padding:5px 6px 7px;">Sorted by</span>
+						  <select id="sortorder" style="margin-bottom:0px;width:150px;" onchange="sortCurrentDeals(document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value, '{{username}}');">
+							<option value="founddate,descending">Last found</option>
+							<option value="price,ascending">Price</option>
+							<option value="value,descending">Value for money</option>
+							<option value="popularity,descending">Popularity</option>
+							<option value="distance,ascending" disabled="disabled">Distance (coming soon)</option>
+							<option value="timetoreceive,ascending" disabled="disabled">Time to recieve (coming soon)</option>
+						  </select>
+						</div>
 						
 					</ul>
 					
@@ -223,7 +234,7 @@
 						</div>
 						
 					</div>
-				</div> <!-- end second col -->
+				</div> <!-- end row -->
             </div>   
         
         	<div class="span3" id="thirdcol" selectedmap="mapresultsdiv">  <!-- Third col holds filters and maps -->
@@ -269,7 +280,13 @@
     
     
     
-    
+    function sortCurrentDeals(selection, username)
+    {
+    	var ajaxDisplay = document.getElementById("filtersholder");
+		var qid = ajaxDisplay.getAttribute("qid");
+		var values = selection.split(",")
+		renderDealResults('/getdeals/' + username + '/' + qid + '/1/200/9/' + values[0] + '/' + values[1] + '/getdeals.html','dealresultsdiv');
+    }
     
     function renderProgressBar()
     {
@@ -546,7 +563,7 @@
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span9");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/12/getmap.html','localmaps', 1000);
+		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/12/nosort/nosorttype/getmap.html','localmaps', 1000);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","localmaps");
 	}
@@ -560,7 +577,7 @@
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span6");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/10/getmap.html','mapresultsdiv', {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
+		renderMapResults('/getdeals/{{username}}/' + qid + '/1/200/10/nosort/nosorttype/getmap.html','mapresultsdiv', {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
 	}
@@ -581,9 +598,9 @@
 		var ajaxDisplay = document.getElementById("thirdcol");
 		var selmap = ajaxDisplay.getAttribute("selectedmap");
 		if(selmap == 'localmaps') {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/getmap.html','localmaps',  1000);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/nosort/nosorttype/getmap.html','localmaps',  1000);
 		} else {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/getmap.html','mapresultsdiv',  {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/nosort/nosorttype/getmap.html','mapresultsdiv',  {% if FILTER_ON_LEFT is sameas 1 %}1000{% else %}500{% endif %});
 		}
 	
 	}
@@ -772,7 +789,7 @@
 	//dealResultsDivname - Name of the  deal results div
 	//dealResultsURL - URL that needs to be requested for the deal results html. This is rendered in queryBoxDivname
 	
-	function renderDealResults(dealResultsURL, dealResultsDivname, queryIndex, doRenderQueryBox, noOfQueries){
+	function renderDealResults(dealResultsURL, dealResultsDivname){
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
 			// Opera 8.0+, Firefox, Safari

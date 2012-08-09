@@ -10,7 +10,7 @@ import unicodedata
 import re
 from operator import itemgetter
 import itertools
-
+import math
 
 def updateMiloMerchantInfo(deals, merchantinfo, zip, radius):
 	
@@ -150,7 +150,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 	if(not results.has_key(feedconfig['resultslistfield'])):
 		return({'deals': deals, 'tagcloud': tagcloud, 'facetcloud': facetcloud})
 		
-	
+	resultindex = 0
+	resultscount = len(results)
 	for result in results[feedconfig['resultslistfield']]:
 		dealresult = {}
 		for datakey in dataitems.keys():
@@ -221,6 +222,14 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 							tagcloud[tag] = 1
 		dealresult['keyword'] = urllib.unquote(keyword)
 		dealresult['founddate'] = datetime.datetime.utcnow()
+		dealresult['popularity'] = float(((float(resultscount)/float(resultindex + 1))/float(resultscount)) * 100.0)
+		dealresult['popularity_rating'] = int(math.floor(dealresult['popularity'] / 20))
+		lowestprice = float(pricelow)
+		if(feedconfig['feeddenomination'] == "cents"):
+			lowestprice = lowestprice / 100.0
+		dealresult['value'] = (lowestprice/dealresult['price']) * dealresult['popularity']
+		print "pricelow:%s, dealprice:%s, value:%s, popularity:%s" % (lowestprice, dealresult['price'], (float(lowestprice)/dealresult['price']), dealresult['popularity'])
+		dealresult['value_rating'] = int(3 + math.floor(dealresult['value'] / 50))
 		hashstr = ""
 		for component in jsonconfig['hashcomponents']:
 			if(dealresult.has_key(component)):
@@ -232,6 +241,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 		
 		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
+		resultindex = resultindex + 1
 	
 	
 	return({'deals': deals, 'tagcloud': tagcloud, 'facetcloud': facetcloud, 'specialreturn': specialReturn})

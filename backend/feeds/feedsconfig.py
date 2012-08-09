@@ -16,6 +16,7 @@ CONFIG = {
 	"feeds" : [
 		{
 			"feedsource": "google",
+			"feeddenomination":"cents",
 			"feedurl": "https://www.googleapis.com/shopping/search/v1/public/products?",
 			"feedkeyname": "key",
 			"feedkeyvalue": "AIzaSyAH7frOOslC7tXHdC-WiJ16d4uhsI_1PQY",
@@ -45,6 +46,7 @@ CONFIG = {
 		},
 		{
 			"feedsource": "milo",
+			"feeddenomination":"cents",
 			"additionallistreturn":"merchantid",
 			"feedurl": "https://api.x.com/milo/v3/products?",
 			"feedkeyname": "key",
@@ -73,6 +75,7 @@ CONFIG = {
 		},
 		{
 			"feedsource": "craigslist",
+			"feeddenomination":"usd",
 			"feedurl": "",
 			"feedparams": "http://localhost:8079/getclfeed/%s%s/%s/%s/0/%s/%s/%s",
 			"feedreplacementfields": "keyword, maxresults, pricehigh, pricelow, zipcode, city, state",

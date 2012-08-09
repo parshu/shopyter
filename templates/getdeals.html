@@ -4,7 +4,7 @@
               &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span>
               
               {% if savetab is sameas 0 %}
-               around <span style="color:darkorange">${{dollarlimit}}</span> [showing {{totalresults}} results]</th>
+               around <span style="color:darkorange">${{dollarlimit}}</span> [showing {{totalresults}} results]
 		      {% endif %}
 		     </div>
 				{% if savetab is sameas 0 %}
@@ -88,7 +88,7 @@
 										
 											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" target="_blank">{{deal['title']}}</a>{% if deal['unseen'] is defined %}<img src="/siteassets/img/newTag.gif"/>{% endif %}</p>
 											<div class="row-fluid">
-												<div class="span6">
+												<div class="span7">
 													<div class="row-fluid" style="margin-bottom: 5px">
 													<strong>Condition:</strong> <span class="label label-inverse">{{deal['condition']}}</span>
 													</div>
@@ -102,11 +102,11 @@
 													{% endif %}
 													</div>
 												</div>
-												<div class="span6">
+												<div class="span5">
 													<span class="muted" style="color: #555555;">
-													{% if deal['f1value'] is defined %}
+													{% if deal['brand'] is defined %}
 													<div class="row-fluid">
-														{{deal['f1name']}}:&nbsp;{{deal['f1value']}}	
+														<span class="label" style="padding: 1px 16px 2px;">Brand</span>&nbsp;<strong>{{deal['brand']}}</strong>	
 													</div>
 													{% endif %}
 													{% if deal['f2value'] is defined %}
@@ -117,16 +117,33 @@
 													</span>
 													
 													<div class="row-fluid" style="margin-top: 10px;">
-													
+													<span class="label" style="padding: 1px 5px 2px;">Popularity</span>
 													<span>
-													{% if deal['rating'] is undefined %}
-													<i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i>
+													{% if deal['popularity_rating'] is undefined %}
+													
 													{% else %}
 													
-													{% for number in range(0,deal['rating']) %}
+													{% for number in range(0,deal['popularity_rating']|int(deal['popularity_rating'])) %}
 													<i class="icon-star"></i>
 													{% endfor %}
-													{% for number in range(deal['rating'], 5) %}
+													{% for number in range(deal['popularity_rating']|int(deal['popularity_rating']), 5) %}
+													<i class="icon-star-empty"></i>
+													{% endfor %}
+													{% endif %}
+													
+													</span>
+													</div>
+													<div class="row-fluid" style="margin-top: 10px;">
+													<span class="label" style="padding: 1px 18px 2px;">Value</span>
+													<span>
+													{% if deal['value_rating'] is undefined %}
+													
+													{% else %}
+													
+													{% for number in range(0,deal['value_rating']|int(deal['value_rating'])) %}
+													<i class="icon-star"></i>
+													{% endfor %}
+													{% for number in range(deal['value_rating']|int(deal['value_rating']), 5) %}
 													<i class="icon-star-empty"></i>
 													{% endfor %}
 													{% endif %}
