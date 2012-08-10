@@ -100,6 +100,7 @@ def getSortedTagCloudList(tagcloud, cutoff=8):
 
 def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults, zipcode="", city="", state=""):
 	
+	
 	feedconfig = None
 	deals = []
 	specialReturn = {}
@@ -152,6 +153,9 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 		
 	resultindex = 0
 	resultscount = len(results)
+	matchstrict = 0
+	if((resultscount < 5) and (len(keywordtags) > 1)):
+		matchstrict = 1
 	for result in results[feedconfig['resultslistfield']]:
 		dealresult = {}
 		for datakey in dataitems.keys():
@@ -221,6 +225,18 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 						else:
 							tagcloud[tag] = 1
 		if(not dealresult.has_key('price')):
+			continue
+		
+		if(dealresult.has_key("title")):
+			dealtitle = dealresult['title'].title()
+			ki = 0
+			for keyt in keywordtags:
+				if(dealtitle.find(keyt) >= 0):
+					ki = ki + 1
+			if(ki < matchstrict):
+				print "Failed strictness test. Dropping [%s]" % (str(dealresult))
+				continue
+		else:
 			continue
 		dealresult['keyword'] = urllib.unquote(keyword)
 		dealresult['founddate'] = datetime.datetime.utcnow()
