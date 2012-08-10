@@ -220,6 +220,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresult
 							tagcloud[tag] = tagcloud[tag] + 1
 						else:
 							tagcloud[tag] = 1
+		if(not dealresult.has_key('price')):
+			continue
 		dealresult['keyword'] = urllib.unquote(keyword)
 		dealresult['founddate'] = datetime.datetime.utcnow()
 		dealresult['popularity'] = float(((float(resultscount)/float(resultindex + 1))/float(resultscount)) * 100.0)
