@@ -14,7 +14,11 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 	cl_table = pymongo.Connection('localhost', 27017)[DBNAME]['clmapping']
 	pageindex = str(int(pageindex) * 100)
 	if not cl_table.find_one({'_id': zipcode}):
-		return {'status': 'error: mapping not found for ' + zipcode}
+		newzip = int(zipcode) - 1
+		if not cl_table.find_one({'_id': str(newzip)}):
+			return {'status': 'error: mapping not found for ' + zipcode}
+		else:
+			zipcode = str(newzip)
 	clmapping = cl_table.find_one({'_id': zipcode})
 	url = clmapping['baseurl'] + "search/sss?sort=rel&hasPic=1&maxAsk=%s&minAsk=%s&query=%s&srchType=T&s=%s"
 	

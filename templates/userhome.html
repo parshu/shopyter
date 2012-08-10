@@ -141,10 +141,10 @@
             	<div id="addform" class="collapse in"><!-- Form to add new queries -->
             		{% if not return_user is sameas 1 %}
           		
-          		<div class="label label-warning span12" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
-						<button class="close" data-dismiss="alert">×</button>
-			   			Add it and forget it! We do all your work, every day.
-				</div>
+          		<div class="alert alert-block alert-error fade in" style="margin-left:0px;min-height:10px;padding-bottom:5px;padding-top:5px;margin-bottom:10px;">
+										<button class="close" data-dismiss="alert" onclick="execURL('/updatemetrics/{{username}}/increment/{&quot;addinfowindow&quot;:1}',true);">×</button>
+										Add it and forget it. We do all the work, everyday. 
+								</div>
           		
 				{% endif %}
             		<div class="well" >

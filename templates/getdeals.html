@@ -46,10 +46,10 @@
 						
 						
 						
-						{% if (user_metrics['queryclicks'] is not defined) or (user_metrics['queryclicks'] < 3) %}
-							<div class="label label-warning span12" style="margin-left:0px;min-height:10px;bottom-padding:5px;">
-										<button class="close" data-dismiss="alert">×</button>
-										Watch this space. Get on with your day and we will notify you when we find more great deals. <a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark page</a>   
+						{% if ((user_metrics['queryclicks'] is not defined) or (user_metrics['queryclicks'] < 4)) and (user_metrics['dealinfowindowclosed'] is not defined) %}
+							<div class="alert alert-block alert-error fade in" style="margin-left:0px;min-height:10px;padding-bottom:5px;padding-top:5px;margin-bottom:10px;">
+										<button class="close" data-dismiss="alert" onclick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealinfowindowclosed&quot;:1}',true);">×</button>
+										Watch this space to be notified when we find more great deals. <a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark page</a><br>You can also just get on with your day and we will email you with updates everyday.   
 								</div>
 								
 						{% endif %}
