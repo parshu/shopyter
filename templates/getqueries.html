@@ -1,9 +1,9 @@
 
 
 {% block content %}
-
-<div id="querytable" class="row-fluid well" totalqueries="{{qlen}}">
 {% if qlen > 0 %}
+<div id="querytable" class="row-fluid well" totalqueries="{{qlen}}">
+
  
 	<table id="table-3" style="background:#F8F8F8;">
 	{% if source['id'] is sameas 1 %}
@@ -45,18 +45,15 @@
 	</table>
 	 </div>
 {% else %}	
- <div class="alert alert-error" style="margin-bottom:0px;">
+
  {% if source['id'] is sameas 1 %}
- 	
+ 	 <div class="alert alert-error" style="margin-bottom:0px;">
  	You are not looking for anything yet. Use the form below to start or add from what others are looking for
+ 	  </div>
  	
- 	
- {% else %}
- 	 Watch this space for what others are looking for...
  {% endif %}
 
  {% endif %}
-  </div>
  {% endblock %}  
 
 
