@@ -209,10 +209,10 @@
 						<div class="controls" style="float:right;">
 						  <span class="label" style="padding:5px 6px 7px;">Sorted by</span>
 						  <select id="sortorder" style="margin-bottom:0px;width:150px;" onchange="sortCurrentDeals(document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value, '{{username}}');">
-							<option value="founddate,descending">Last found</option>
-							<option value="price,ascending">Price</option>
 							<option value="value,descending">Value for money</option>
 							<option value="popularity,descending">Popularity</option>
+							<option value="founddate,descending">Last found</option>
+							<option value="price,ascending">Price</option>
 							<option value="distance,ascending" disabled="disabled">Distance (coming soon)</option>
 							<option value="timetoreceive,ascending" disabled="disabled">Time to recieve (coming soon)</option>
 						  </select>
@@ -790,6 +790,10 @@
 	//dealResultsURL - URL that needs to be requested for the deal results html. This is rendered in queryBoxDivname
 	
 	function renderDealResults(dealResultsURL, dealResultsDivname){
+	
+		var sortby = document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value;
+		sortby = sortby.replace(",","/");
+		dealResultsURL = dealResultsURL.replace("sortbyfield",sortby);
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
 			// Opera 8.0+, Firefox, Safari
@@ -869,9 +873,10 @@
 	  		
 	  	}
 	  	else{
+	  		var div = "";
 	  		var ajaxDisplay;
-	  		divs = ['dealresultsdiv', 'filtersdiv', 'savedknopons', 'mapresultsdiv', 'localmaps'];
-	  		for each (var div in divs) {
+	  		var divs = ['dealresultsdiv', 'filtersdiv', 'savedknopons', 'mapresultsdiv', 'localmaps'];
+	  		for (div in divs) {
 	  		 	ajaxDisplay = document.getElementById(div);
 				ajaxDisplay.innerHTML = "";
 			}

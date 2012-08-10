@@ -210,9 +210,12 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 		dealresult['popularity'] = float(((float(resultscount)/float(resultindex + 1))/float(resultscount)) * 100.0)
 		dealresult['popularity_rating'] = int(math.floor(dealresult['popularity'] / 20))
 		lowestprice = float(pricelow)
+		highestprice = float(pricehigh)
 		if(feedconfig['feeddenomination'] == "cents"):
 			lowestprice = lowestprice / 100.0
-		dealresult['value'] = (lowestprice/dealresult['price']) * dealresult['popularity']
+		pricefactor = ((highestprice - dealresult['price'])/highestprice) * 100.0
+		harmonicmean = (2 * pricefactor * dealresult['popularity'])/(pricefactor + dealresult['popularity'])
+		dealresult['value'] = harmonicmean
 		print "pricelow:%s, dealprice:%s, value:%s, popularity:%s" % (lowestprice, dealresult['price'], (float(lowestprice)/dealresult['price']), dealresult['popularity'])
 		dealresult['value_rating'] = int(3 + math.floor(dealresult['value'] / 50))
 		hashstr = ""
