@@ -14,7 +14,7 @@
 								<div class="btn-group" data-toggle="buttons-checkbox" style="padding-left: 20px;">
 									{% for channel in facethash['channel'].keys() %}
 									<div class="span{{spans}}">
-									<button class="btn{% if selectedfilters['channel'] is defined %}{% if selectedfilters['channel'][channel] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','channel-{{channel}}','channel|{{channel}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;width:100%;" id="channel-{{channel}}" channel="{{channel}}">{{channel}} {%if not facethash['channel'][channel] is sameas 0 %}({{facethash['channel'][channel]}}){% endif %}</button>
+									<button class="btn{% if selectedfilters['channel'] is defined %}{% if selectedfilters['channel'][channel] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','channel-{{channel}}','channel|{{channel}}', '{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;width:100%;" id="channel-{{channel}}" channel="{{channel}}">{{channel}} {%if not facethash['channel'][channel] is sameas 0 %}({{facethash['channel'][channel]}}){% endif %}</button>
 									</div>
 									{% endfor %}
 								</div>

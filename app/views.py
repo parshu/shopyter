@@ -599,7 +599,7 @@ def getqueries(username, linkno):
 	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
 	queries = [query for query in mainbox_table.find({'username': username}).sort("created", pymongo.ASCENDING)]  
 	qlen = len(queries)  
-	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source)
+	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source, FILTER_ON_LEFT = FILTER_ON_LEFT)
 
 @route('/getpopularqueries/<username>/<linkno>')
 def getpopularqueries(username, linkno):
