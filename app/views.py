@@ -20,6 +20,7 @@ sys.path.append('./batch')
 import deals_updater
 from datetime import timedelta
 TEMPLATE_PATH.append('./templates')
+import milo
 
 DBNAME = "test"
 PRICE_HIGH_PER = 0.15
@@ -316,20 +317,20 @@ def addquery(keyword, dollarlimit):
 		
 		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': currdatetime, 'created': currdatetime, 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip'], 'lat': userinfo['lat'], 'long': userinfo['long']}
 		
-		results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "",userinfo['zip'],userinfo['city'],userinfo['state'])
+		results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, keyword, pricehigh, pricelow, "",userinfo['zip'],userinfo['city'],userinfo['state'])
 		deals1 = results1['deals']
 		print "feed1 deals found: " + str(len(deals1))
-		results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
+		results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, keyword, pricehigh, pricelow, 25)
 		deals2 = results2['deals']
 		print "feed2 deals found: " + str(len(deals2))
-		results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, int(pricehigh * 100), int(pricelow * 100), 30, userinfo['zip'])
+		results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, keyword, int(pricehigh * 100), int(pricelow * 100), 30, userinfo['zip'])
 		deals3 = results3['deals']
 		print "feed3 deals found: " + str(len(deals3))
 		sys.stdout.flush()
 		if(len(deals3) > 0):
 			print "Getting merchant info from milo..."
 			sys.stdout.flush()
-			deals3 = feedslib.updateMiloMerchantInfo(deals3, results3['specialreturn'], userinfo['zip'], 10)
+			deals3 = milo.updateMiloMerchantInfo(deals3, results3['specialreturn'], userinfo['zip'], 10)
 		
 		deals = []
 		deals.extend(deals1)

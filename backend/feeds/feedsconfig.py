@@ -10,8 +10,7 @@ CONFIG = {
 		"shipping",
 		"brand",
 		"condition",
-		"channel",
-		"keyword"		
+		"channel"		
 	],
 	"feeds" : [
 		{

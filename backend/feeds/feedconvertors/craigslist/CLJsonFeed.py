@@ -84,5 +84,4 @@ def getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME):
 		jsonitems.append(jsonitem)
 	
 	htmljson['items'] = jsonitems
-
 	return htmljson

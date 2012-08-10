@@ -13,7 +13,7 @@ from BeautifulSoup import BeautifulSoup
 import unicodedata
 import CLJsonFeed
 import datetime
-
+import milo
 
 def updateQuery(query, mainbox_table, db):
 	
@@ -37,16 +37,16 @@ def updateQuery(query, mainbox_table, db):
 	state = query['state']
 	print "Updating deals for (%s): keyword(%s), pricehigh(%s), pricelow(%s) @%s, %s %s" % (query['_id'], keyword, pricehigh, pricelow, city, state, zip)
 	
-	results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, pricehigh, pricelow, "",zip,city,state)
+	results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, query['keyword'], pricehigh, pricelow, "",zip,city,state)
 	deals1 = results1['deals']
 	print "feed1 deals found: " + str(len(deals1))
-	results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, pricehigh, pricelow, 25)
+	results2 = feedslib.getFeedDeals("google", feedsconfig.CONFIG, keyword, query['keyword'], pricehigh, pricelow, 25)
 	deals2 = results2['deals']
 	print "feed2 deals found: " + str(len(deals2))
-	results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, int(pricehigh * 100), int(pricelow * 100), 30, zip)
+	results3 = feedslib.getFeedDeals("milo", feedsconfig.CONFIG, keyword, query['keyword'], int(pricehigh * 100), int(pricelow * 100), 30, zip)
 	deals3 = results3['deals']
 	if(len(deals3) > 0):
-		deals3 = feedslib.updateMiloMerchantInfo(deals3, results3['specialreturn'], zip, 10)
+		deals3 = milo.updateMiloMerchantInfo(deals3, results3['specialreturn'], zip, 10)
 	print "feed3 deals found: " + str(len(deals3))
 	sys.stdout.flush()
 	deals = []
