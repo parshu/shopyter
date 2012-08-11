@@ -29,6 +29,8 @@ PRICE_MAX_PER = 2
 PRICE_MIN_PER = 2
 DEFAULT_DAYS_FILTER = 7
 FILTER_ON_LEFT = 1
+THUMBNAIL_COLOR = "#EFFFFF"
+RESULTS_LISTING_VIEW = 0
 
 def getQueryFilters(query):
 	filterstring = ""
@@ -566,7 +568,7 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	
 	mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
 	
-	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals))
+	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), THUMBNAIL_COLOR = THUMBNAIL_COLOR, RESULTS_LISTING_VIEW = RESULTS_LISTING_VIEW)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):

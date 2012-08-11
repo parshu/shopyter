@@ -428,57 +428,7 @@ function execURL(url, asynchronous){
 	
 	
 	
-    function addQuery(url, username){
   
-    	
-    	execURL("/updatemetrics/" + username + "/increment/{\"queryadd\":1}",true);
-		var ajaxRequest;  // The variable that makes Ajax possible!
-		try{
-			// Opera 8.0+, Firefox, Safari
-			ajaxRequest = new XMLHttpRequest();
-		} catch (e){
-			// Internet Explorer Browsers
-			try{
-				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-			} catch (e) {
-				try{
-					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-				} catch (e){
-					// Something went wrong
-					alert("Your browser broke!");
-					return false;
-				}
-			}
-		}
-		// Create a function that will receive data sent from the server
-		ajaxRequest.onreadystatechange = function(){
-			if(ajaxRequest.readyState == 4){
-				  querycount = parseInt(document.getElementById("querytable").getAttribute("totalqueries")) + 1;
-				  
-				  renderQueryBox('/getqueries/' + username + '/' + querycount,'queriesdiv', 1);
-				  var link = document.getElementById('query' + querycount);
-				  if(link != undefined) {
-					link.click();
-				  } else {
-				  	var link2 = document.getElementById('query1');
-				  	if(link2 != undefined) {
-						link2.click();
-				  	}
-				  	
-				  }
-		
-				  
-				  $('#keyword').val('');
-				  $('#dollar_limit').val('');
-				
-			}
-		}
-		ajaxRequest.open("GET", url, true);
-		ajaxRequest.send(null); 
-		
-	
-		
-	}
     
     
 	
@@ -606,11 +556,62 @@ function execURL(url, asynchronous){
 	
 	}
     
-   
-	
-	//url - URL containing information to delete a query
+       
+  	//url - URL containing information to delete a query
 	// highlightIndex - highlighted query
 	// keyword/dollarlimit pair used as primary key contained in url
+	
+	  function addQuery(url, username){
+  
+    	
+    	execURL("/updatemetrics/" + username + "/increment/{\"queryadd\":1}",true);
+		var ajaxRequest;  // The variable that makes Ajax possible!
+		try{
+			// Opera 8.0+, Firefox, Safari
+			ajaxRequest = new XMLHttpRequest();
+		} catch (e){
+			// Internet Explorer Browsers
+			try{
+				ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try{
+					ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e){
+					// Something went wrong
+					alert("Your browser broke!");
+					return false;
+				}
+			}
+		}
+		// Create a function that will receive data sent from the server
+		ajaxRequest.onreadystatechange = function(){
+			if(ajaxRequest.readyState == 4){
+				  querycount = parseInt(document.getElementById("querytable").getAttribute("totalqueries")) + 1;
+				  
+				  renderQueryBox('/getqueries/' + username + '/' + querycount,'queriesdiv', 1);
+				  var link = document.getElementById('query' + querycount);
+				  if(link != undefined) {
+					link.click();
+				  } else {
+				  	var link2 = document.getElementById('query1');
+				  	if(link2 != undefined) {
+						link2.click();
+				  	}
+				  	
+				  }
+		
+				  
+				  $('#keyword').val('');
+				  $('#dollar_limit').val('');
+				
+			}
+		}
+		ajaxRequest.open("GET", url, true);
+		ajaxRequest.send(null); 
+		
+	
+		
+	}
 	
 	function removeQuery(url,highlightIndex, queryid, price_max, price_min, price_high, price_low, daysfilter, username)
 	{
@@ -650,10 +651,16 @@ function execURL(url, asynchronous){
 	  		var ajaxDisplay;
 	  		var divs = ['dealresultsdiv', 'filtersdiv', 'savedknopons', 'mapresultsdiv', 'localmaps'];
 	  		for (div in divs) {
-	  		 	ajaxDisplay = document.getElementById(div);
-				ajaxDisplay.innerHTML = "";
+	  		 	ajaxDisplay = document.getElementById(divs[div]);
+	  		 	if(ajaxDisplay != null) {
+					ajaxDisplay.innerHTML = "";
+				}
 			}
 	  	}
        
 		
 	}
+   
+    
+	
+	

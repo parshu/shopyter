@@ -65,7 +65,7 @@
 				{% for deal in deals %}
 		        
 		        
-		       		   
+		       		   {% if RESULTS_LISTING_VIEW is sameas 1 %}
 					    	
 						<ul class="thumbnails" id="tn{{deal['_id']}}">
 					
@@ -74,9 +74,9 @@
 						 
 						  <div class="thumbnail" 
 						  {% if deal['days'] == 0 %}
-						  	style="background-color: cornsilk;"
+						  	style="background-color: {{THUMBNAIL_COLOR}};"
 						  {% else %}
-						    style="background-color: #EFFFFF;"
+						    style="background-color: {{THUMBNAIL_COLOR}};"
 						  {% endif %}
 						  
 						  >
@@ -86,7 +86,7 @@
 									<td width="18%" valign="top"><img src="{{deal['image']}}" style="height: 100px;" width="100"/> </td>
 									<td width="70%" valign="top">
 										
-											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" target="_blank">{{deal['title']}}</a>{% if deal['unseen'] is defined %}<img src="/siteassets/img/newTag.gif"/>{% endif %}</p>
+											<p><a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);" title="{{deal['title']}}" target="_blank">{{deal['listing_title']}}</a>{% if deal['unseen'] is defined %}<img src="/siteassets/img/newTag.gif"/>{% endif %}</p>
 											<div class="row-fluid">
 												<div class="span7">
 													<div class="row-fluid" style="margin-bottom: 5px">
@@ -184,7 +184,49 @@
 						</li>
 						
 					  </ul>
-				
+					{% else %}
+						{% if (loop.index - 1) is divisibleby 3 %}
+						<ul class="thumbnails span12" style="margin-left:10px;">
+						{% endif %}
+							<li class="span4">
+							  <div class="thumbnail" id="tn{{deal['_id']}}">
+								<img src="{{deal['image']}}" style="height: 150px;width:100%;">
+								<div class="caption" >
+								  <a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);"  title="{{deal['title']}}" target="_blank">{{deal['thumbnail_title']}}</a>&nbsp;&nbsp;<span class="label label-inverse">{{deal['condition']}}</span>
+								  <p>
+								  	<div class="row-fluid" style="margin-bottom: 5px">
+									
+									<span style="margin-bottom: 3px; color: green;">
+									From {{deal['source']}}, {{deal['channel']}}</span>
+									
+									
+									
+									</div>
+									
+									{% if deal['city'] is defined %}
+									
+									<span style="color:grey;">{{deal['city']}}</span> |
+									   
+									{% endif %}
+									<span style="color:grey;">Rating ({{deal['value_rating']}}/5)</span>
+								  
+								  </p>
+								  <p><h2>${{deal['price']}} {% if deal['saved'] is sameas 1 %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+									{% elif deal['saved'] is sameas 2 %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
+									{% else %}
+									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+									{% endif %}</h2></p>
+								</div>
+							  </div>
+							</li>
+							
+						{% if loop.index is divisibleby 3 %}
+						</ul>
+						{% endif %}
+					
+					{% endif %}
 					    
 					    	
 					 

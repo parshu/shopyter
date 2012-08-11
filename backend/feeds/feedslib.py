@@ -196,6 +196,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 		
 		if(dealresult.has_key("title")):
 			dealtitle = dealresult['title'].title()
+			dealresult['thumbnail_title'] = (dealtitle[:34] + '..') if len(dealtitle) > 35 else dealtitle
+			dealresult['listing_title'] = (dealtitle[:68] + '..') if len(dealtitle) > 70 else dealtitle
 			ki = 0
 			for keyt in keywordtags:
 				if(dealtitle.find(keyt) >= 0):

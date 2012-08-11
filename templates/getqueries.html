@@ -1,10 +1,11 @@
 
 
 {% block content %}
-{% if qlen > 0 %}
-<div id="querytable" class="row-fluid well" totalqueries="{{qlen}}">
 
- 
+<div id="querytable" class="row-fluid" totalqueries="{{qlen}}">
+
+ {% if qlen > 0 %}
+ <div class="well">
 	<table id="table-3" style="background:#F8F8F8;">
 	{% if source['id'] is sameas 1 %}
 	<tr><td><span style="color:darkorange">{{username}}'s</span> looking for:</td></tr>
@@ -43,7 +44,8 @@
 	</td></tr>
  	{% endfor %}
 	</table>
-	 </div>
+	</div>
+	 
 {% else %}	
 
  {% if source['id'] is sameas 1 %}
@@ -52,8 +54,10 @@
  	  </div>
  	
  {% endif %}
+ 
 
  {% endif %}
+ </div>
  {% endblock %}  
 
 
