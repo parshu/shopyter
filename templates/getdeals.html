@@ -61,11 +61,11 @@
 					
 				{% endif %}
 				
-		<div class="scrollspy-example">
+		<div >
 				{% for deal in deals %}
 		        
 		        
-		       		   {% if RESULTS_LISTING_VIEW is sameas 1 %}
+		       		   {% if APP_CONFIG['RESULTS_LISTING_VIEW'] is sameas 1 %}
 					    	
 						<ul class="thumbnails" id="tn{{deal['_id']}}">
 					
@@ -74,9 +74,9 @@
 						 
 						  <div class="thumbnail" 
 						  {% if deal['days'] == 0 %}
-						  	style="background-color: {{THUMBNAIL_COLOR}};"
+						  	style="background-color: {{APP_CONFIG['THUMBNAIL_COLOR']}};"
 						  {% else %}
-						    style="background-color: {{THUMBNAIL_COLOR}};"
+						    style="background-color: {{APP_CONFIG['THUMBNAIL_COLOR']}};"
 						  {% endif %}
 						  
 						  >
@@ -188,8 +188,8 @@
 						{% if (loop.index - 1) is divisibleby 3 %}
 						<ul class="thumbnails span12" style="margin-left:10px;">
 						{% endif %}
-							<li class="span4">
-							  <div class="thumbnail" id="tn{{deal['_id']}}">
+							<li class="span4" id="tn{{deal['_id']}}">
+							  <div class="thumbnail">
 								<img src="{{deal['image']}}" style="height: 150px;width:100%;">
 								<div class="caption" >
 								  <a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);"  title="{{deal['title']}}" target="_blank">{{deal['thumbnail_title']}}</a>&nbsp;&nbsp;<span class="label label-inverse">{{deal['condition']}}</span>

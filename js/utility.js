@@ -61,7 +61,7 @@ function execURL(url, asynchronous){
 				var lng = results[0].geometry.location.lng();
 				execURL('/updatelocation/' + username + '/' + city + '/' + state + '/' + lat + '/' + lng , true);
 				var ajaxDisplay = document.getElementById("userlocation");
-				ajaxDisplay.innerHTML = "<strong>" + city + ", " + state + "</strong>";
+				ajaxDisplay.innerHTML = city + ", " + state;
 				ajaxDisplay = document.getElementById("editlink");
 				ajaxDisplay.innerHTML = "edit";
 				

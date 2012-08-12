@@ -1,13 +1,13 @@
 make
 echo "Customizing bootstrap-responsive.css ..."
-sed '548 s/.*/    margin-left: 5px;/' docs/assets/css/bootstrap-responsive.css > test1
-sed '216 s/.*/    margin-left: 5px;/' test1 > test2
-sed '312 s/.*/    margin-left: 5px;/' test2 > test3
-sed '452 s/.*/    margin-left: 5px;/' test3 > docs/assets/css/bootstrap-responsive.css
+sed '548 s/.*/    margin-left: 8px;/' docs/assets/css/bootstrap-responsive.css > test1
+sed '216 s/.*/    margin-left: 8px;/' test1 > test2
+sed '312 s/.*/    margin-left: 8px;/' test2 > test3
+sed '452 s/.*/    margin-left: 8px;/' test3 > docs/assets/css/bootstrap-responsive.css
 echo "Done customizing bootstrap-responsive.css ..."
 echo "Customizing bootstrap.css ..."
-sed '194 s/.*/   margin-left: 5px;/' docs/assets/css/bootstrap.css > test1
-sed '319 s/.*/   margin-left: 5px;/' test1 > test2
+sed '194 s/.*/   margin-left: 8px;/' docs/assets/css/bootstrap.css > test1
+sed '319 s/.*/   margin-left: 8px;/' test1 > test2
 sed '3208 s/.*/   margin-bottom: 0px;/' test2 > test21
 sed '409 s/.*/   padding-left: 70px;/' test21 > test3
 sed '2594 s/.*/   background-color: #AAAAAA;/' test3 > test31

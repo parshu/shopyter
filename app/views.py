@@ -22,15 +22,18 @@ from datetime import timedelta
 TEMPLATE_PATH.append('./templates')
 import milo
 
-DBNAME = "test"
-PRICE_HIGH_PER = 0.15
-PRICE_LOW_PER = 1.0
-PRICE_MAX_PER = 2
-PRICE_MIN_PER = 2
-DEFAULT_DAYS_FILTER = 7
-FILTER_ON_LEFT = 1
-THUMBNAIL_COLOR = "#EFFFFF"
-RESULTS_LISTING_VIEW = 0
+APP_CONFIG = {}
+APP_CONFIG["DBNAME"] = "test"
+APP_CONFIG["PRICE_HIGH_PER"] = 0.15
+APP_CONFIG["PRICE_LOW_PER"] = 1.0
+APP_CONFIG["PRICE_MAX_PER"] = 2
+APP_CONFIG["PRICE_MIN_PER"] = 2
+APP_CONFIG["DEFAULT_DAYS_FILTER"] = 7
+APP_CONFIG["FILTER_ON_LEFT"] = 1
+APP_CONFIG["THUMBNAIL_COLOR"] = "#EFFFFF"
+APP_CONFIG["RESULTS_LISTING_VIEW"] = 1
+APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
+APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
 
 def getQueryFilters(query):
 	filterstring = ""
@@ -151,13 +154,13 @@ def hello_world():
     
 @route('/getclfeed/<keyword>/<pricelow>/<pricehigh>/<pageindex>/<zipcode>/<city>/<state>')
 def getclfeed(keyword,pricelow,pricehigh,pageindex,zipcode,city,state):
-	jsonresp = CLJsonFeed.getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,DBNAME)
+	jsonresp = CLJsonFeed.getCLJson(keyword,pricehigh,pricelow,pageindex,zipcode,city,state,APP_CONFIG["DBNAME"])
 	return jsonresp
 
 
 @route('/updatedeallocation/<dealid>/<lat>/<long>')
 def updatedeallocation(dealid, lat, long):
-	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
 	deal = deals_table.find_one({'_id': dealid})
 	deal['lat'] = float(lat)
 	deal['long'] = float(long)
@@ -167,7 +170,7 @@ def updatedeallocation(dealid, lat, long):
 
 @route('/updatelocation/<username>/<city>/<state>/<lat>/<long>')
 def updatelocation(username, city, state, lat, long):
-	users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+	users_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['users']
 	userinfo = users_table.find_one({'username': username})
 	userinfo['city'] = city
 	userinfo['state'] = state
@@ -181,15 +184,15 @@ def updatelocation(username, city, state, lat, long):
 @route('/dealsupdate/<username>/<qid>')
 def dealsupdate(username, qid):
 
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 	query = mainbox_table.find_one({'_id': qid})
-	deals_updater.updateQuery(query, mainbox_table, DBNAME)
+	deals_updater.updateQuery(query, mainbox_table, APP_CONFIG["DBNAME"])
 
 	lastviewed = query['lastviewed']
 	dealquery = getDealQuery(query)
 
 	dealquery['$and'].append({'founddate': {'$gt':  lastviewed} })
-	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
 	sys.stdout.flush()
 	dealcount = deals_table.find(dealquery).count()
 	print "Found additional %s deals..." % (dealcount)
@@ -210,7 +213,7 @@ def updatemetrics(username, mode, metrics):
 	metricshash = json.loads(metrics)
 	print metricshash
 	sys.stdout.flush()
-	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
+	user_metrics_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})
 	if not user_metrics:
 		metricshash['_id'] = username
@@ -240,7 +243,7 @@ def updatemetrics(username, mode, metrics):
 @route('/:username')
 def user(username):
     
-	users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+	users_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['users']
 	userinfo = users_table.find_one({'username': username})
 	if not userinfo:
 		return 'User %s not a part of our beta test. Please wait for your invite :-)' % username
@@ -255,7 +258,7 @@ def user(username):
 		   
 	response.set_cookie('username', username, path = '/')    
     
-	return template('userhome.html', username = username, userinfo = userinfo, PRICE_HIGH_PER = PRICE_HIGH_PER, PRICE_LOW_PER = PRICE_LOW_PER, PRICE_MAX_PER = PRICE_MAX_PER, PRICE_MIN_PER = PRICE_MIN_PER, DEFAULT_DAYS_FILTER = DEFAULT_DAYS_FILTER, return_user = return_user, FILTER_ON_LEFT = FILTER_ON_LEFT)
+	return template('userhome.html', username = username, userinfo = userinfo, APP_CONFIG = APP_CONFIG, return_user = return_user)
 
 
 
@@ -263,7 +266,7 @@ def user(username):
 def updatequerypricerange(qid, pricelow, pricehigh):
 	pricelow = int(pricelow)
 	pricehigh = int(pricehigh)
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 	username = request.cookies.get('username')
 	print "updating " + qid + ": " + str(pricelow) + " - " + str(pricehigh)
 	sys.stdout.flush()
@@ -275,7 +278,7 @@ def updatequerypricerange(qid, pricelow, pricehigh):
 @route('/updatequerydays/<qid>/<days>')
 def updatequerydays(qid, days):
 	days = int(days)
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 	username = request.cookies.get('username')
 	print "updating " + qid + ": " + str(days) 
 	sys.stdout.flush()
@@ -288,7 +291,7 @@ def updatequerydays(qid, days):
 def updatequeryfilters(qid, filters):
 	if(filters == "-1"):
 		filters = ""
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 	username = request.cookies.get('username')
 	print "updating " + qid + ": " + filters
 	sys.stdout.flush()
@@ -300,24 +303,24 @@ def updatequeryfilters(qid, filters):
 
 @route('/addquery/<keyword>/<dollarlimit>')
 def addquery(keyword, dollarlimit):
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 	username = request.cookies.get('username')
 	queries = [query for query in mainbox_table.find({'username': username})]		
 	dollar = int(dollarlimit)
 	keyword = string.strip(keyword)
-	pricehigh = int(dollar + (PRICE_HIGH_PER * dollar))
-	pricelow = int(dollar - (PRICE_LOW_PER * dollar))
-	pricemax = pricehigh * PRICE_MAX_PER
-	pricemin = pricelow / PRICE_MIN_PER
+	pricehigh = int(dollar + (APP_CONFIG['PRICE_HIGH_PER'] * dollar))
+	pricelow = int(dollar - (APP_CONFIG['PRICE_LOW_PER'] * dollar))
+	pricemax = pricehigh * APP_CONFIG['PRICE_MAX_PER']
+	pricemin = pricelow / APP_CONFIG['PRICE_MIN_PER']
 	queryhash = feedslib.gethash(username + keyword + dollarlimit + str(pricehigh) + str(pricelow))
 	uniqqueryhash = feedslib.gethash(keyword + dollarlimit + str(pricehigh) + str(pricelow))
 	querymatches = [query for query in mainbox_table.find({'_id': queryhash})]
 	currdatetime = datetime.utcnow()
 	if(len(querymatches) == 0):
-		users_table = pymongo.Connection('localhost', 27017)[DBNAME]['users']
+		users_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['users']
 		userinfo = users_table.find_one({'username': username})
 		
-		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': currdatetime, 'created': currdatetime, 'dayfilter': DEFAULT_DAYS_FILTER, 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip'], 'lat': userinfo['lat'], 'long': userinfo['long']}
+		inserthash = {'_id': queryhash, 'qid': uniqqueryhash, 'username': username, 'keyword': keyword, 'dollar_limit': dollar, 'price_high': pricehigh, 'price_low': pricelow, 'lastmodified': currdatetime, 'created': currdatetime, 'dayfilter': APP_CONFIG['DEFAULT_DAYS_FILTER'], 'pricemax': pricemax, 'pricemin': pricemin, 'city': userinfo['city'], 'state': userinfo['state'], 'zip': userinfo['zip'], 'lat': userinfo['lat'], 'long': userinfo['long']}
 		
 		results1 = feedslib.getFeedDeals("craigslist", feedsconfig.CONFIG, keyword, keyword, pricehigh, pricelow, "",userinfo['zip'],userinfo['city'],userinfo['state'])
 		deals1 = results1['deals']
@@ -363,7 +366,7 @@ def addquery(keyword, dollarlimit):
 		inserthash["facets"] = ','.join(facetslist)
 		sys.stdout.flush()
 		if(len(deals) > 0):
-			deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+			deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
 			print "Inserting into deals table..."
 			sys.stdout.flush()
 			deals_table.insert(deals, continue_on_error=True)
@@ -389,7 +392,7 @@ def getdealemail(keyword, dollarlimit, days, username):
     dollarlimit = int(dollarlimit)
     dollarlimit = int(1.25 * dollarlimit) 
     daylimit = int(days);
-    deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+    deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
     deals = []
     dealsout = []
     deals.extend([deal for deal in deals_table.find({'keyword': keyword, 'price': {'$lt': dollarlimit} }).sort("founddate", pymongo.DESCENDING)])
@@ -410,7 +413,7 @@ def getdealemail(keyword, dollarlimit, days, username):
 
 @route('/savetag/<username>/<queryid>/<tag>')
 def savetag(username, queryid, tag):
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']     
 	query = mainbox_table.find_one({'_id': queryid})
 	if(query.has_key('tags')):
 		query['tags'] = query['tags'] + "," + tag
@@ -423,7 +426,7 @@ def savetag(username, queryid, tag):
 
 @route('/getfilters/<username>/<queryid>/<loopid>')
 def getfilters(username, queryid, loopid):
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']     
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']     
 	query = mainbox_table.find_one({'_id': queryid})
 
 
@@ -432,13 +435,13 @@ def getfilters(username, queryid, loopid):
 	tagresults = getQueryTags(query)
 	
 
-	return template('getfilters.html', query = query, tags = tagresults['tags'], taghash = tagresults['taghash'], facethash = facetresults['facethash'], loopid = loopid, selectedfilters = filterresults['selectedfilters'], filterstring = filterresults['filterstring'], username = username)
+	return template('getfilters.html', query = query, tags = tagresults['tags'], taghash = tagresults['taghash'], facethash = facetresults['facethash'], loopid = loopid, selectedfilters = filterresults['selectedfilters'], filterstring = filterresults['filterstring'], username = username, APP_CONFIG = APP_CONFIG)
 
 
 @route('/savedeal/<dealid>/<username>')
 def savedeal(dealid, username):
-	deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
-	saved_deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']  
+	deal_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
+	saved_deal_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['saved_deals']  
 	deal = deal_table.find_one({'_id': dealid})
 	deal['username'] = username
 	saved_deal_table.insert(deal)
@@ -448,7 +451,7 @@ def savedeal(dealid, username):
     
 @route('/unsavedeal/<dealid>/<username>')
 def unsavedeal(dealid, username):
-	saved_deal_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']  
+	saved_deal_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['saved_deals']  
 	
 	saved_deal_table.remove({'username': username, '_id': dealid})
 	print "Unsaving|" + username + ":" + dealid
@@ -464,16 +467,16 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	if(sorttype == "-1"):
 		sorttype = "descending"
 	
-	user_metrics_table = pymongo.Connection('localhost', 27017)[DBNAME]['user_metrics']
+	user_metrics_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})
 	savetab = 0
 	zoom = int(zoom)
 	startnum = int(startnum) - 1
 	resultsize = int(resultsize)
-	deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['deals']
+	deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
 	deals = []
 	
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox'] 
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox'] 
 	query = mainbox_table.find_one({'_id': queryid})
 	
 	qlastviewed = None
@@ -497,7 +500,7 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 		else:
 			deals.extend([deal for deal in deals_table.find(dealquery).sort(sortby, pymongo.DESCENDING).skip(startnum).limit(resultsize)])
     
-	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
+	saved_deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['saved_deals']
 	saved_deals = []
 	saved_deals.extend([saved_deal for saved_deal in saved_deals_table.find({'keyword': query['keyword'], 'username': username})])
 	sdealhash = {}
@@ -568,19 +571,19 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	
 	mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
 	
-	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), THUMBNAIL_COLOR = THUMBNAIL_COLOR, RESULTS_LISTING_VIEW = RESULTS_LISTING_VIEW)
+	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
 	
 	if(keyword == '-1'): 
-		mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+		mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
 		query = mainbox_table.find_one({'username': username})
 		keyword = query['keyword']
 		dollarlimit = query['dollar_limit']
    
 	dollarlimit = int(dollarlimit)
-	saved_deals_table = pymongo.Connection('localhost', 27017)[DBNAME]['saved_deals']
+	saved_deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['saved_deals']
 	deals = []
 	savetab = 1
     
@@ -592,22 +595,22 @@ def getsaveddeals(username, keyword, dollarlimit):
 		deals[i]['days'] = days
 		deals[i]['saved'] = 2
 		i = i + 1
-	return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab)
+	return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, APP_CONFIG = APP_CONFIG)
     
 @route('/getqueries/<username>/<linkno>')
 def getqueries(username, linkno):
 	source = {'id': 1, 'trname': 'trquery', 'linkname': 'query'}
 	linkno = int(linkno)
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']    
 	queries = [query for query in mainbox_table.find({'username': username}).sort("created", pymongo.ASCENDING)]  
 	qlen = len(queries)  
-	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source, FILTER_ON_LEFT = FILTER_ON_LEFT)
+	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source, APP_CONFIG = APP_CONFIG)
 
 @route('/getpopularqueries/<username>/<linkno>')
 def getpopularqueries(username, linkno):
 	source = {'id': 2, 'trname': 'trpopquery', 'linkname': 'popquery'}
 	linkno = int(linkno)
-	mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']    
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']    
 	queries = [query for query in mainbox_table.find({'username': {'$ne': username}}).limit(6)]  
 	qlen = len(queries)  
 	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source)
@@ -616,7 +619,7 @@ def getpopularqueries(username, linkno):
 @route('/removequery/<queryid>')
 def removequery(queryid):
     
-    mainbox_table = pymongo.Connection('localhost', 27017)[DBNAME]['mainbox']
+    mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
     #did = bson.objectid.ObjectId(qid)
     
     mainbox_table.remove({'_id': queryid})
