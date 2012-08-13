@@ -4,7 +4,7 @@
               &nbsp;&nbsp;&nbsp; for <span style="color:darkorange;">{{keyword}}</span>
               
               {% if savetab is sameas 0 %}
-               around <span style="color:darkorange">${{dollarlimit}}</span> [showing {{totalresults}} results]
+               around <span style="color:darkorange">${{dollarlimit}}</span> <span style="color:grey;float:right;">showing {{totalresults}} results</span>
 		      {% endif %}
 		     </div>
 				<!--{% if savetab is sameas 0 %}
@@ -191,18 +191,43 @@
 					  </ul>
 					{% else %}
 						{% if (loop.index - 1) is divisibleby 3 %}
-						<ul class="thumbnails span12" style="margin-left:10px;">
+						<ul class="thumbnails span12" >
 						{% endif %}
 							<li class="span4" id="tn{{deal['_id']}}">
 							  <div class="thumbnail">
-								<img src="{{deal['image']}}" style="height: 150px;width:100%;">
+							  	<div class="row-fluid">
+									<div class="span8">
+										<img src="{{deal['image']}}" style="height: 100px;width:100%;">
+									</div>
+									<div class="span3">
+										 <div class="row-fluid" style="padding-top:5px;padding-bottom:5px;"><h4><span style="color:brown;">${{deal['price']}}</span> </h4></div>
+										  <div class="row-fluid" style="padding-bottom:3px;float:right;">
+										 {% if deal['condition'] == "new" %}
+										 	<span class="label label-success" style="padding: 3px 6px;width:80%;float:right;float:bottom;" >{{deal['condition']}}</span>
+										 {% elif deal['condition'] == "used" %}
+										 	<span class="label label-important" style="padding: 3px 6px;width:80%;float:right;float:bottom;" >{{deal['condition']}}</span>
+										 {% else %}
+										 	<span class="label label-important" style="padding: 3px 6px;width:80%;float:right;float:bottom;" > {{ deal['condition'] | truncate(length=6, killwords=True, end='') }}</span>
+										 {% endif %}
+										 </div>
+										  <div class="row-fluid">
+										 {% if deal['saved'] is sameas 1 %}
+										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);padding: 3px 6px;width:80%;float:right;float:bottom;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+										{% elif deal['saved'] is sameas 2 %}
+										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);padding: 3px 6px;width:80%;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
+										{% else %}
+										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 6px;width:80%;float:right;float:bottom;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+										{% endif %}
+										</div>
+									</div>
+								</div>
 								<div class="caption" >
-								  <a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);"  title="{{deal['title']}}" target="_blank">{{deal['thumbnail_title']}}</a>&nbsp;&nbsp;<span class="label label-inverse">{{deal['condition']}}</span>
+								  <a href="{{deal['url']}}"  onClick="execURL('/updatemetrics/{{username}}/increment/{&quot;dealclicks&quot;:1}',true);"  title="{{deal['title']}}" target="_blank">{{deal['thumbnail_title']}}</a>&nbsp;&nbsp;
 								  <p>
 								  	<div class="row-fluid" style="margin-bottom: 5px">
 									
 									<span style="margin-bottom: 3px; color: green;">
-									From {{deal['source']}}</span><span style="color:grey;">, {{deal['city']}}</span> |
+									From {{deal['source']}}</span><span style="color:grey;">, {{deal['city']}}</span>
 									
 									
 									
@@ -215,13 +240,7 @@
 									
 									
 								  </p>
-								  <p><h2>${{deal['price']}} {% if deal['saved'] is sameas 1 %}
-									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
-									{% elif deal['saved'] is sameas 2 %}
-									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
-									{% else %}
-									<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 18px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
-									{% endif %}</h2></p>
+								 
 								</div>
 							  </div>
 							</li>
