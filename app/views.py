@@ -166,6 +166,25 @@ def updatedeallocation(dealid, lat, long):
 	deal['long'] = float(long)
 	
 	deals_table.update({'_id': dealid}, deal)
+	
+@route('/setdbfield/<table>/<id>/<value>')
+def updatedeallocation(table, id, value):
+	print "Update to: " + value
+	sys.stdout.flush()
+	hash = json.loads(value)
+	print hash
+	sys.stdout.flush()
+	table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]][table]
+	record = table.find_one({'_id': id})
+	if not record:
+		return {'status': 'Error: Record not found'}
+	else:
+		for key in hash.keys():
+			record[key] = hash[key]
+		print record
+		sys.stdout.flush()
+		table.update({'_id': id}, record)
+	return {'status': 'ok'}
 
 
 @route('/updatelocation/<username>/<city>/<state>/<lat>/<long>')
@@ -257,6 +276,8 @@ def user(username):
 	
 		   
 	response.set_cookie('username', username, path = '/')    
+	if(userinfo.has_key("RESULTS_LISTING_VIEW")):
+		APP_CONFIG['RESULTS_LISTING_VIEW'] = userinfo['RESULTS_LISTING_VIEW']
     
 	return template('userhome.html', username = username, userinfo = userinfo, APP_CONFIG = APP_CONFIG, return_user = return_user)
 
@@ -466,6 +487,12 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 		sortby = "founddate"
 	if(sorttype == "-1"):
 		sorttype = "descending"
+	
+	user_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['users']
+	user = user_table.find_one({'username': username})
+	if(user.has_key("RESULTS_LISTING_VIEW")):
+		APP_CONFIG["RESULTS_LISTING_VIEW"] = user["RESULTS_LISTING_VIEW"]
+
 	
 	user_metrics_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})

@@ -412,10 +412,7 @@ function execURL(url, asynchronous){
 	
 	function makeBigMapChanges(username)
 	{
-		/*var ajaxDisplay = document.getElementById("filtersdiv");
-		var filtercontent = ajaxDisplay.innerHTML;
-		ajaxDisplay = document.getElementById("tempfiltersdiv");
-		ajaxDisplay.innerHTML = filtercontent;*/
+		
 		var ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("class","span0");
 		ajaxDisplay = document.getElementById("secondcol");
