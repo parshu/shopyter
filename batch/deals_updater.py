@@ -64,7 +64,7 @@ def updateQuery(query, mainbox_table, db):
 	facetcloudlist = [results1['facetcloud'], results2['facetcloud'], results3['facetcloud']]
 	
 	
-	mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4, "channel,condition")
+	mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4, "channel,condition","facets")
 	print "mfacetcloud: " + str(mfacetcloud)
 	sys.stdout.flush()
 	facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,100)

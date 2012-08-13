@@ -365,13 +365,25 @@ def addquery(keyword, dollarlimit):
 		print "Total deals found: " + str(len(deals))
 		
 		tagcloudlist = [results1['tagcloud'], results2['tagcloud'], results3['tagcloud']]
+		print "************** All tags ********************"
+		print tagcloudlist
+		print "************** All tags ********************"
+		sys.stdout.flush()
 		mtagcloud = feedslib.consolidateTagClouds(tagcloudlist)
+		print "************** consolidated tags ********************"
+		print mtagcloud
+		print "************** consolidated tags ********************"
+		sys.stdout.flush()
 		tagcloud = feedslib.getSortedTagCloudList(mtagcloud)
+		print "************** final tags ********************"
+		print tagcloud
+		print "************** final tags ********************"
+		sys.stdout.flush()
 		tagslist = []
 		facetcloudlist = [results1['facetcloud'], results2['facetcloud'], results3['facetcloud']]
 		
 		
-		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4, "channel,condition")
+		mfacetcloud = feedslib.consolidateTagClouds(facetcloudlist,4, "channel,condition", "facets")
 		print "mfacetcloud: " + str(mfacetcloud)
 		sys.stdout.flush()
 		facetcloud = feedslib.getSortedTagCloudList(mfacetcloud,100)
@@ -594,7 +606,8 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	spans = 0
 	if(facethash.has_key('channel')):
 		spans = spans + len(facethash['channel'].keys())
-	spans = int(12/spans)
+	if(spans > 0):
+		spans = int(12/spans)
 	
 	mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
 	
@@ -631,7 +644,6 @@ def getqueries(username, linkno):
 	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']    
 	queries = [query for query in mainbox_table.find({'username': username}).sort("created", pymongo.ASCENDING)]  
 	qlen = len(queries) 
-	print "**** qlen: " + qlen
 	sys.stdout.flush()
 	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source, APP_CONFIG = APP_CONFIG)
 

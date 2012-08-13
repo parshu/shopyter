@@ -13,7 +13,55 @@ import itertools
 import math
 import milo
 
+STOP_WORDS = {'the': 1, 'for': 1, 'by': 1, 'and': 1}
+def getTagCloud(tagcloud, tags, excludelist):
+	
+	for tag in tags:
+		if(tag.isdigit() or tag.islower() or (tag == '') or (tag.title() in excludelist) or (STOP_WORDS.has_key(tag.lower()))):
+			continue
+		
+		tagupper = tag.upper()
+		tagtitle = tag.title()
+		taglower = tag.lower()
+		if(tagcloud.has_key(tagupper)):
+			tagcloud[tagupper] = tagcloud[tagupper] + 1
+		elif(tagcloud.has_key(tagtitle)):
+			if(tag.isupper()):
+				tagcloud[tag] = tagcloud[tagtitle] + 1
+				del tagcloud[tagtitle]
+			else:
+				tagcloud[tagtitle] = tagcloud[tagtitle] + 1
+		elif(tagcloud.has_key(taglower)):
+			if(tag.isupper()):
+				tagcloud[tag] = tagcloud[taglower] + 1
+				del tagcloud[taglower]
+			elif(tag.istitle()):
+				tagcloud[tag] = tagcloud[taglower] + 1
+				del tagcloud[taglower]
+			else:
+				tagcloud[taglower] = tagcloud[taglower] + 1
+		elif(tagcloud.has_key(tag)):
+			tagcloud[tag] = tagcloud[tag] + 1
+		else:
+			tagcloud[tag] = 1
+	return tagcloud
 
+def getBigrams(words):
+	bigrams = []
+	wprev = None
+	for w in words:
+		if(STOP_WORDS.has_key(w.lower())):
+			wprev = None
+			continue
+		if(w.isdigit()):
+			wprev = w
+			continue
+		if((w == "") or (w == " ")):
+			continue
+		if(wprev != None):
+			bigrams.append(wprev + " " + w)
+		wprev = w
+	return bigrams
 
 def getZipCode(lat, long):
 	url = "http://www.geoplugin.net/extras/postalcode.gp?lat=%s&long=%s&format=json" % (lat, long)
@@ -32,7 +80,7 @@ def gethash(s):
 	h.update(s)
 	return(h.hexdigest())
 	
-def consolidateTagClouds(tagcloudlist, threshold=7, exceptkeys=""):
+def consolidateTagClouds(tagcloudlist, threshold=7, exceptkeys="", type="tags"):
 	exceptlist = exceptkeys.split(",")
 	if(len(tagcloudlist) == 0):
 		return None
@@ -46,17 +94,32 @@ def consolidateTagClouds(tagcloudlist, threshold=7, exceptkeys=""):
 				resulttagcloud[key] = resulttagcloud[key] + tagcloud[key]
 			else:
 				resulttagcloud[key] = tagcloud[key]
-			if(resulttagcloud[key] < threshold):
-				keytemp = key.split("|")[0]
-				if(not keytemp in exceptlist):
-					del resulttagcloud[key]
+			
 	
 	for key in resulttagcloud.keys():
-		keytemp = key.split("|")[0]
-		if(resulttagcloud[key] < threshold):
+		if(resulttagcloud.has_key(key)):
+			keytemp = key.split("|")[0]
 			if(not keytemp in exceptlist):
-				del resulttagcloud[key]
+				if(resulttagcloud[key] < threshold):
+					del resulttagcloud[key]
+					continue
+				if((resulttagcloud[key] >= 3) and (key.find(" ") > 0)):
+					bigram = key.split(" ")
+					for gram in bigram:
+						if(resulttagcloud.has_key(gram)):
+							del resulttagcloud[gram]
+				if(type == "tags"):
+					if(not (key.istitle() or key.isupper())):
+						del resulttagcloud[key]
+						continue
+				
+				
 	return resulttagcloud
+
+
+
+
+
 
 def getSortedTagCloudList(tagcloud, cutoff=8):
 	
@@ -81,7 +144,10 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 			 break
 	if(feedconfig == None):
 		raise Exception("Error: Feed configurations not found. Check \"feedsource\" field and make sure it exists.")
-	keywordtags = re.split('\W+', keyword.title())	 
+	ktitle = keyword.title()
+	ktitle = ktitle.replace("'","")
+	keywordtags = re.split('\W+', ktitle)	
+	keywordbigramtags = getBigrams(keywordtags) 
 	keyword = urllib.quote(keyword)
 	pricehigh = str(pricehigh)
 	pricelow = str(pricelow)
@@ -107,6 +173,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 	
 	tagcloud = {}
 	facetcloud = {}
+	bigramtagcloud = {}
 	
 	resp = response.read()
 	results = json.loads(resp)	
@@ -181,16 +248,11 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 							
 				if(datakey in feedtags):
 					valascii = val
-					tags = re.split('\W+', valascii)
-					for tag in tags:
-						if(tag.isdigit() or tag.islower() or (tag == '') or (tag in keywordtags)):
-							continue
-						
-						
-						if(tagcloud.has_key(tag)):
-							tagcloud[tag] = tagcloud[tag] + 1
-						else:
-							tagcloud[tag] = 1
+					valstripped = valascii.replace("'","")
+					tags = re.split('\W+', valstripped)
+					bigramtags = getBigrams(tags)
+					tagcloud = getTagCloud(tagcloud, tags, keywordtags)
+					bigramtagcloud = getTagCloud(bigramtagcloud, bigramtags, keywordbigramtags)
 		if(not dealresult.has_key('price')):
 			continue
 		
@@ -236,6 +298,5 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
 		resultindex = resultindex + 1
-	
-	
-	return({'deals': deals, 'tagcloud': tagcloud, 'facetcloud': facetcloud, 'specialreturn': specialReturn})
+		
+	return({'deals': deals, 'tagcloud': dict(tagcloud.items() + bigramtagcloud.items()), 'facetcloud': facetcloud, 'specialreturn': specialReturn})

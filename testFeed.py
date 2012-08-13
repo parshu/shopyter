@@ -27,7 +27,7 @@ jsonconfig = feedsconfig.CONFIG
 print jsonconfig
 
 
-results = feedslib.getFeedDeals(feedsource, jsonconfig, keyword, pricehigh, pricelow, maxresults, zip, city, state)
+results = feedslib.getFeedDeals(feedsource, jsonconfig, keyword, keyword, pricehigh, pricelow, maxresults, zip, city, state)
 deals = results['deals']
 
 ct = 1
