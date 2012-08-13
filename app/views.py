@@ -30,7 +30,7 @@ APP_CONFIG["PRICE_MAX_PER"] = 2
 APP_CONFIG["PRICE_MIN_PER"] = 2
 APP_CONFIG["DEFAULT_DAYS_FILTER"] = 7
 APP_CONFIG["FILTER_ON_LEFT"] = 1
-APP_CONFIG["THUMBNAIL_COLOR"] = "#EFFFFF"
+APP_CONFIG["THUMBNAIL_COLOR"] = "#FEFEFE"
 APP_CONFIG["RESULTS_LISTING_VIEW"] = 1
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
@@ -613,7 +613,7 @@ def getpopularqueries(username, linkno):
 	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']    
 	queries = [query for query in mainbox_table.find({'username': {'$ne': username}}).limit(6)]  
 	qlen = len(queries)  
-	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source)
+	return template('getqueries.html', username = username, linkno = linkno, queries = queries, qlen = qlen, source = source, APP_CONFIG = APP_CONFIG)
     
 
 @route('/removequery/<queryid>')

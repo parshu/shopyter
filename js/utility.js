@@ -424,6 +424,7 @@ function execURL(url, asynchronous){
 		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/nosort/nosorttype/getmap.html','localmaps', 1000);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","localmaps");
+		$("#thirdcol").hide();
 	}
 	
 	
@@ -445,6 +446,7 @@ function execURL(url, asynchronous){
 		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/nosort/nosorttype/getmap.html','mapresultsdiv', mapheight);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
+		$("#thirdcol").show();
 	}
 	
 	

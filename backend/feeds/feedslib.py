@@ -186,7 +186,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 						if(tag.isdigit() or tag.islower() or (tag == '') or (tag in keywordtags)):
 							continue
 						
-						tag = tag.title()
+						
 						if(tagcloud.has_key(tag)):
 							tagcloud[tag] = tagcloud[tag] + 1
 						else:
@@ -195,7 +195,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 			continue
 		
 		if(dealresult.has_key("title")):
-			dealtitle = dealresult['title'].title()
+			dealtitle = dealresult['title']
 			dealresult['thumbnail_title'] = (dealtitle[:34] + '..') if len(dealtitle) > 35 else dealtitle
 			dealresult['listing_title'] = (dealtitle[:68] + '..') if len(dealtitle) > 70 else dealtitle
 			ki = 0
@@ -211,6 +211,10 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 		dealresult['founddate'] = datetime.datetime.utcnow()
 		dealresult['popularity'] = float(((float(resultscount)/float(resultindex + 1))/float(resultscount)) * 100.0)
 		dealresult['popularity_rating'] = int(math.floor(dealresult['popularity'] / 20))
+		if(dealresult.has_key('city')):
+			dealresult['city'] = dealresult['city'].title()
+		if(dealresult.has_key('state')):
+			dealresult['state'] = dealresult['state'].upper()
 		lowestprice = float(pricelow)
 		highestprice = float(pricehigh)
 		if(feedconfig['feeddenomination'] == "cents"):
