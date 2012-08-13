@@ -3,7 +3,7 @@
 <html lang="en"><head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>klipiter.com | personal deal hunting engine | shopping assistant</title>
+    <title>shopyter | personal shopping assistant</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -95,8 +95,8 @@
 
 <body style="background:repeat 0 0 #FAFBF5)">
 	<div class="navbar navbar-fixed-top">
-		<div class="well"  style="color:white;background-color:brown;position:absolute;padding:15px 25px 20px;margin-left:50px;font-size:xx-large;">klipiter</div>
-    	<div class="navbar-inner" style="padding-left:50px;background-image: -moz-linear-gradient(center top , {{APP_CONFIG['NAV_COLOR']}}, {{APP_CONFIG['NAV_COLOR']}});border-top:5px solid #80BCA3;" >
+		<div class="well"  style="color:white;background-color:brown;position:absolute;padding:15px 15px 20px;margin-left:50px;font-size:xx-large;">shopyter</div>
+    	<div class="navbar-inner" style="padding-left:60px;background-image: -moz-linear-gradient(center top , {{APP_CONFIG['NAV_COLOR']}}, {{APP_CONFIG['NAV_COLOR']}});border-top:5px solid #80BCA3;" >
     		
     		
         	<div class="container-fluid" style="padding-left:50px;padding-right:0px;">
@@ -108,7 +108,7 @@
           		<div><a class="brand" href="http://klipiter.com"><span style="margin-left:110px;"><small>personal shopping assistant</small></span></a></div>
           		<div class="nav-collapse">
             	
-            		<p class="navbar-text pull-right" style="margin-right: 60px;"><a onclick="bookmark('{{username}}\'s Klipiter page', document.URL);" href="">Bookmark</a> | <a href="/{{username}}">{{username}}'s</a> klip board | <a href="mailto:knopon@gmail.com">feedback</a></p>
+            		<p class="navbar-text pull-right" style="margin-right: 60px;"><a onclick="bookmark('{{username}}\'s shopyter page', document.URL);" href="">Bookmark</a> | <a href="/{{username}}">{{username}}'s</a> klip board | <a href="mailto:knopon@gmail.com">feedback</a></p>
           		</div><!--/.nav-collapse -->
         	</div>
 		</div>
@@ -192,7 +192,7 @@
           				
 						<li class="active"><a href="#knopons" data-toggle="tab" onclick="revertBigMapChanges('{{username}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %});">Results</a></li>
 						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges('{{username}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %});execURL('/updatemetrics/{{username}}/increment/{&quot;savedtabviews&quot;:1}',true);">Saved Results</a></li>
-						<li><a href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges('{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);">Results on Map</a></li>
+						<li><a id="bigmaplink" href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges('{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);">Results on Map</a></li>
 						<!--<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
 							Sort by
@@ -251,9 +251,16 @@
         		
           	
           		<div class="row-fluid">  <!-- holds maps -->
-          			<div class="span12 well" id="mapsdiv" style="background-color:{{APP_CONFIG['HEADING_COLOR']}};" >
+          			<div class="span12 well" id="mapsdiv" style="background-color:{{APP_CONFIG['HEADING_COLOR']}};margin-bottom:0px;" >
           			    {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}
-						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">Loading...</span> <a onclick="renderLocationEdit();" href="#" ><span id="editlink">edit</span></a></form>
+						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">Loading...</span> <a onclick="renderLocationEdit();" href="#" ><span id="editlink">edit</span></a><a href="#" onmouseover="$('#maphelp').collapse('toggle');" onmouseout="$('#maphelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a><a href="#" onclick="$('#bigmaplink').click();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);"><i class="icon-fullscreen" style="float:right;"></i></a></form>
+						<div id="maphelp" class="collapse"><div style="color:brown;background-color:{{APP_CONFIG['THUMBNAIL_COLOR']}};padding-top:7px;padding-bottom:7px;padding-left:7px;padding-right:7px;">
+<button type="button" class="close" onclick="$('#maphelp').collapse('toggle');">&times;</button>
+
+	Edit you location by clicking on "edit" and then "saving". Locate in store and classified listings nearby. Click on the markers on the map to view listing details. Click "enlarge" to view on a larger map.
+
+
+</div></div>
 						<hr style="margin: 0px 0px;width:100%;">
 					{% endif %}
 						<div id="mapresultsdiv" ></div>
@@ -266,7 +273,7 @@
       		<hr>
 			
       		<footer>
-        		<p>© klipiter.com 2012</p>
+        		<p>© shopyter 2012</p>
       		</footer>
 
     </div><!--/.fluid-container-->
@@ -337,8 +344,7 @@
       });
       
       $('#add_query').submit(function() {
-      	  renderProgressBar();
-      	  doAnimation();   	  
+      	   	  
       	  
 	      var keyword = $("#keyword").val();
 	      var dollar_limit = parseInt($("#dollar_limit").val());

@@ -562,7 +562,8 @@ function execURL(url, asynchronous){
 	
 	  function addQuery(url, username){
   
-    	
+    	renderProgressBar();
+      	doAnimation();  
     	execURL("/updatemetrics/" + username + "/increment/{\"queryadd\":1}",true);
 		var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -633,7 +634,6 @@ function execURL(url, asynchronous){
 				}
 			}
 		}
-		
 		
 		ajaxRequest.open("GET", url, false); // false: synchronous call to eliminate weird UI behavior
 		ajaxRequest.send(null); 
