@@ -2,16 +2,36 @@
 
 {% block content %}
 
+<div class="row-fluid" style="padding-top:7px;padding-bottom:7px;margin-left:0px;background-color:{{APP_CONFIG['HEADING_COLOR']}};">
+	<span style="margin-left:7px;">
+	
+	{% if source['id'] is sameas 1 %}
+	<span style="color:darkorange">{{username}}'s</span> looking for
+	{% else %}
+	<span style="color:darkorange">Other users</span> are looking for
+	{% endif %}
+	
+	
+	 <a href="#" onmouseover="$('#queryboxhelp{{source['id']}}').collapse('toggle');" onmouseout="$('#queryboxhelp{{source['id']}}').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a></span>
+</div>
+
+<div id="queryboxhelp{{source['id']}}" class="collapse"><div style="color:brown;background-color:{{APP_CONFIG['THUMBNAIL_COLOR']}};padding-top:7px;padding-bottom:7px;padding-left:7px;padding-right:7px;">
+<button type="button" class="close" onclick="$('#queryboxhelp{{source['id']}}').collapse('toggle');">&times;</button>
+{% if source['id'] is sameas 1 %}
+	Use the form below to tell us <strong>"what"</strong> you want and <strong>"how much"</strong> you are willing to spend on it. <strong>We do the rest.</strong>
+{% else %}
+	See anything interesting below? Click "+" to add it to your mainbox and start tracking deals.
+{% endif %}
+
+</div></div>
+<hr style="margin: 0px 0px;width:100%;">
 <div id="querytable" class="row-fluid" totalqueries="{{qlen}}">
 
  {% if qlen > 0 %}
+ 
  <div class="well">
 	<table id="table-3" style="background:#F8F8F8;">
-	{% if source['id'] is sameas 1 %}
-	<tr><td><span style="color:darkorange">{{username}}'s</span> looking for:</td></tr>
-	{% else %}
-	<tr><td><span style="color:darkorange">other users</span> looking for:</td></tr>
-	{% endif %}
+	
 	{% for query in queries %}
 	
 	{% if source['id'] is sameas 1 %}
