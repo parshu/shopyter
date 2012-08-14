@@ -413,12 +413,15 @@ function execURL(url, asynchronous){
 	function makeBigMapChanges(username)
 	{
 		
+		var sortby = document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value;
+		sortby = sortby.replace(",","/");
+		
 		var ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("class","span0");
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span9");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/nosort/nosorttype/-1/getmap.html','localmaps', 1000);
+		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/-1/getmap.html','localmaps', 1000);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","localmaps");
 		$("#thirdcol").hide();
@@ -433,14 +436,15 @@ function execURL(url, asynchronous){
 	function revertBigMapChanges(username, mapheight)
 	{
 		
-		/*ajaxDisplay = document.getElementById("tempfiltersdiv");
-		ajaxDisplay.innerHTML = "";*/
+		var sortby = document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value;
+		sortby = sortby.replace(",","/");
+		
 		var ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("class","span3");
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span6");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/nosort/nosorttype/-1/getmap.html','mapresultsdiv', mapheight);
+		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/-1/getmap.html','mapresultsdiv', mapheight);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
 		$("#thirdcol").show();
@@ -451,13 +455,16 @@ function execURL(url, asynchronous){
 	
 	function renderSelectedMap(username, qid, mapheight, dealid)
 	{
+		var sortby = document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value;
+		sortby = sortby.replace(",","/");
+		
 		dealid = typeof dealid !== 'undefined' ? dealid : '-1';
 		var ajaxDisplay = document.getElementById("thirdcol");
 		var selmap = ajaxDisplay.getAttribute("selectedmap");
 		if(selmap == 'localmaps') {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12/nosort/nosorttype/' + dealid + '/getmap.html','localmaps',  1000);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/' + dealid + '/getmap.html','localmaps',  1000);
 		} else {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10/nosort/nosorttype/' + dealid + '/getmap.html','mapresultsdiv',  mapheight);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/' + dealid + '/getmap.html','mapresultsdiv',  mapheight);
 		}
 	
 	}

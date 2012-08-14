@@ -528,7 +528,8 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
 	user_metrics_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['user_metrics']
 	user_metrics = user_metrics_table.find_one({'username': username})
 	savetab = 0
-	zoom = int(zoom)
+	mapspecs = zoom.split(",")
+	zoom = int(mapspecs[0])
 	startnum = int(startnum) - 1
 	resultsize = int(resultsize)
 	deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['deals']
@@ -648,7 +649,7 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
 		del deals[id - numdel]
 		numdel = numdel + 1
 	
-	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid)
+	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid, mapspecs = mapspecs)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
