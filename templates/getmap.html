@@ -25,8 +25,13 @@
     	var markers = {};
     	var infowindows = {};
     	var markercounts = {};
+    	var prevopenindex = -1;
     	function codeAddress(map, address, markertitle, isuserlocation, url, source, dealid, latp, lngp, channel, imgurl, price) {
-    		var display = '<div class="container well" style="margin-bottom: 0px;width:100%;"><div><table><tr><td><img src="' + imgurl + '" style="height: 40px;" width="40"/></td><td><a href="' + url + '" target="_blank">' + markertitle + '</a> - $' + price + '</td></tr></table></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
+    		var highlightcolor = '';
+    		if(dealid == '{{highlightdealid}}') {
+				highlightcolor = "background-color:palegreen;"
+			}
+    		var display = '<div class="container well" style="margin-bottom: 0px;width:100%;' + highlightcolor + '"><div><table><tr><td><img src="' + imgurl + '" style="height: 40px;" width="30"/></td><td><a href="' + url + '" target="_blank">' + markertitle + '</a> - $' + price + '</td></tr></table></div><div><span style="color: green;">From ' + source + '</span>&nbsp;|&nbsp;' + address + '</div></div>';
     		if((latp == 0) && (lngp == 0)) {
     			geocoder.geocode( { 'address': address}, function(results, status) {
 				  if (status == google.maps.GeocoderStatus.OK) {
@@ -46,6 +51,9 @@
 						}
 						else {
 							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF0000|000000');
+						}
+						if(dealid == '{{highlightdealid}}') {
+							iwin.open(map,marker);
 						}
 						
 						
@@ -68,14 +76,22 @@
 						}
 						var infowindow = new google.maps.InfoWindow({
 							content: display,
-							maxWidth: 20
+							maxWidth: 30
 						});
 						markers[address] = marker;
 						infowindows[address] = infowindow;
 						markercounts[address] = 1;
+						{% if highlightdealid != "-1" %}
+							if(dealid == '{{highlightdealid}}') {
+								infowindow.open(map,marker);
+							}
+						{% endif %}
 						google.maps.event.addListener(marker, 'click', function() {
-						  infowindow.open(map,marker);
+						  
+						  	infowindow.open(map,marker);
+						  	
 						});
+						
 					}
 					
 				  } else {
@@ -98,6 +114,9 @@
 						else {
 							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF0000|000000');
 						}
+						if(dealid == '{{highlightdealid}}') {
+							iwin.open(map,marker);
+						}
 					}
 					else {
 						var marker = new google.maps.Marker({
@@ -115,11 +134,17 @@
 						}
 						var infowindow = new google.maps.InfoWindow({
 							content: display,
-							maxWidth: 20
+							maxWidth: 30
 						});
 						markers[address] = marker;
 						infowindows[address] = infowindow;
 						markercounts[address] =  1;
+						{% if highlightdealid != "-1" %}
+							if(dealid == '{{highlightdealid}}') {
+								
+								infowindow.open(map,marker);
+							}
+						{% endif %}
 						google.maps.event.addListener(marker, 'click', function() {
 						  infowindow.open(map,marker);
 						});
@@ -169,7 +194,7 @@
 			 var latlng = new google.maps.LatLng({{query['lat']}} - 0.005,{{query['long']}} - 0.005);
 			 map.setCenter(latlng);
 			 			
-			 			
+			 
 
       	}
       	

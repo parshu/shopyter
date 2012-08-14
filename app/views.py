@@ -34,6 +34,7 @@ APP_CONFIG["THUMBNAIL_COLOR"] = "#FEFEFE"
 APP_CONFIG["RESULTS_LISTING_VIEW"] = 1
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
+APP_CONFIG['PRICE_LOWBAR_PER'] = 0.20
 
 def getQueryFilters(query):
 	filterstring = ""
@@ -358,6 +359,7 @@ def addquery(keyword, dollarlimit):
 			sys.stdout.flush()
 			deals3 = milo.updateMiloMerchantInfo(deals3, results3['specialreturn'], userinfo['zip'], 10)
 		
+		
 		deals = []
 		deals.extend(deals1)
 		deals.extend(deals2)
@@ -493,8 +495,8 @@ def unsavedeal(dealid, username):
     
     
     
-@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/:filename')
-def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, sorttype):
+@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/<highlightdealid>/:filename')
+def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, highlightdealid, filename):
 	if(sortby == "-1"):
 		sortby = "founddate"
 	if(sorttype == "-1"):
@@ -517,6 +519,8 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	
 	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox'] 
 	query = mainbox_table.find_one({'_id': queryid})
+	
+	pricehigh = query['price_high']
 	
 	qlastviewed = None
 	if(query.has_key('lastviewed')):
@@ -545,15 +549,26 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	sdealhash = {}
 	for saved_deal in saved_deals:
 		sdealhash[saved_deal['_id']] = 1
-    	
     
+	filterlowprice = True
+	if((sortby == "price") and (sorttype == "descending")):
+		filterlowprice = False
 	updateCountFields = ['channel']	
 	addresshash = {}
 	i = 0
 	fieldhash = {}
 	for field in updateCountFields:
 		fieldhash[field] = {}
+	
+	dealdelindex = []
 	for deal in deals:
+		if(filterlowprice):
+			priceper = deal['price']/float(pricehigh)
+			if(priceper < APP_CONFIG['PRICE_LOWBAR_PER']):
+				dealdelindex.append(i)
+				i = i + 1
+				continue 
+			
 		fulladdress = []
 		if(deal.has_key('city')):
 			if(deal.has_key('street')):
@@ -611,7 +626,12 @@ def getdeals(username, queryid, startnum, resultsize, zoom, filename, sortby, so
 	
 	mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
 	
-	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG)
+	numdel = 0
+	for id in dealdelindex:
+		del deals[id - numdel]
+		numdel = numdel + 1
+	
+	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid)
     
 @route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
 def getsaveddeals(username, keyword, dollarlimit):
