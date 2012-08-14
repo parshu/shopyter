@@ -109,10 +109,10 @@
 						markercounts[address] = markercounts[address] + 1;
 						var marker = markers[address];
 						if(channel == "in-store") {
-							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|0000FF|000000');
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|66A3FF|000000');
 						}
 						else {
-							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF0000|000000');
+							marker.setIcon('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + markercounts[address] + '|FF6666|000000');
 						}
 						if(dealid == '{{highlightdealid}}') {
 							iwin.open(map,marker);

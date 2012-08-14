@@ -214,9 +214,9 @@
 							<a href="#" onclick="toggleListingView('{{username}}');" title="Thumbnail View"><span id="thumbviewicon" class="label{% if APP_CONFIG['RESULTS_LISTING_VIEW'] is sameas 0 %} label-inverse{% endif %}" style="padding:5px 6px 7px;"><i class="icon-th icon-white"></i></span></a> 
 						  <span class="label" style="padding:5px 6px 7px;">Sorted by</span>
 						  <select id="sortorder" style="margin-bottom:0px;width:150px;" onchange="sortCurrentDeals(document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value, '{{username}}');">
+							<option value="value,descending">Value for money</option>
 							<option value="price,descending">Price, High - Low</option>
 							<option value="price,ascending">Price, Low - High</option>
-							<option value="value,descending">Value for money</option>
 							<option value="popularity,descending">Popularity</option>
 							<option value="founddate,descending">Last found</option>
 							<option value="distance,ascending" disabled="disabled">Distance (coming soon)</option>

@@ -153,7 +153,7 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 	pricelow = str(pricelow)
 	maxresults = str(maxresults)
 	city = urllib.quote(city)
-	
+	lowestprice = pricehigh
 	print [keyword, maxresults, pricelow, pricehigh, zipcode, city, state]
 	
 	url = feedconfig['feedurl']
@@ -297,6 +297,8 @@ def getFeedDeals(feedsource, jsonconfig, keyword, origkeyword, pricehigh, pricel
 		hashstr = hashstr + origkeyword
 		dealresult["_id"] = gethash(hashstr)
 		deals.append(dealresult)
+		if(dealresult['price'] < lowestprice):
+			lowestprice = dealresult['price']
 		resultindex = resultindex + 1
 		
-	return({'deals': deals, 'tagcloud': dict(tagcloud.items() + bigramtagcloud.items()), 'facetcloud': facetcloud, 'specialreturn': specialReturn})
+	return({'deals': deals, 'tagcloud': dict(tagcloud.items() + bigramtagcloud.items()), 'facetcloud': facetcloud, 'specialreturn': specialReturn, 'lowestprice': lowestprice})

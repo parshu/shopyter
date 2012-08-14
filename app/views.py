@@ -35,6 +35,14 @@ APP_CONFIG["RESULTS_LISTING_VIEW"] = 1
 APP_CONFIG["HEADING_COLOR"] = "#EBE0D6"
 APP_CONFIG["NAV_COLOR"] = "#FDFDFA"
 APP_CONFIG['PRICE_LOWBAR_PER'] = 0.20
+APP_CONFIG['CHANNEL_DISPLAY_COLOR'] = {}
+APP_CONFIG['CHANNEL_DISPLAY_COLOR']['online'] = "#663300"
+APP_CONFIG['CHANNEL_DISPLAY_COLOR']['local'] = "red"
+APP_CONFIG['CHANNEL_DISPLAY_COLOR']['in-store'] = "#00478F"
+APP_CONFIG['CHANNEL_DISPLAY_NAME'] = {}
+APP_CONFIG['CHANNEL_DISPLAY_NAME']['online'] = "Online"
+APP_CONFIG['CHANNEL_DISPLAY_NAME']['local'] = "Local Ads"
+APP_CONFIG['CHANNEL_DISPLAY_NAME']['in-store'] = "In Store"
 
 def getQueryFilters(query):
 	filterstring = ""
@@ -85,6 +93,15 @@ def getQueryTags(query):
 	
 	return({"tags": tags, "taghash": taghash})
 	
+def getLowest(items):
+	lowest = None
+	for item in items:
+		if(lowest == None):
+			lowest = item
+		else:
+			if(item < lowest):
+				lowest = item
+	return lowest
 
 def getDealQuery(query):
 	keyword = query['keyword']
