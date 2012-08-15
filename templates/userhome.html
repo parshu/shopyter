@@ -104,10 +104,10 @@
             		<span class="icon-bar"></span>
             		<span class="icon-bar"></span>
           		</a>
-          		<div><a class="brand" href="http://klipiter.com"><span style="margin-left:110px;"><small>personal shopping assistant</small></span></a></div>
+          		<div><a class="brand" href="http://shopyter.com"><span style="margin-left:110px;"><small>personal shopping assistant</small></span></a></div>
           		<div class="nav-collapse">
             	
-            		<p class="navbar-text pull-right" style="margin-right: 60px;"><a onclick="bookmark('{{username}}\'s shopyter page', document.URL);" href="">Bookmark</a> | <a href="/{{username}}">{{username}}'s</a> klip board | <a href="mailto:knopon@gmail.com">feedback</a></p>
+            		<p class="navbar-text pull-right" style="margin-right: 60px;"><a onclick="bookmark('{{username}}\'s shopyter page', document.URL);" href="">bookmark</a> | <a href="/{{username}}">{{username}}'s</a> shopping dashboard | <a href="mailto:knopon@gmail.com">feedback</a></p>
           		</div><!--/.nav-collapse -->
         	</div>
 		</div>
@@ -252,7 +252,7 @@
           		<div class="row-fluid">  <!-- holds maps -->
           			<div class="span12 well" id="mapsdiv" style="background-color:{{APP_CONFIG['HEADING_COLOR']}};margin-bottom:0px;" >
           			    {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}
-						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">?</span> <a onclick="renderLocationEdit();" href="#" ><span id="editlink">edit</span></a><a href="#" onmouseover="$('#maphelp').collapse('toggle');" onmouseout="$('#maphelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a><a href="#" onclick="$('#bigmaplink').click();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);"><i class="icon-fullscreen" style="float:right;"></i></a></form>
+						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">?</span> <a onclick="renderLocationEdit();" href="#" title="Edit and Save new location"><span id="editlink">edit</span></a><a href="#" title="Map Help" onmouseover="$('#maphelp').collapse('toggle');" onmouseout="$('#maphelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a><a href="#" title="Big Map View" onclick="$('#bigmaplink').click();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);"><i class="icon-fullscreen" style="float:right;"></i></a></form>
 						<div id="maphelp" class="collapse"><div style="color:brown;background-color:{{APP_CONFIG['THUMBNAIL_COLOR']}};padding-top:7px;padding-bottom:7px;padding-left:7px;padding-right:7px;">
 <button type="button" class="close" onclick="$('#maphelp').collapse('toggle');">&times;</button>
 

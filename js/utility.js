@@ -29,6 +29,11 @@ function execURL(url, asynchronous){
 		var qid = ajaxDisplay.getAttribute("qid");
 		var values = selection.split(",")
 		renderDealResults('/getdeals/' + username + '/' + qid + '/1/200/9/' + values[0] + '/' + values[1] + '/-1/getdeals.html','dealresultsdiv');
+		ajaxDisplay = document.getElementById("thirdcol");
+		var selmap = ajaxDisplay.getAttribute("selectedmap");
+		if(selmap == 'localmaps') {
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + values[0] + '/' + values[1] + '/-1/getmap.html','localmaps',  1000);
+		}
     }
     
     function renderProgressBar()
@@ -476,7 +481,6 @@ function execURL(url, asynchronous){
 	
 	}
 	
-	  
     
 	
 	function renderPriceSlider(loopid, username) {

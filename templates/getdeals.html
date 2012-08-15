@@ -130,15 +130,15 @@
 									
 									<tr><td align="right" valign="bottom"> 
 									{% if deal['city'] is defined %}
-									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="padding: 3px 14px;background-color:#C2A385; background-image: -moz-linear-gradient(center top , #C2A385, #C2A385);color:white;" onclick="renderSelectedMap('{{username}}', '{{query['_id']}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %}, '{{deal['_id']}}');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Map it</a>
+									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="width:40px;background-color:#FF6600;color:white;" onclick="renderSelectedMap('{{username}}', '{{query['_id']}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %}, '{{deal['_id']}}');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Map it</a>
 									{% endif %}
 									
 									{% if deal['saved'] is sameas 1 %}
-									<a href="#" id="{{deal['_id']}}" class="btn" style="padding: 3px 18px;background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+									<a href="#" id="{{deal['_id']}}" class="btn" style="width:40px;background-color:darkgreen;color:white;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
 									{% elif deal['saved'] is sameas 2 %}
-									<a href="#" id="{{deal['_id']}}" class="btn" style="padding: 3px 18px;background-color:red; background-image: -moz-linear-gradient(center top , red, red);color:white;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
+									<a href="#" id="{{deal['_id']}}" class="btn" style="width:40px;background-color:red;color:white;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 									{% else %}
-									<a href="#" id="{{deal['_id']}}" class="btn" style="padding: 3px 18px;background-color:brown; background-image: -moz-linear-gradient(center top , brown, brown);color:white;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['_id']}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+									<a href="#" id="{{deal['_id']}}" class="btn" style="width:40px;background-color:brown;color:white;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['_id']}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
 									{% endif %}
 									</td></tr>
 									
@@ -168,16 +168,16 @@
 										
 										  <div class="row-fluid">
 										 {% if deal['saved'] is sameas 1 %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);color:white;padding: 3px 6px;margin-bottom:3px;width:80%;float:right;float:bottom;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="background-color:darkgreen; color:white;width:30px;margin-bottom:3px;float:right;float:bottom;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
 										{% elif deal['saved'] is sameas 2 %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);padding: 3px 6px;width:80%;margin-bottom:3px;color:white;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="background-color:red; width:30px;margin-bottom:3px;color:white;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 										{% else %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;background-color:brown; color:white;background-image: -moz-linear-gradient(center top , brown, brown);" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['_id']}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="width:30px;margin-bottom:3px;float:right;float:bottom;background-color:brown; color:white;" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{query['_id']}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
 										{% endif %}
 										</div>
 										 <div class="row-fluid">
 										 {% if deal['city'] is defined %}
-									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="padding: 3px 6px;width:80%;float:right;float:bottom;background-color:#C2A385; color:white;background-image: -moz-linear-gradient(center top , #C2A385, #C2A385);margin-bottom:5px;" onclick="renderSelectedMap('{{username}}', '{{query['_id']}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %}, '{{deal['_id']}}');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Mapit</a>
+									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="width:30px;float:right;float:bottom;background-color:#FF6600; color:white;margin-bottom:5px;" onclick="renderSelectedMap('{{username}}', '{{query['_id']}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %}, '{{deal['_id']}}');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Mapit</a>
 									{% endif %}
 											</div>
 									</div>

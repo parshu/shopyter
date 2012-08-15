@@ -229,16 +229,16 @@
 										
 										  <div class="row-fluid">
 										 {% if deal['saved'] is sameas 1 %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="color:white;background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);padding: 3px 6px;margin-bottom:3px;width:80%;float:right;float:bottom;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="width:35px;color:white;background-color:darkgreen;margin-bottom:3px;float:right;float:bottom;padding:4px 6px;" onclick="saveDeal('{{deal['_id']}}','{{username}}');">Saved</a>
 										{% elif deal['saved'] is sameas 2 %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="color:white;background-color:red; background-image: -moz-linear-gradient(center top , red, red);padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="width:35px;padding:4px 6px;color:white;background-color:red; margin-bottom:3px;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 										{% else %}
-										<a href="#" id="{{deal['_id']}}" class="btn" style="color:white;padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;background-color:brown; background-image: -moz-linear-gradient(center top , brown, brown);" onclick="saveDeal('{{deal['_id']}}','{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+										<a href="#" id="{{deal['_id']}}" class="btn" style="width:35px;color:white;margin-bottom:3px;padding:4px 6px;float:right;float:bottom;background-color:brown;" onclick="saveDeal('{{deal['_id']}}','{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
 										{% endif %}
 										</div>
 										 <div class="row-fluid">
 										 {% if deal['city'] is defined %}
-									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="color:white;padding: 3px 6px;width:80%;float:right;float:bottom;background-color:#C2A385; background-image: -moz-linear-gradient(center top , #C2A385, #C2A385);margin-bottom:5px;" onclick="openInfoWindow('{{deal['street']}}, {{deal['city']}}, {{deal['state']}}, US');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Mapit</a>
+									<a href="#" id="showonmap{{deal['_id']}}" class="btn" style="width:35px;color:white;float:right;float:bottom;padding:4px 6px;background-color:#FF6600; margin-bottom:5px;" onclick="openInfoWindow('{{deal['street']}}, {{deal['city']}}, {{deal['state']}}, US');execURL('/updatemetrics/{{username}}/increment/{&quot;mapits&quot;:1}',true);">Mapit</a>
 									{% endif %}
 											</div>
 									</div>
