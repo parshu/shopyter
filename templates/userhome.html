@@ -66,7 +66,6 @@
 
 
 </style> 
-	 <link href="/assets/86da9cefa74f779e7cd597976f1b4c64/trover.css" media="all" rel="stylesheet" type="text/css" />  
     <link href="/bootstrap/docs/assets/css/bootstrap-responsive.css" rel="stylesheet">
     <link rel="stylesheet" href="/jquery-ui-1.8.21.custom/development-bundle/themes/base/jquery.ui.all.css">
 
@@ -186,12 +185,12 @@
 			</div><!--/span end column-->
         	
         
-			<div class="span6" id="secondcol" listingview="{{APP_CONFIG['RESULTS_LISTING_VIEW']}}"> <!-- second column, holds deal results -->
+			<div class="span6" id="secondcol" listingview="{{APP_CONFIG['RESULTS_LISTING_VIEW']}}" refreshsaved="no"> <!-- second column, holds deal results -->
           		<div class="row-fluid">
           			<ul class="nav nav-tabs" id="myTab">
           				
 						<li class="active"><a href="#knopons" data-toggle="tab" onclick="revertBigMapChanges('{{username}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %});">Results</a></li>
-						<li><a href="#savedknopons" data-toggle="tab" onclick="revertBigMapChanges('{{username}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %});execURL('/updatemetrics/{{username}}/increment/{&quot;savedtabviews&quot;:1}',true);">Saved Results</a></li>
+						<li><a href="#savedknopons" data-toggle="tab" onclick="refreshSaved('{{username}}');revertBigMapChanges('{{username}}', {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}1000{% else %}500{% endif %});execURL('/updatemetrics/{{username}}/increment/{&quot;savedtabviews&quot;:1}',true);">Saved Results</a></li>
 						<li><a id="bigmaplink" href="#localmaps" data-toggle="tab" onclick="makeBigMapChanges('{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);">Map View</a></li>
 						<!--<li class="dropdown" id="menu1">
 							<a class="dropdown-toggle" data-toggle="dropdown" href="#menu1">
@@ -228,10 +227,9 @@
 					
 					<div id="myTabContent" class="tab-content">
 						<div class="tab-pane fade" id="savedknopons">
-							Loading...
+						
 						</div>
 						<div class="tab-pane fade" id="localmaps" >
-							Loading...
 						</div>
 						<div class="tab-pane fade active in" data-target="#knopons" id="knopons" >
 							
@@ -254,7 +252,7 @@
           		<div class="row-fluid">  <!-- holds maps -->
           			<div class="span12 well" id="mapsdiv" style="background-color:{{APP_CONFIG['HEADING_COLOR']}};margin-bottom:0px;" >
           			    {% if APP_CONFIG['FILTER_ON_LEFT'] is sameas 1 %}
-						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">Loading...</span> <a onclick="renderLocationEdit();" href="#" ><span id="editlink">edit</span></a><a href="#" onmouseover="$('#maphelp').collapse('toggle');" onmouseout="$('#maphelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a><a href="#" onclick="$('#bigmaplink').click();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);"><i class="icon-fullscreen" style="float:right;"></i></a></form>
+						<form id="mod_location" class="form-inline" style="margin: 7px 7px 7px;">Results around <span id="userlocation" style="color:darkorange;">?</span> <a onclick="renderLocationEdit();" href="#" ><span id="editlink">edit</span></a><a href="#" onmouseover="$('#maphelp').collapse('toggle');" onmouseout="$('#maphelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a><a href="#" onclick="$('#bigmaplink').click();execURL('/updatemetrics/{{username}}/increment/{&quot;bigmapviews&quot;:1}',true);"><i class="icon-fullscreen" style="float:right;"></i></a></form>
 						<div id="maphelp" class="collapse"><div style="color:brown;background-color:{{APP_CONFIG['THUMBNAIL_COLOR']}};padding-top:7px;padding-bottom:7px;padding-left:7px;padding-right:7px;">
 <button type="button" class="close" onclick="$('#maphelp').collapse('toggle');">&times;</button>
 
@@ -303,7 +301,7 @@
 			execURL('/setdbfield/users/' + username + '/{"RESULTS_LISTING_VIEW": 1}',false);
 			ajaxDisplay.setAttribute("listingview","1");
 		}
-		var eleid = document.getElementById("filtersholder");
+		var eleid = document.getElementById("secondcol");
 		var qid = eleid.getAttribute("qid");
 		var selection = document.getElementById('sortorder').options[document.getElementById('sortorder').selectedIndex].value;
 		var values = selection.split(",");
@@ -380,10 +378,8 @@
       // Display the querybox with 1st item highlighed and render deals for it when user first visits the page  
       renderQueryBox('/getqueries/{{username}}/1','queriesdiv', 1);	
       
-      var link = document.getElementById('query1');
-	  if(link != undefined) {
-	  		link.click();
-	  }
+      $('#query1').click();
+	  
 
 	  renderLocationBox();
       renderQueryBox('/getpopularqueries/{{username}}/1','popularqueriesdiv', 1);

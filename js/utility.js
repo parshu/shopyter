@@ -25,7 +25,7 @@ function execURL(url, asynchronous){
 	
 	  function sortCurrentDeals(selection, username)
     {
-    	var ajaxDisplay = document.getElementById("filtersholder");
+    	var ajaxDisplay = document.getElementById("secondcol");
 		var qid = ajaxDisplay.getAttribute("qid");
 		var values = selection.split(",")
 		renderDealResults('/getdeals/' + username + '/' + qid + '/1/200/9/' + values[0] + '/' + values[1] + '/-1/getdeals.html','dealresultsdiv');
@@ -248,11 +248,18 @@ function execURL(url, asynchronous){
 	function clickCurrentQuery()
 	{
 		
-		var filtersele = document.getElementById("filtersholder");
-		var lpid = filtersele.getAttribute("loopid");
-		var linkele = document.getElementById(lpid);
-		linkele.click();	
+		var filtersele = document.getElementById("secondcol");
+		var lpid = filtersele.getAttribute("qlinkid");
+		$('#' + lpid).click();	
 	
+	}
+	
+	function refreshSaved(username)
+	{
+		var ajaxDisplay = document.getElementById("secondcol");
+		var qid = ajaxDisplay.getAttribute("qid");
+		renderURLinDiv('/getsaveddeals/' + username + '/' + qid + '/1','savedknopons',true);
+		
 	}
 	
 	 function saveTag(newtag, username, qid) {
@@ -497,7 +504,7 @@ function execURL(url, asynchronous){
 					var linkele = document.getElementById(lpid);
 					linkele.setAttribute("pl",ui.values[0]);
 					linkele.setAttribute("ph",ui.values[1]);
-					linkele.click();
+					$('#' + lpid).click();
 					execURL("/updatemetrics/" + username + "/increment/{\"filtersused\":1}",true);
 					updateDeals(username,qid);
 					
@@ -530,7 +537,7 @@ function execURL(url, asynchronous){
 					var lpid = ele.getAttribute("loopid");
 					var linkele = document.getElementById(lpid);
 					linkele.setAttribute("df",ui.value);
-					linkele.click();
+					$('#' + lpid).click();
 					execURL("/updatemetrics/" + username + "/increment/{\"filtersused\":1}",true);											
 					
 				}
@@ -557,7 +564,7 @@ function execURL(url, asynchronous){
 		execURL('/updatequeryfilters/' + queryid + '/' + selectedbuttons, false);
 		var lpid = filtersele.getAttribute("loopid");
 		var linkele = document.getElementById(lpid);
-		linkele.click();
+		$('#' + lpid).click();
 		updateDeals(username,queryid);
 		
 	
@@ -599,11 +606,11 @@ function execURL(url, asynchronous){
 				  renderQueryBox('/getqueries/' + username + '/' + querycount,'queriesdiv', 1);
 				  var link = document.getElementById('query' + querycount);
 				  if(link != undefined) {
-					link.click();
+					$('#query' + querycount).click();
 				  } else {
 				  	var link2 = document.getElementById('query1');
 				  	if(link2 != undefined) {
-						link2.click();
+						$('#query1').click();
 				  	}
 				  	
 				  }
@@ -650,7 +657,7 @@ function execURL(url, asynchronous){
 		renderQueryBox('/getqueries/' + username + '/' + highlightIndex,'queriesdiv', 1);
        	var link = document.getElementById('query1');
        	if(link != undefined) {
-	  		link.click();
+	  		$('#query1').click();
 	  		
 	  	}
 	  	else{

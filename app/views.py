@@ -154,6 +154,10 @@ def serve_jquery_ui_3(dir1,dir2,dir3,filename):
 def serve_jquery_ui_2(dir1,dir2,filename):
 	return static_file(dir1 + '/' + dir2 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
 	
+@route('/jquery-ui-1.8.21.custom/<dir1>/<dir2>/<dir3>/<dir4>/:filename')
+def serve_jquery_ui_2(dir1,dir2,dir3,dir4,filename):
+	return static_file(dir1 + '/' + dir2 + '/' + dir3 + '/' + dir4 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
+	
 @route('/jquery-ui-1.8.21.custom/<dir1>/:filename')
 def serve_jquery_ui_1(dir1,filename):
 	return static_file(dir1 + '/' + filename, root='./jquery-ui-1.8.21.custom/')
@@ -537,7 +541,8 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
 	
 	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox'] 
 	query = mainbox_table.find_one({'_id': queryid})
-	
+	if(query == None):
+		return ""
 	pricehigh = query['price_high']
 	
 	qlastviewed = None
@@ -651,14 +656,14 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
 	
 	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid, mapspecs = mapspecs)
     
-@route('/getsaveddeals/<username>/<keyword>/<dollarlimit>')
-def getsaveddeals(username, keyword, dollarlimit):
+@route('/getsaveddeals/<username>/<qid>/<dollarlimit>')
+def getsaveddeals(username, qid, dollarlimit):
 	
-	if(keyword == '-1'): 
-		mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
-		query = mainbox_table.find_one({'username': username})
-		keyword = query['keyword']
-		dollarlimit = query['dollar_limit']
+	
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox']
+	query = mainbox_table.find_one({'_id': qid})
+	keyword = query['keyword']
+	dollarlimit = query['dollar_limit']
    
 	dollarlimit = int(dollarlimit)
 	saved_deals_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['saved_deals']
@@ -673,7 +678,7 @@ def getsaveddeals(username, keyword, dollarlimit):
 		deals[i]['days'] = days
 		deals[i]['saved'] = 2
 		i = i + 1
-	return template('getdeals.html', keyword = keyword, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, APP_CONFIG = APP_CONFIG)
+	return template('getdeals.html', keyword = keyword, query = query, dollarlimit = dollarlimit, deals = deals, username = username, savetab = savetab, APP_CONFIG = APP_CONFIG)
     
 @route('/getqueries/<username>/<linkno>')
 def getqueries(username, linkno):

@@ -233,7 +233,7 @@
 										{% elif deal['saved'] is sameas 2 %}
 										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="background-color:red; background-image: -moz-linear-gradient(center top , red, red);padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;" onclick="unsaveDeal('{{deal['_id']}}','{{username}}');">Unsave</a>
 										{% else %}
-										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;background-color:brown; background-image: -moz-linear-gradient(center top , brown, brown);" onclick="saveDeal('{{deal['_id']}}','{{username}}');renderURLinDiv('/getsaveddeals/{{username}}/{{keyword}}/1','savedknopons',true);execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
+										<a href="#" id="{{deal['_id']}}" class="btn btn-info" style="padding: 3px 6px;width:80%;margin-bottom:3px;float:right;float:bottom;background-color:brown; background-image: -moz-linear-gradient(center top , brown, brown);" onclick="saveDeal('{{deal['_id']}}','{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;saves&quot;:1}',true);">Save</a>
 										{% endif %}
 										</div>
 										 <div class="row-fluid">
