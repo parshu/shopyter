@@ -1,0 +1,116 @@
+{% block content %}
+<div class="span12 well" style="border:1px solid #E7E7E7;box-shadow: 2px 2px 2px #888;margin-bottom:0px;" id="filtersholder" qid="{{query['_id']}}" loopid="{{loopid}}" selectedbuttons="{{filterstring}}">
+		  	    		<div class="row-fluid" style="padding-top:7px;padding-bottom:7px;margin-left:0px;background-color:{{APP_CONFIG['HEADING_COLOR']}};">
+								  		<span style="margin-left:7px;">Persistent Filters for <span style="color:darkorange;">{{query['keyword']}}</span>  <a href="#" onmouseover="$('#filterhelp').collapse('toggle');" onmouseout="$('#filterhelp').collapse('toggle');"><i class="icon-question-sign" style="float:right;" ></i></a></span>
+							</div>
+							<div id="filterhelp" class="collapse"><div style="color:brown;background-color:{{APP_CONFIG['THUMBNAIL_COLOR']}};padding-top:7px;padding-bottom:7px;padding-left:7px;padding-right:7px;">
+<button type="button" class="close" onclick="$('#filterhelp').collapse('toggle');">&times;</button>
+
+	Use filters below to <strong>"narrow down"</strong> results. These are <strong>persistent</strong>, and we will use this information to learn what you want and remember it when we go looking for deals tonight.
+
+
+</div></div>
+									<hr style="margin: 0px 0px;width:100%;">
+		  	        	
+		  	        	<div class="row-fluid" id="priceslider">  <!-- price slider filter -->
+		  	        		<div class="span3" style="margin-top: 2px;">
+								<span class="label label-info" style="margin-left:5px;">Price&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span6">
+								<div id="slider-range" style="margin-top: 5px"></div>
+							</div>
+							<div class="span3">
+								<input type="text" id="amount" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
+           		    		</div>
+           		    	</div>
+           		    	<div class="row-fluid">  <!-- date slider filter -->
+		  	        		<div class="span3" style="margin-top: 2px;">
+								<span class="label label-info" style="margin-left:5px;">Found&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span6">
+								<div id="slider-range-min" style="margin-top: 5px"></div>
+							</div>
+							<div class="span3">
+								<input type="text" id="days" style="border:0; color:#f6931f; padding: 0px; width: 70px; background-color:#f5f5f5; box-shadow: 0 1px 1px transparent inset; margin-bottom: 0px;" />
+           		    		</div>
+           		    	</div>
+           		    	{% if facethash is defined %}
+           		    		{% if facethash['condition'] is defined %}
+           		     	<div class="row-fluid">  <!-- condition filter-->
+           		     		<div class="span3" style="margin-top: 2px;">
+           		     			<span class="label label-info" style="margin-left:5px;">Condition&nbsp;</span>
+							</div>
+							<div class="span9" style="margin-top: 2px;">
+								<div class="btn-group" data-toggle="buttons-checkbox" >
+									{% for condition in facethash['condition'].keys() %}
+									<button class="btn{% if selectedfilters['condition'] is defined %}{% if selectedfilters['condition'][condition] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','condition-{{condition}}','condition|{{condition}}', '{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;" id="condition-{{condition}}" condition="{{condition}}">{{condition}}<!-- ({{facethash['condition'][condition]}})--></button>
+									
+									{% endfor %}
+									
+									
+								</div>
+							</div>
+					 	</div>   <!-- end condition filter -->
+					 		{% endif %}
+					 		{% if facethash['brand'] is defined %}
+           		     	<div class="row-fluid">  <!-- brand filter-->
+           		     		<div class="span3" style="margin-top: 2px;">
+           		     			<span class="label label-info" style="margin-left:5px;">Brand&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span9" style="margin-top: 2px;">
+								<div class="btn-group" data-toggle="buttons-checkbox" >
+									{% for brand in facethash['brand'].keys() %}
+									<button class="btn{% if selectedfilters['brand'] is defined %}{% if selectedfilters['brand'][brand] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','brand-{{brand}}','brand|{{brand}}', '{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;" id="brand-{{brand}}" brand="{{brand}}">{{brand}}<!-- ({{facethash['brand'][brand]}})--></button>
+									
+									{% endfor %}
+									
+									
+								</div>
+							</div>
+					 	</div>   <!-- end brand filter -->
+					 		{% endif %}
+					 		{% if facethash['channel'] is defined %}
+					 	<div class="row-fluid"> 
+           		     		<div class="span3" style="margin-top: 5px;">
+           		     			<span class="label label-info" style="margin-left:5px;min-width:60px;">Channel&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span9" style="margin-top: 5px;">
+								<div class="btn-group" data-toggle="buttons-checkbox" >
+									{% for channel in facethash['channel'].keys() %}
+									<button class="btn{% if selectedfilters['channel'] is defined %}{% if selectedfilters['channel'][channel] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','channel-{{channel}}','channel|{{channel}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;" id="channel-{{channel}}" channel="{{channel}}">{{APP_CONFIG['CHANNEL_DISPLAY_NAME'][channel]}}</button>
+									{% endfor %}
+								</div>
+							</div>
+					 	</div>  
+					 		{% endif %}
+					 {% endif %}
+					 	<div class="row-fluid">  <!-- features filter -->
+					 		
+							<div class="span3" style="margin-top: 2px;">
+								<span class="label label-info" style="margin-left:5px;">Tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							</div>
+							<div class="span9" style="margin-top: 5px;">
+								<div class="btn-group" data-toggle="buttons-checkbox" >
+									{% for tag in tags %}
+										{% if taghash[tag] is defined %}
+											<button class="btn{% if selectedfilters['tag'] is defined %}{% if selectedfilters['tag'][tag] is defined %} active{% endif %}{% endif %}" onclick="saveFilter('{{query['_id']}}','tag-{{tag}}','tag|{{tag}}', '{{username}}');execURL('/updatemetrics/{{username}}/increment/{&quot;filtersused&quot;:1}',true);" style="padding: 1px 10px;" id="tag-{{tag}}" tag="{{tag}}">{{tag}}<!--({{taghash[tag]}})--></button>
+										{% endif %}
+									
+									{% endfor %}
+								</div>
+								<div style="padding-top:5px;">
+									<form id="add_tag" class="form-inline">
+										<input type="hidden" id="qidinput" value="{{query['_id']}}">
+										<input type="text" id="newtag" class="input-small" placeholder="new tag..." required>
+										<button class="btn" type="submit" onclick="saveTag(document.getElementById('newtag').value, '{{username}}', '{{query['_id']}}');" style="padding: 3px 3px;background-color:brown; background-image: -moz-linear-gradient(center top , brown, brown);"><i class="icon-plus icon-white"></i></button>
+									</form>
+								</div>
+							</div>
+							
+							
+							
+           		    	</div>  <!-- end features filter -->
+           			</div>
+           			
+           			
+ {% endblock %}	

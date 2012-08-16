@@ -514,10 +514,31 @@ def unsavedeal(dealid, username):
 	sys.stdout.flush()
 	return ""   
     
+ 
+@route('/getemaildeals/<username>/<startnum>/<resultsize>/<sortby>/<sorttype>/<mode>/:filename')
+def getemaildeals(username, startnum, resultsize, sortby, sorttype, mode, filename): 
+	
+	mainbox_table = pymongo.Connection('localhost', 27017)[APP_CONFIG["DBNAME"]]['mainbox'] 
+	queries = mainbox_table.find({'username': username})
+	htmlcontent = ""
+	for query in queries:
+		htmlcontent = htmlcontent + getdeals(username, query['_id'], startnum, resultsize, "9", sortby, sorttype, "-1", mode, filename)
+	htmlcontent = htmlcontent.strip()
+	if(htmlcontent == ""):
+		return ""
+	else:
+		print "\"%s\"" % (htmlcontent)
+		sys.stdout.flush()
+		return template('emaildeals.html', htmlcontent = htmlcontent)
+ 
+'''@route('/getemaildeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/<highlightdealid>/<mode>/:filename')
+def getemaildeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, highlightdealid, mode, filename): 
+	htmlcontent = getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, highlightdealid, mode, filename)
+	return template('emaildeals.html', htmlcontent = htmlcontent)
+''' 
     
-    
-@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/<highlightdealid>/:filename')
-def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, highlightdealid, filename):
+@route('/getdeals/<username>/<queryid>/<startnum>/<resultsize>/<zoom>/<sortby>/<sorttype>/<highlightdealid>/<mode>/:filename')
+def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, highlightdealid, mode, filename):
 	if(sortby == "-1"):
 		sortby = "founddate"
 	if(sorttype == "-1"):
@@ -556,8 +577,12 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
     
 	if(filename == "getmap.html"):
 		dealquery['$and'].append({'city': {'$exists': True}})
+	if(mode == "emaildeals"):
+		dealquery['$and'].append({'founddate': {'$gt': query['lastviewed']}})
+		APP_CONFIG["RESULTS_LISTING_VIEW"] = 0
     
 	print dealquery
+	sys.stdout.flush()
 	if(sortby == "nosort"):
 		deals.extend([deal for deal in deals_table.find(dealquery).skip(startnum).limit(resultsize)])
 	else:
@@ -647,14 +672,19 @@ def getdeals(username, queryid, startnum, resultsize, zoom, sortby, sorttype, hi
 	if(spans > 0):
 		spans = int(12/spans)
 	
-	mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
+	if(mode != "emaildeals"):
+		mainbox_table.update({'_id': query["_id"], 'username': username}, { "$set" : { "lastviewed": datetime.utcnow() } })
 	
 	numdel = 0
 	for id in dealdelindex:
 		del deals[id - numdel]
 		numdel = numdel + 1
 	
-	return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid, mapspecs = mapspecs)
+	
+	if(mode == "emaildeals"):
+		    return template('getdealemail.html', username = username, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals)
+	else:
+		return template(filename, keyword = query['keyword'], dollarlimit = int(query['dollar_limit']), deals = deals, username = username, savetab = savetab, user_metrics = user_metrics, query = query, facethash = facethash, spans = spans, selectedfilters = filterresults['selectedfilters'], addresshash = addresshash, zoom = zoom, totalresults = len(deals), APP_CONFIG = APP_CONFIG, startnum = startnum, resultsize = resultsize, highlightdealid = highlightdealid, mapspecs = mapspecs, mode = mode)
     
 @route('/getsaveddeals/<username>/<qid>/<dollarlimit>')
 def getsaveddeals(username, qid, dollarlimit):

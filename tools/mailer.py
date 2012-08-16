@@ -6,7 +6,7 @@ from tools.text_utils import toutf8
 
 def mail(to_address, subject, text):
     msg = MIMEMultipart()
-    msg['From'] = 'knopon@gmail.com'
+    msg['From'] = 'parashuram@gmail.com'
     msg['To'] = to_address
     msg['Subject'] = subject
 
@@ -16,8 +16,8 @@ def mail(to_address, subject, text):
     mailServer.ehlo()
     mailServer.starttls()
     mailServer.ehlo()
-    mailServer.login('knopon@gmail.com', 'paloaltosantaclara')
-    mailServer.sendmail('knopon@gmail.com', to_address, msg.as_string())
+    mailServer.login('parashuram@gmail.com', 'u4muixarm7tdmi')
+    mailServer.sendmail('parashuram@gmail.com', to_address, msg.as_string())
     mailServer.close()
 
 

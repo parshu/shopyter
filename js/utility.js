@@ -28,11 +28,11 @@ function execURL(url, asynchronous){
     	var ajaxDisplay = document.getElementById("secondcol");
 		var qid = ajaxDisplay.getAttribute("qid");
 		var values = selection.split(",")
-		renderDealResults('/getdeals/' + username + '/' + qid + '/1/200/9/' + values[0] + '/' + values[1] + '/-1/getdeals.html','dealresultsdiv');
+		renderDealResults('/getdeals/' + username + '/' + qid + '/1/200/9/' + values[0] + '/' + values[1] + '/-1/-1/getdeals.html','dealresultsdiv');
 		ajaxDisplay = document.getElementById("thirdcol");
 		var selmap = ajaxDisplay.getAttribute("selectedmap");
 		if(selmap == 'localmaps') {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + values[0] + '/' + values[1] + '/-1/getmap.html','localmaps',  1000);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + values[0] + '/' + values[1] + '/-1/-1/getmap.html','localmaps',  1000);
 		}
     }
     
@@ -433,7 +433,7 @@ function execURL(url, asynchronous){
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span9");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/-1/getmap.html','localmaps', 1000);
+		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/-1/-1/getmap.html','localmaps', 1000);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","localmaps");
 		$("#thirdcol").hide();
@@ -456,7 +456,7 @@ function execURL(url, asynchronous){
 		ajaxDisplay = document.getElementById("secondcol");
 		ajaxDisplay.setAttribute("class","span6");
 		var qid = ajaxDisplay.getAttribute("qid");
-		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/-1/getmap.html','mapresultsdiv', mapheight);
+		renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/-1/-1/getmap.html','mapresultsdiv', mapheight);
 		ajaxDisplay = document.getElementById("thirdcol");
 		ajaxDisplay.setAttribute("selectedmap","mapresultsdiv");
 		$("#thirdcol").show();
@@ -474,9 +474,9 @@ function execURL(url, asynchronous){
 		var ajaxDisplay = document.getElementById("thirdcol");
 		var selmap = ajaxDisplay.getAttribute("selectedmap");
 		if(selmap == 'localmaps') {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/' + dealid + '/getmap.html','localmaps',  1000);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/12,big/' + sortby + '/' + dealid + '/-1/getmap.html','localmaps',  1000);
 		} else {
-			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/' + dealid + '/getmap.html','mapresultsdiv',  mapheight);
+			renderMapResults('/getdeals/' + username + '/' + qid + '/1/200/10,small/' + sortby + '/' + dealid + '/-1/getmap.html','mapresultsdiv',  mapheight);
 		}
 	
 	}

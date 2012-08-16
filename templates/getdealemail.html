@@ -1,22 +1,16 @@
-<font face="arial">
-              <span style="color:red">New Today</span> | knopons for <span style="color:darkorange">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span></th>
+{% block content %}{% if deals[0] is defined %}
+              <span style="color:red">New Today</span> | <span style="color:darkorange">{{keyword}}</span> around <span style="color:darkorange">${{dollarlimit}}</span><span style="float:right"><a href="http://shopyter.com/{{username}}">See more...</a></span>
 		      <hr>
 		        
 		        
 		       <table> 
-		        {% block content %}
-		        {% if deals[0] is undefined %}
-		        <tr>
-		       		<td>
-		       		
-		       		 No new deals for this today. We will continue to look!
-					</td>
-				</tr>
-				{% endif %}
+		       
+		        
+		        
 				 <tr>
 				{% for deal in deals %}
 				
-				   {% if loop.index is sameas 4 %}
+				   {% if loop.index is sameas 5 %}
 				   <tr></tr>
 				   
 				   {% endif %}
@@ -28,39 +22,20 @@
     			
 		
 
-		       		<td>
-		       		    <table bgcolor="#EFEFEF">
-					   			<tr><td>
-					   				<table><tr>
-					   				<td>
-					    				<img src="{{deal['image']}}" style="height: 150px;" width="150"/> 
-					    			
-					    			</td>
-					    			</tr></table>
-					    			</td>
-					    			<td>
-					    			<table width="200"><tr>
-					    			<td>
+		       		<td style="border: 1px solid lightgrey;background-color:#FDFDFC;">
+		       		    <table width="200">
+					   			<tr>
+					   				<td><img src="{{deal['image']}}" style="height: 200px;" width="200"/> </td>
+					    		</tr>
 					    				<tr>
-					    					<td><a href="{{deal['url']}}"  target="_blank">{{deal['title']}}</a><b> ({{deal['condition']}})</b><td>
+					    					<td><a href="{{deal['url']}}"  target="_blank">{{deal['thumbnail_title']}}</a> - <b>${{deal['price']}}</b><td>
 					    				</tr>
-					    				<tr>
-					   						<td><b>${{deal['price']}}</b></td>
-					   					</tr>
+					    				
 					   					<tr>
-					   						<td><span style="color:green">From {{deal['source']}}</span></td>
+					   						<td><span style="color:green;">From {{deal['source']}}</span>{% if deal['city'] is defined %}<span style="color:lightgrey;">{{deal['city']}}</span> {% endif %}</td>
 					   					</tr>
-					   					{% if loop.index is sameas 6 %}
-		           							<tr>
-					   						<td><span style="background-color:darkorange"><a href="http://knopon.com/{{username}}">See more…</a></span></td>
-					   					    </tr>
-
-				   						{% endif %}
-					   				</td>
-					   				</tr></table>
-					   				</td>
-					   			
-					   			</tr>
+					   					
+					   				
 					   	</table>
 	
 		       	    </td>
@@ -70,12 +45,8 @@
 		       	    
 		          
 		         {% endfor %}
- 				 {% endblock %}	
  				 </tr>	
 		      
 		      </table>
            
-</font>
-
-
-	    
+{% endif %}{% endblock %}
