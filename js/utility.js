@@ -99,11 +99,11 @@ function execURL(url, asynchronous){
                     me.css('width', (current_perc)+'%');
                 }
 				
-				var sourcesite = ['Amazon', 'Ebay','Craigslist', 'Walmart', 'Web'];
+				var sourcesite = ['Amazon', 'Ebay','Local Classified Ads', 'In Store Deals', 'Milo'];
 				var index = Math.floor(current_perc / 20);
                 me.text('Scouring ' + sourcesite[index]);
 
-            }, 200);
+            }, 300);
 
         	});
 			
@@ -204,7 +204,7 @@ function execURL(url, asynchronous){
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4){
 				var ajaxDisplay = document.getElementById(divname);
-				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+				var jsonres = eval('(' + ajaxRequest.responseText + ')');
 			}
 		}
 		ajaxRequest.open("GET", url, asynchronous); 
@@ -235,7 +235,7 @@ function execURL(url, asynchronous){
 			if(ajaxRequest.readyState == 4){
 				var ajaxDisplay = document.getElementById(divname);
 				ajaxDisplay.innerHTML = ajaxRequest.responseText;
-				ajaxDisplay.setAttribute("style","background-color:lightgreen; background-image: -moz-linear-gradient(center top , lightgreen, lightgreen);");
+				ajaxDisplay.setAttribute("style","background-color:darkgreen;color:white;");
 			}
 		}
 		ajaxRequest.open("GET", url, asynchronous); 

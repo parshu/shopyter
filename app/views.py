@@ -503,7 +503,7 @@ def savedeal(dealid, username):
 	saved_deal_table.insert(deal)
 	print "Saving|" + username + ":" + dealid
 	sys.stdout.flush()
-	return "<strong>Saved</strong>"
+	return "Saved"
     
 @route('/unsavedeal/<dealid>/<username>')
 def unsavedeal(dealid, username):
